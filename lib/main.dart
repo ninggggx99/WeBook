@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:webookapp/Pages/Setup/welcome.dart';
+import 'package:webookapp/view_models/root_vm.dart';
+
+import 'database/authentication.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -27,8 +30,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: WelcomePage(),
-    );
+      home: new RootPage(auth: new Auth()));
   }
 }
 

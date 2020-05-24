@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:webookapp/view/HomePage.dart';
-import 'package:webookapp/view/Notification.dart';
-import 'package:webookapp/view/Profile.dart';
-import 'package:webookapp/view/CreateBook.dart';
-import 'package:webookapp/view/Library.dart';
+import 'package:webookapp/view/navbar.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -11,21 +8,13 @@ void main() {
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
-  
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'WeBook',
-      theme: ThemeData(        
-        primarySwatch: Colors.blue,
+      theme: ThemeData(
+        primarySwatch: Colors.teal,
       ),
-      initialRoute: '/',
-      routes:{
-        '/': (context) => MyHomePage(),
-        '/notification': (context) => NotificationPage(),
-        '/library': (context) => LibraryPage(),
-        '/createbook':  (context) => CreateBookPage(),
-        '/profile': (context) => ProfilePage(),
-      }
+      home: BottomNavBar(),
     );
   }
 }

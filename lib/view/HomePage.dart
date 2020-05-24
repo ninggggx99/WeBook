@@ -11,19 +11,11 @@ class MyHomePage extends StatefulWidget{
   }
 }
 class _MyHomePageState extends State<MyHomePage>{
-  int _counter = 0;
-  void _incrementCounter(){
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build (BuildContext context){
     return Scaffold(
-      appBar: AppBarCustom(
-        title: "Home",
-        height:100.0
+      appBar: AppBar(
+       title: const Text('Home'),
       ),
       body: Center(
         child: Column(
@@ -32,14 +24,10 @@ class _MyHomePageState extends State<MyHomePage>{
             Text(
               'My Home Page',
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavBar(),
+      //bottomNavigationBar: BottomNavBar(),
     );
   }
 }

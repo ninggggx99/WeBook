@@ -15,9 +15,8 @@ class _NotificationPageState extends State<NotificationPage>{
   @override
   Widget build (BuildContext context){
     return Scaffold(
-       appBar: AppBarCustom(
-        title: "Notification",
-        height:100.0
+       appBar: AppBar(
+        title: const Text('Notification'),
       ),
       body: Center(
         child: Column(
@@ -29,7 +28,7 @@ class _NotificationPageState extends State<NotificationPage>{
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavBar(),
+      //bottomNavigationBar: BottomNavBar(),
     );
   }
 }

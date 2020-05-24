@@ -15,9 +15,8 @@ class _LibraryPageState extends State<LibraryPage>{
   @override
   Widget build (BuildContext context){
     return Scaffold(
-      appBar: AppBarCustom(
-        title: "Library",
-        height:100.0
+      appBar: AppBar(
+        title: const Text('Library'),
       ),
       body: Center(
         child: Column(
@@ -29,7 +28,7 @@ class _LibraryPageState extends State<LibraryPage>{
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavBar(),
+
     );
   }
 }

@@ -15,9 +15,8 @@ class _CreateBookPageState extends State<CreateBookPage>{
   @override
   Widget build (BuildContext context){
     return Scaffold(
-      appBar: AppBarCustom(
-        title: "Create Book",
-        height:100.0
+      appBar: AppBar(
+        title: const Text('Create Book'),
       ),
       body: Center(
         child: Column(
@@ -29,7 +28,7 @@ class _CreateBookPageState extends State<CreateBookPage>{
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavBar(),
+      // bottomNavigationBar: BottomNavBar(),
     );
   }
 }

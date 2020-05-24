@@ -1,55 +1,59 @@
 import 'package:flutter/material.dart';
-
-class BottomNavBar extends StatelessWidget {
-  Color textcolor = Color.fromRGBO(104,134,197,1);
-  //Color textcolor = Color.fromRGBO(192, 242, 208,1);
+import 'package:webookapp/view/HomePage.dart';
+import 'package:webookapp/view/Notification.dart';
+import 'package:webookapp/view/Profile.dart';
+import 'package:webookapp/view/CreateBook.dart';
+import 'package:webookapp/view/Library.dart';
+class BottomNavBar extends StatefulWidget{
+  @override
+  _BottomNavBarState createState() => _BottomNavBarState();
+}
+class _BottomNavBarState extends State<BottomNavBar>{
+  int _currentIndex = 0;
+  final List <Widget> _children = [MyHomePage(),LibraryPage(),CreateBookPage(),NotificationPage(),ProfilePage()];
+  void onTappedBar(int index){
+    setState(() {
+      _currentIndex= index;
+    });
+  }
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height : 75,
-      padding: EdgeInsets.only(top: 5, bottom: 30, left: 0, right:0),
-      color: Color.fromRGBO(249, 249, 249, 1),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          IconButton(
-            color: textcolor,
-            icon:Icon(Icons.home, size:35.0) ,
-            onPressed: (){
-              Navigator.pushReplacementNamed(context, '/');
-            },
+    return new Scaffold(
+      body:_children[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: onTappedBar,
+        currentIndex: _currentIndex,
+        type:BottomNavigationBarType.fixed,
+        items:
+        [
+          BottomNavigationBarItem
+          (
+            icon: new Icon(Icons.home),
+            title: new Text ("Home")
           ),
-          IconButton(
-            color:textcolor,
-            icon:Icon(Icons.library_books, size:35.0) ,
-            onPressed: (){
-               Navigator.pushReplacementNamed(context, '/library');
-            },
+          BottomNavigationBarItem
+          (
+            icon: new Icon(Icons.library_books),
+            title: new Text ("Library")
           ),
-          IconButton(
-            color: textcolor,
-            icon:Icon(Icons.create, size:35.0) ,
-            onPressed: (){
-               Navigator.pushReplacementNamed(context, '/createbook');
-            },
+          BottomNavigationBarItem
+          (
+            icon: new Icon(Icons.create),
+            title: new Text ("Create")
           ),
-          IconButton(
-            color: textcolor,
-            icon:Icon(Icons.notifications, size:35.0) ,
-            onPressed: (){
-               Navigator.pushReplacementNamed(context, '/notification');
-            },
+          BottomNavigationBarItem
+          (
+            icon: new Icon(Icons.notifications),
+            title: new Text ("Notification")
           ),
-          IconButton(
-            color: textcolor,
-            icon:Icon(Icons.person, size: 35.0) ,
-            onPressed: (){
-               Navigator.pushReplacementNamed(context, '/profile');
-            },
+          BottomNavigationBarItem
+          (
+            icon: new Icon(Icons.person),
+            title: new Text ("Profile")
           ),
-
-      ],
+        ]
       ),
     );
   }
+  
 }

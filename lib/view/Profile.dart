@@ -15,9 +15,8 @@ class _ProfilePageState extends State<ProfilePage>{
   @override
   Widget build (BuildContext context){
     return Scaffold(
-      appBar: AppBarCustom(
-        title: "Profile",
-        height:100.0
+      appBar: AppBar(
+        title: const Text('Profile'),
       ),
       body: Center(
         child: Column(
@@ -29,7 +28,7 @@ class _ProfilePageState extends State<ProfilePage>{
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavBar(),
+      //bottomNavigationBar: BottomNavBar(),
     );
   }
 }

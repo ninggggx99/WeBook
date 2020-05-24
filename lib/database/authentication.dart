@@ -53,32 +53,3 @@ class Auth implements BaseAuth {
   }
 
 }
-
-
-class AccountHelper {
-  
-  static DatabaseReference dbRef = FirebaseDatabase.instance.reference().child("users");
-  
-  static Future<FirebaseUser> signUp(String firstName, String lastName, String email, String password, String role) async {
-    
-    try {
-      FirebaseUser user = (await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password)).user;
-      
-      User acc = User(firstName, lastName, email, password, role);
-      dbRef.child(user.uid).set(acc.toJson());
-    } catch (e) {
-      print(e.message);
-    }
-  }
-
-  static Future<User> signIn(String email, String password) async {
-    
-    FirebaseUser user = (await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password)).user;
-    dbRef.child(user.uid).once().then((DataSnapshot snapshot) {
-      User acc = User.fromSnapShot(snapshot);
-      return acc;
-    });
-
-  }
-
-}

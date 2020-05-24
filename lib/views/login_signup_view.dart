@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webookapp/database/authentication.dart';
+import 'package:webookapp/view_models/login_signup_vm.dart';
 
 class LoginSignupPage extends StatefulWidget {
   LoginSignupPage({this.auth, this.loginCallback});
@@ -14,15 +15,20 @@ class LoginSignupPage extends StatefulWidget {
 class _LoginSignupPageState extends State<LoginSignupPage> {
   final _formKey = new GlobalKey<FormState>();
 
-  String _firstName;
-  String _lastName;
-  String _email;
-  String _password;
-  String _role;
-  String _errorMessage;
+  LogInSignUpViewModel vm;
 
+  String _errorMessage;
   bool _isLoginForm;
   bool _isLoading;
+
+  @override
+  void initState() {
+    super.initState();
+    _errorMessage = "";
+    _isLoading = false;
+    _isLoginForm = true;
+    vm = LogInSignUpViewModel(auth: widget.auth);
+  }
 
   // Check if form is valid before perform login or signup
   bool validateAndSave() {
@@ -41,22 +47,22 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
       _isLoading = true;
     });
     if (validateAndSave()) {
-      String userId = "";
       try {
         if (_isLoginForm) {
-          userId = await widget.auth.signIn(_email, _password);
-          print('Signed in: $userId');
+          vm.logIn();
+          print('Signed in: $vm.userId');
         } else {
-          userId = await widget.auth.signUp(_firstName, _lastName, _email, _password, _role);
-          //widget.auth.sendEmailVerification();
-          //_showVerifyEmailSentDialog();
-          print('Signed up user: $userId');
+          vm.signUp();
+          toggleFormMode();
+          print('Signed up user: $vm.userId');
+          
         }
+
         setState(() {
           _isLoading = false;
         });
 
-        if (userId.length > 0 && userId != null && _isLoginForm) {
+        if (vm.userId.length > 0 && vm.userId != null && _isLoginForm) {
           widget.loginCallback();
         }
       } catch (e) {
@@ -68,14 +74,6 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         });
       }
     }
-  }
-
-  @override
-  void initState() {
-    _errorMessage = "";
-    _isLoading = false;
-    _isLoginForm = true;
-    super.initState();
   }
 
   void resetForm() {
@@ -93,13 +91,11 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        appBar: new AppBar(
-          title: new Text('Flutter login demo'),
-        ),
         body: Stack(
           children: <Widget>[
             _showForm(),
-            _showCircularProgress(),
+            //Loading needs to be fixed
+            //_showCircularProgress(),
           ],
         ));
   }
@@ -113,29 +109,6 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
       width: 0.0,
     );
   }
-
-//  void _showVerifyEmailSentDialog() {
-//    showDialog(
-//      context: context,
-//      builder: (BuildContext context) {
-//        // return object of type Dialog
-//        return AlertDialog(
-//          title: new Text("Verify your account"),
-//          content:
-//              new Text("Link to verify account has been sent to your email"),
-//          actions: <Widget>[
-//            new FlatButton(
-//              child: new Text("Dismiss"),
-//              onPressed: () {
-//                toggleFormMode();
-//                Navigator.of(context).pop();
-//              },
-//            ),
-//          ],
-//        );
-//      },
-//    );
-//  }
 
   Widget _logInForm() {
     return new Container(
@@ -203,29 +176,25 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
     return new Hero(
       tag: 'hero',
       child: Padding(
-        padding: EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
-        child: CircleAvatar(
-          backgroundColor: Colors.transparent,
-          radius: 48.0,
-          child: Image.asset('assets/logo_transparent.png'),
-        ),
+        padding: EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
+        child: Image.asset('assets/logo_transparent.png', height: 250, width: 250),
       ),
     );
   }
   Widget showFirstNameInput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 50.0, 0.0, 0.0),
+      padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
       child: new TextFormField(
         maxLines: 1,
         autofocus: false,
         decoration: new InputDecoration(
             hintText: 'First Name',
             icon: new Icon(
-              Icons.mail,
+              Icons.account_circle,
               color: Colors.grey,
             )),
         validator: (value) => value.isEmpty ? 'First Name can\'t be empty' : null,
-        onSaved: (value) => _firstName = value.trim(),
+        onSaved: (value) => vm.setFirstName(value.trim()),
       ),
     );
   }
@@ -239,33 +208,41 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
         decoration: new InputDecoration(
             hintText: 'Last Name',
             icon: new Icon(
-              Icons.mail,
+              Icons.account_circle,
               color: Colors.grey,
             )),
         validator: (value) => value.isEmpty ? 'Last Name can\'t be empty' : null,
-        onSaved: (value) => _lastName = value.trim(),
+        onSaved: (value) => vm.setLastName(value.trim()),
       ),
     );
   }
 
-    Widget showRoleInput() {
+     Widget showRoleInput() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
-      child: new TextFormField(
-        maxLines: 1,
-        autofocus: false,
-        decoration: new InputDecoration(
-            hintText: 'Role',
-            icon: new Icon(
-              Icons.mail,
-              color: Colors.grey,
-            )),
-        validator: (value) => value.isEmpty ? 'Role can\'t be empty' : null,
-        onSaved: (value) => _role = value.trim(),
+      padding: const EdgeInsets.fromLTRB(35.0, 15.0, 0.0, 0.0),
+      child: new DropdownButton<String> (
+        icon: Icon(Icons.arrow_downward),
+        value: "Aspiring Writer",
+        iconSize: 24,
+        elevation: 16,
+        items: [
+          DropdownMenuItem<String>(
+            value: 'Aspiring Writer',
+            child: Text('Aspiring Writer'),
+          ),
+          DropdownMenuItem<String>(
+            value: 'Professional Writer',
+            child: Text('Professional Writer')
+          ),
+          DropdownMenuItem<String>(
+            value: 'Bookworm',
+            child: Text('Bookworm')
+          )
+        ],
+        onChanged: (value) => vm.setRole(value.trim())
       ),
-    );
-  }
-
+      );
+    }
 
   Widget showEmailInput() {
     return Padding(
@@ -281,7 +258,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
               color: Colors.grey,
             )),
         validator: (value) => value.isEmpty ? 'Email can\'t be empty' : null,
-        onSaved: (value) => _email = value.trim(),
+        onSaved: (value) => vm.setEmail(value.trim()),
       ),
     );
   }
@@ -300,7 +277,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
               color: Colors.grey,
             )),
         validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
-        onSaved: (value) => _password = value.trim(),
+        onSaved: (value) => vm.setPassword(value.trim()),
       ),
     );
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:webookapp/view_models/login_vm.dart';
+import 'package:webookapp/views/login_signup_view.dart';
 import 'package:webookapp/database/authentication.dart';
-import 'package:webookapp/Pages/home.dart';
+import 'package:webookapp/views/home.dart';
 
 enum AuthStatus {
   NOT_DETERMINED,

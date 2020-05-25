@@ -1,16 +1,28 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:webookapp/view/HomePage.dart';
+import 'package:webookapp/database/authentication.dart';
+import 'package:webookapp/view/home.dart';
 import 'package:webookapp/view/Notification.dart';
 import 'package:webookapp/view/Profile.dart';
 import 'package:webookapp/view/CreateBook.dart';
 import 'package:webookapp/view/Library.dart';
 class BottomNavBar extends StatefulWidget{
   @override
-  _BottomNavBarState createState() => _BottomNavBarState();
+ 
+   BottomNavBar({Key key, this.auth, this.userId, this.logoutCallback})
+      : super(key: key);
+
+  final BaseAuth auth;
+  final VoidCallback logoutCallback;
+  final String userId;
+  final DatabaseReference dbRef = FirebaseDatabase.instance.reference().child("users");
+
+  @override
+   State<StatefulWidget> createState() => _BottomNavBarState();
 }
 class _BottomNavBarState extends State<BottomNavBar>{
   int _currentIndex = 0;
-  final List <Widget> _children = [MyHomePage(),LibraryPage(),CreateBookPage(),NotificationPage(),ProfilePage()];
+  final List <Widget> _children = [HomePage(),LibraryPage(),CreateBookPage(),NotificationPage(),ProfilePage()];
   void onTappedBar(int index){
     setState(() {
       _currentIndex= index;

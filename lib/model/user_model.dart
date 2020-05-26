@@ -2,9 +2,9 @@ import 'package:firebase_database/firebase_database.dart';
 
 class User {
   
-  String key, firstName, lastName, email, password, role;
+  String key, firstName, lastName, email, role;
   
-  User(this.firstName, this.lastName, this.email, this.password, this.role);
+  User(this.firstName, this.lastName, this.email, this.role);
 
   String get fName {
     return firstName;
@@ -15,7 +15,6 @@ class User {
     firstName = snapshot.value["firstName"],
     lastName = snapshot.value["lastName"],
     email = snapshot.value["email"],
-    password = snapshot.value["password"],
     role = snapshot.value["role"];
 
     toJson() {
@@ -23,7 +22,6 @@ class User {
         "firstName" : firstName,
         "lastName" : lastName,
         "email" : email,
-        "password": password,
         "role": role
       };
     }

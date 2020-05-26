@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:webookapp/database/authentication.dart';
 
 
 class LogInSignUpViewModel {
   
+  FirebaseUser user;
   String userId;
   String _firstName;
   String _lastName;
@@ -22,6 +24,15 @@ class LogInSignUpViewModel {
 
   Future<void> signUp() async {
     this.userId = await auth.signUp(_firstName, _lastName, _email, _password, _role);  
+  }
+
+  Future<void> signInGoogle() async {
+    this.user = (await auth.signInWithGoogle());
+    this.userId = user.uid;
+  }
+  
+  Future<void> addUser() async {
+    this.userId = (await auth.addUserToDB(user, _role));
   }
 
   void setFirstName(String value) {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/button_view.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:webookapp/database/authentication.dart';
 import 'package:webookapp/view_model/login_signup_vm.dart';
 
@@ -121,6 +123,8 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
               showLogo(),
               showEmailInput(),
               showPasswordInput(),
+              showGoogleSignInButton(),
+              showFBSignInButton(),
               showPrimaryButton(),
               showSecondaryButton(),
               showErrorMessage(),
@@ -143,6 +147,8 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
               showEmailInput(),
               showPasswordInput(),
               showRoleInput(),
+              showGoogleSignUpButton(),
+              showFBSignUpButton(),
               showPrimaryButton(),
               showSecondaryButton(),
               showErrorMessage(),
@@ -306,4 +312,93 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
           ),
         ));
   }
-}
+
+
+    Widget showGoogleSignInButton() {
+    return new Padding(
+        padding: EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
+        child: SizedBox(
+          height: 40.0,
+          child: new SignInButton(
+            Buttons.Google, 
+            onPressed: (){
+              vm.signInGoogle().whenComplete(() => 
+                widget.loginCallback()
+              );
+            })
+        ));
+    }
+
+    Widget showFBSignInButton() {
+    return new Padding(
+        padding: EdgeInsets.fromLTRB(0.0, 10, 0.0, 0.0),
+        child: SizedBox(
+          height: 40.0,
+          child: new SignInButton(
+            Buttons.Facebook, 
+            onPressed: (){})
+        ));
+    }
+
+    Widget showGoogleSignUpButton() {
+    return new Padding(
+        padding: EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
+        child: SizedBox(
+          height: 40.0,
+          child: new SignInButton(
+            Buttons.Google, 
+            text: "Sign up with Google",
+            onPressed: (){
+              
+              //vm.signInGoogle();
+              vm.signInGoogle().whenComplete(() => {
+                _showDialog(context)
+              }
+              );
+              }
+        ))
+        );
+    }
+
+    Widget showFBSignUpButton() {
+    return new Padding(
+        padding: EdgeInsets.fromLTRB(0.0, 10, 0.0, 0.0),
+        child: SizedBox(
+          height: 40.0,
+          child: new SignInButton(
+            Buttons.Facebook, 
+            text: "Sign up with Facebook",
+            onPressed: (){})
+        ));
+    }
+
+  _showDialog(BuildContext context) {
+  return showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: new Text("What is your role?"),
+        content: showRoleInput(),
+        actions: <Widget>[
+          new FlatButton(
+            child: new Text("Back"),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          new FlatButton(
+            onPressed: () {
+              vm.addUser().whenComplete(() => {
+                  Navigator.of(context).pop(),
+                  widget.loginCallback()
+              }
+              );
+            }, 
+            child: new Text("Submit")
+          )
+        ],
+      );
+    });
+    }
+  }
+  

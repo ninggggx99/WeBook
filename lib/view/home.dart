@@ -27,7 +27,8 @@ import 'package:webookapp/database/authentication.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:webookapp/model/user_model.dart';
 import 'dart:async';
-
+import 'package:provider/provider.dart';
+import 'package:webookapp/provider/UserProvider.dart';
 import 'package:webookapp/view/navbar.dart';
 
 class HomePage extends StatefulWidget {
@@ -44,7 +45,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
+  // @override
+  // void didChangeDependencies() {
+  //   // TODO: implement didChangeDependencies
+  //   final provider = Provider.of<UserProvider>(context);
+  // }
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -59,6 +64,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    
     return new Scaffold(
         appBar: new AppBar(
           title: new Text('Home'),

@@ -1,18 +1,17 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:webookapp/database/authentication.dart';
 import 'package:webookapp/view/HomePage.dart';
 import 'package:webookapp/view/Notification.dart';
 import 'package:webookapp/view/Profile.dart';
 import 'package:webookapp/view/CreateBook.dart';
 import 'package:webookapp/view/Library.dart';
+
 class BottomNavBar extends StatefulWidget{
   @override
  
-   BottomNavBar({Key key, this.auth, this.userId, this.logoutCallback})
+   BottomNavBar({Key key, this.userId, this.logoutCallback})
       : super(key: key);
 
-  final BaseAuth auth;
   final VoidCallback logoutCallback;
   final String userId;
   final DatabaseReference dbRef = FirebaseDatabase.instance.reference().child("users");

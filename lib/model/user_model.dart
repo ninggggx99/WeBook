@@ -20,7 +20,7 @@ class User {
     toJson() {
       return {
         "firstName" : firstName,
-        "lastName" : lastName,
+        "lastName" : lastName, 
         "email" : email,
         "role": role
       };

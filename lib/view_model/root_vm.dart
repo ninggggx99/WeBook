@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webookapp/view/login_signup_view.dart';
 import 'package:webookapp/database/authentication.dart';
-import 'package:webookapp/view/home.dart';
 import 'package:webookapp/view/navbar.dart';
 
 enum AuthStatus {
@@ -83,11 +82,6 @@ class _RootPageState extends State<RootPage> {
             auth: widget.auth,
             logoutCallback: logoutCallback,
           );*/
-          return HomePage(
-            userId: _userId,
-            auth: widget.auth,
-            logoutCallback: logoutCallback,
-            );
         } else
           return buildWaitingScreen();
         break;

@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:webookapp/database/authentication.dart';
-import 'package:webookapp/view/home.dart';
+import 'package:webookapp/view/HomePage.dart';
 import 'package:webookapp/view/Notification.dart';
 import 'package:webookapp/view/Profile.dart';
 import 'package:webookapp/view/CreateBook.dart';
@@ -20,6 +20,7 @@ class BottomNavBar extends StatefulWidget{
   @override
    State<StatefulWidget> createState() => _BottomNavBarState();
 }
+
 class _BottomNavBarState extends State<BottomNavBar>{
   int _currentIndex = 0;
   final List <Widget> _children = [HomePage(),LibraryPage(),CreateBookPage(),NotificationPage(),ProfilePage()];

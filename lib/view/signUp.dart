@@ -1,0 +1,211 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:webookapp/view_model/auth_provider.dart';
+import 'package:webookapp/view/logIn.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+
+class SignUpPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => new _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  final _formKey = new GlobalKey<FormState>();
+  
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController emailRegController = TextEditingController();
+  TextEditingController passwordRegController = TextEditingController();
+  TextEditingController roleController = TextEditingController();
+
+  
+  @override
+  Widget build(BuildContext context) {
+    final auth = Provider.of<AuthProvider>(context);
+    return Scaffold(
+      body: Stack(
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.all(16.0),
+            child: new ListView(
+              shrinkWrap: true,
+              children: <Widget>[
+                // Logo 
+                Hero(
+                  tag:'hero',
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
+                    child:Image.asset('assets/logo_transparent.png', height :250,width: 250),
+                    ),
+                ),
+                //First Name Textinput
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
+                  child: new TextFormField(
+                    maxLines: 1,
+                    controller: firstNameController,
+                    autofocus: false,
+                    decoration: new InputDecoration(
+                    hintText: 'First Name',
+                    icon: new Icon(
+                      Icons.account_circle,
+                      color: Colors.grey,
+                    )),
+                    validator: (value) => value.isEmpty ? 'First Name can\'t be empty' : null,
+                  ),
+                ),
+                //Last Name Textinput
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
+                  child: new TextFormField(
+                    maxLines: 1,
+                    controller: lastNameController,
+                    autofocus: false,
+                    decoration: new InputDecoration(
+                    hintText: 'Last Name',
+                    icon: new Icon(
+                      Icons.account_circle,
+                      color: Colors.grey,
+                    )),
+                    validator: (value) => value.isEmpty ? 'Last Name can\'t be empty' : null,
+                  ),
+                ),
+                //Email Textinput
+                Padding(
+                  padding:  const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+                  child: new TextFormField(
+                    maxLines: 1,
+                    controller: emailRegController,
+                    keyboardType: TextInputType.emailAddress,
+                    autofocus: false,
+                    decoration: new InputDecoration(
+                        hintText: 'Email',
+                        icon: new Icon(
+                          Icons.mail,
+                          color: Colors.grey,
+                    )),
+                  validator: (value) => value.isEmpty ? 'Email can\'t be empty' : null,
+                  ),
+                ),
+                //Password Textinput
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+                  child: new TextFormField(
+                    maxLines: 1,
+                    controller: passwordRegController,
+                    obscureText: true,
+                    autofocus: false,
+                    decoration: new InputDecoration(
+                        hintText: 'Password',
+                        icon: new Icon(
+                          Icons.lock,
+                          color: Colors.grey,
+                        )),
+                    validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
+                  ),
+                ),
+                //Role Dropdown
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(35.0, 15.0, 0.0, 0.0),
+                    child: new DropdownButton<String> (
+                      icon: Icon(Icons.arrow_downward),
+                      value: "Aspiring Writer",
+                      iconSize: 24,
+                      elevation: 16,
+                      items: [
+                        DropdownMenuItem<String>(
+                          value: 'Aspiring Writer',
+                          child: Text('Aspiring Writer'),
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'Professional Writer',
+                          child: Text('Professional Writer')
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'Bookworm',
+                          child: Text('Bookworm')
+                        )
+                      ],
+                      onChanged: (String value) {
+                        setState(() {
+                          roleController.text = value;
+                        });
+                      },
+                    ),
+                  ),
+                // Sign up Button
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
+                  child: SizedBox(
+                    height: 40.0,
+                    child: new RaisedButton(
+                      elevation: 5.0,
+                      shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30.0)),
+                      color: Colors.blue,
+                      child: new Text('Sign Up',
+                          style: new TextStyle(fontSize: 20.0, color: Colors.white)),
+                      onPressed: (){
+                        auth.createUser(firstName: firstNameController.text,
+                                        lastName: lastNameController.text,
+                                        email:emailRegController.text, 
+                                        password: passwordRegController.text,
+                                        role: roleController.text).whenComplete(() => 
+                                          Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(builder: (context) => LogInPage()))
+                                        ).catchError( (e) {
+                                          print(e.message);
+                                        });
+    
+                      },
+                    ),
+                  )
+                ),
+                // Sign up with Google Button
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 30, 0.0, 0.0),
+                  child: SizedBox(
+                    height: 40.0,
+                    child: new SignInButton(
+                      Buttons.Google,
+                      text: "Sign up with Google",
+                      onPressed: (){}
+                    )
+                  )
+                ),
+                // Sign up with Facebook Button
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0.0, 10, 0.0, 0.0),
+                  child: SizedBox(
+                    height: 40.0,
+                    child: new SignInButton(
+                      Buttons.Facebook,
+                      text: "Sign up with Facebook",
+                      onPressed: (){}
+                    )
+                  )
+                ),
+                // Create New Acc button
+                FlatButton(
+                  child: new Text(
+                      'Have an account? Sign in' ,
+                      style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
+                  onPressed: (){
+                    _formKey.currentState.reset();
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LogInPage())
+                    );
+                  }
+                ),
+              ],
+            ),
+          )
+        ],
+      )
+    );
+  }
+
+
+}

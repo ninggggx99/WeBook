@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/view/HomePage.dart';
+import 'package:webookapp/view/navbar.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view/signUp.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
@@ -82,7 +83,14 @@ class _LogInPageState extends State<LogInPage> {
                       child: new Text('Login',
                           style: new TextStyle(fontSize: 20.0, color: Colors.white)),
                       onPressed: (){
-                        auth.signInWithEmail(email:emailController.text, password: passwordController.text) == true? HomePage() : LogInPage();
+                        if (auth.signInWithEmail(email:emailController.text, password: passwordController.text) == true){
+                          BottomNavBar();
+                        }
+                        else{
+                          // final authupdate = Provider.of<AuthProvider>(context,listen:false);
+                          print(context.read<AuthProvider>().error);
+                          // AlertDialog(title: Text("Error"), content: Text(getErrorMessage(authupdate.error)));
+                        } 
                       },
                     ),
                   )
@@ -129,5 +137,30 @@ class _LogInPageState extends State<LogInPage> {
     );
   }
 
-
+ String getErrorMessage(AuthError errorcode){
+   
+    // String error = " ";
+    print(errorcode.toString() + "ERROR");
+    switch (errorcode) {
+      case AuthError.ERROR_INVALID_EMAIL:
+        return "Incorrect Email/Password";
+        break;
+      case AuthError.ERROR_WRONG_PASSWORD:
+        return "Incorrect Email/Password";
+        break;
+      case AuthError.ERROR_USER_NOT_FOUND:
+        print("user not found");
+        return "User not found ";
+        break;
+      case AuthError.ERROR_USER_DISABLED:
+      case AuthError.ERROR_TOO_MANY_REQUESTS:
+      case AuthError.ERROR_OPERATION_NOT_ALLOWED:
+        return "Internal Error" ;
+        break;
+      default:
+        return "Unknown Error";
+        break;
+    }
+    
+}
 }

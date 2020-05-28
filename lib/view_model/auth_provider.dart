@@ -11,6 +11,16 @@ enum AuthStatus {
   LOGGED_IN,
 }
 
+enum AuthError{
+  ERROR_INVALID_EMAIL,
+  ERROR_WRONG_PASSWORD,
+  ERROR_USER_NOT_FOUND,
+  ERROR_USER_DISABLED,
+  ERROR_TOO_MANY_REQUESTS,
+  ERROR_OPERATION_NOT_ALLOWED,
+  ERROR_UNKNOWN,
+}
+
 class AuthProvider extends ChangeNotifier {
 
   DatabaseReference _dbRef;
@@ -25,6 +35,9 @@ class AuthProvider extends ChangeNotifier {
 
   AuthStatus _status;
   AuthStatus get status => _status;
+
+  AuthError _error;
+  AuthError get error => _error;
 
   AuthProvider() {
     _auth = FirebaseAuth.instance;
@@ -75,35 +88,71 @@ class AuthProvider extends ChangeNotifier {
 
   }
 
-  Future<bool> signInWithEmail({String email, String password}) async =>
-      _signIn(await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password, 
-      ));
-
-  Future<bool> signInWithGoogle() async {
-
-    GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
-    GoogleSignInAuthentication googleSignInAuthentication =
-        await googleSignInAccount.authentication;
-
-    AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: googleSignInAuthentication.accessToken,
-      idToken: googleSignInAuthentication.idToken,
-    );
-
-    return signInWithCredential(credential);
-  }
+  // Future<bool> signInWithEmail({String email, String password}) async =>
+  //     _signIn(await _auth.signInWithEmailAndPassword(
+  //       email: email,
+  //       password: password, 
+  //     ));
+  Future <bool> signInWithEmail({String email, String password}) async{
+    try {
+      AuthResult result = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      _user = result.user;
+      _additionalUserInfo = result.additionalUserInfo;
+      notifyListeners();
+    }catch(e){
+      print(e.code);
+      switch(e.code){
+        case "ERROR_INVALID_EMAIL":
+          _error = AuthError.ERROR_INVALID_EMAIL;
+          break;
+        case "ERROR_WRONG_PASSWORD":
+          _error = AuthError.ERROR_WRONG_PASSWORD;
+          break;
+        case "ERROR_USER_NOT_FOUND":
+          _error = AuthError.ERROR_USER_NOT_FOUND;
+          break;
+        case "ERROR_USER_DISABLED":
+          _error = AuthError.ERROR_USER_DISABLED;
+          break;
+        case "ERROR_TOO_MANY_REQUESTS":
+          _error = AuthError.ERROR_TOO_MANY_REQUESTS;
+          break;
+        case "ERROR_OPERATION_NOT_ALLOWED":
+          _error = AuthError.ERROR_OPERATION_NOT_ALLOWED;
+          break;
+        default:
+          _error = AuthError.ERROR_UNKNOWN;
+          break;
+      }
+      notifyListeners();
       
-  Future<bool> signInWithCredential(AuthCredential credential) async =>
-      _signIn(await _auth.signInWithCredential(credential));
-
-  bool _signIn(AuthResult result) {
-    _user = result.user;
-    _additionalUserInfo = result.additionalUserInfo;
-    notifyListeners();
-    return result.user == null ? false : true;
+    }
+    return _user == null ? false : true;
   }
+
+  // Future<bool> signInWithGoogle() async {
+
+  //   GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
+  //   GoogleSignInAuthentication googleSignInAuthentication =
+  //       await googleSignInAccount.authentication;
+
+  //   AuthCredential credential = GoogleAuthProvider.getCredential(
+  //     accessToken: googleSignInAuthentication.accessToken,
+  //     idToken: googleSignInAuthentication.idToken,
+  //   );
+
+  //   return signInWithCredential(credential);
+  // }
+      
+  // Future<bool> signInWithCredential(AuthCredential credential) async =>
+  //     _signIn(await _auth.signInWithCredential(credential));
+
+  // bool _signIn(AuthResult result) {
+  //   _user = result.user;
+  //   _additionalUserInfo = result.additionalUserInfo;
+  //   notifyListeners();
+  //   return result.user == null ? false : true;
+  // }
 
   Future<String> signUpWithGoogle(String role) async {
   final GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();

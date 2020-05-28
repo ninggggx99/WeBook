@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view/logIn.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:webookapp/view/navbar.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -10,7 +11,6 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final _formKey = new GlobalKey<FormState>();
   
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
@@ -18,7 +18,24 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController passwordRegController = TextEditingController();
   TextEditingController roleController = TextEditingController();
 
-  
+  List<String> roles = <String>[
+    "Aspiring Writer",
+    "Professional Writer",
+    "Bookworm"
+  ];
+
+  String selectedRole = "Aspiring Writer";
+
+  @override
+  void dispose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    emailRegController.dispose();
+    passwordRegController.dispose();
+    roleController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
@@ -56,7 +73,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 //Last Name Textinput
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
+                  padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
                   child: new TextFormField(
                     maxLines: 1,
                     controller: lastNameController,
@@ -109,25 +126,19 @@ class _SignUpPageState extends State<SignUpPage> {
                   padding: const EdgeInsets.fromLTRB(35.0, 15.0, 0.0, 0.0),
                     child: new DropdownButton<String> (
                       icon: Icon(Icons.arrow_downward),
-                      value: "Aspiring Writer",
+                      hint: Text("Select your role"),
+                      value: selectedRole,
                       iconSize: 24,
                       elevation: 16,
-                      items: [
-                        DropdownMenuItem<String>(
-                          value: 'Aspiring Writer',
-                          child: Text('Aspiring Writer'),
-                        ),
-                        DropdownMenuItem<String>(
-                          value: 'Professional Writer',
-                          child: Text('Professional Writer')
-                        ),
-                        DropdownMenuItem<String>(
-                          value: 'Bookworm',
-                          child: Text('Bookworm')
-                        )
-                      ],
+                      items: roles.map((role) {
+                        return DropdownMenuItem(
+                          value: role,
+                          child: new Text(role));
+                      },
+                      ).toList(),
                       onChanged: (String value) {
                         setState(() {
+                          selectedRole = value;
                           roleController.text = value;
                         });
                       },
@@ -154,10 +165,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                           Navigator.push(
                                                   context,
                                                   MaterialPageRoute(builder: (context) => LogInPage()))
-                                        ).catchError( (e) {
-                                          print(e.message);
-                                        });
-    
+                                        )
+                            .catchError( (e) {
+                                print(e.message);
+                            });
                       },
                     ),
                   )
@@ -170,9 +181,62 @@ class _SignUpPageState extends State<SignUpPage> {
                     child: new SignInButton(
                       Buttons.Google,
                       text: "Sign up with Google",
-                      onPressed: (){}
-                    )
-                  )
+                      onPressed: (){
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(20.0)),
+                                title: Text("What is your role?"),
+                                content: Padding(
+                                    padding: const EdgeInsets.fromLTRB(35.0, 15.0, 0.0, 0.0),
+                                      child: new DropdownButton<String> (
+                                        icon: Icon(Icons.arrow_downward),
+                                        hint: Text("Select your role"),
+                                        value: selectedRole,
+                                        iconSize: 24,
+                                        elevation: 16,
+                                        items: roles.map((role) {
+                                          return DropdownMenuItem(
+                                            value: role,
+                                            child: new Text(role));
+                                        },
+                                        ).toList(),
+                                        onChanged: (String value) {
+                                          setState(() {
+                                            selectedRole = value;
+                                            roleController.text = value;
+                                          });
+                                        },
+                                      ),
+                                    ) ,
+                                actions: <Widget>[
+                                  FlatButton(
+                                    child: Text('Sign Up'),
+                                    onPressed: () {
+                                      auth.signUpWithGoogle(roleController.text).whenComplete(() => {
+                                          Navigator.of(context).pop(),
+                                          Navigator.push(context,
+                                              MaterialPageRoute(builder: (context) => BottomNavBar()))
+                                      }).catchError((e) {
+                                        print(e.message);
+                                      });
+                                    }
+                                  ),
+                                  FlatButton(
+                                    child: Text("Cancel"),
+                                    onPressed: () {
+                                      this.dispose();
+                                      Navigator.of(context).pop();
+                                    }
+                                  ,)
+                                ],
+                              );
+                            });
+                          }
+                        ))
                 ),
                 // Sign up with Facebook Button
                 Padding(
@@ -192,10 +256,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       'Have an account? Sign in' ,
                       style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
                   onPressed: (){
-                    _formKey.currentState.reset();
-                    Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LogInPage())
+                    Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LogInPage())
                     );
                   }
                 ),

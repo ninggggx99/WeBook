@@ -43,6 +43,10 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /*Future<User> retrieveUserData() async {
+    _user = await FirebaseAuth.instance.currentUser();
+    _dbRef.child("users").
+  }*/
   /*Future<AuthResult> createUser({String email, String password}) async {
     final result = await _auth.createUserWithEmailAndPassword(
       email: email,
@@ -54,20 +58,30 @@ class AuthProvider extends ChangeNotifier {
     return result;
   }*/
 
+  Future<void> insertUser(String firstName, String lastName, String email, String role) async {
+    //Convert to the user model and insert into db
+    User acc = User(firstName, lastName, email, role);
+    _dbRef.child("users").child(user.uid).set(acc.toJson());
+
+  }
+
+  Future<User> retrieveUser() async {
+    //Retrieve a snapshot of the user data from the database
+    User acc;
+    _dbRef.child("users").once().then((DataSnapshot snapshot) {
+      acc = User.fromSnapShot(snapshot);
+    });
+    return acc;
+  }
+
   Future<AuthResult> createUser({String firstName, String lastName, String email, String password, String role}) async {
+    
     final result = await _auth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
 
-    //Convert to the user model and insert into db
-    FirebaseUser user = result.user;
-    User acc = User(firstName, lastName, email, role);
-    _dbRef.child("users").child(user.uid).set(acc.toJson());
-
-    print("${user.uid}");
-    print("${acc.firstName}");
-    print("${acc.role}");
+    await insertUser(firstName, lastName, email, role);
 
     await signOut();
     notifyListeners();
@@ -92,6 +106,8 @@ class AuthProvider extends ChangeNotifier {
       idToken: googleSignInAuthentication.idToken,
     );
 
+    print("Success Google Sign In");
+
     return signInWithCredential(credential);
   }
       
@@ -106,35 +122,26 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<String> signUpWithGoogle(String role) async {
-  final GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
-  final GoogleSignInAuthentication googleSignInAuthentication =
-      await googleSignInAccount.authentication;
+    final GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
 
-  final AuthCredential credential = GoogleAuthProvider.getCredential(
-    accessToken: googleSignInAuthentication.accessToken,
-    idToken: googleSignInAuthentication.idToken,
-  );
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleSignInAuthentication.accessToken,
+      idToken: googleSignInAuthentication.idToken,
+    );
 
-  final AuthResult authResult = await _auth.signInWithCredential(credential);
-  final FirebaseUser user = authResult.user;
+    await _auth.signInWithCredential(credential);
+    await insertUser(user.displayName, " ", user.email, role);
 
-  assert(!user.isAnonymous);
-  assert(await user.getIdToken() != null);
-
-  final FirebaseUser currentUser = await _auth.currentUser();
-  assert(user.uid == currentUser.uid);
- 
-  User acc = User(currentUser.displayName, " ", currentUser.email, role);
-  _dbRef.child("users").child(user.uid).set(acc.toJson());
-
-
-  print('signUpWithGoogle succeeded: $user');
-  return currentUser.uid;
-}
+    print('signUpWithGoogle succeeded: $user');
+    return user.uid;
+  }
 
 
   Future<void> signOut() async {
     await _auth.signOut();
+    await _googleSignIn.signOut();
     notifyListeners();
   }
 

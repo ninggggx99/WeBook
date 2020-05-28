@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webookapp/view/HomePage.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view/signUp.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:webookapp/view/navbar.dart';
 
 class LogInPage extends StatefulWidget {
   @override
@@ -11,11 +11,18 @@ class LogInPage extends StatefulWidget {
 }
 
 class _LogInPageState extends State<LogInPage> {
-  final _formKey = new GlobalKey<FormState>();
   
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   
+  
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
@@ -82,7 +89,19 @@ class _LogInPageState extends State<LogInPage> {
                       child: new Text('Login',
                           style: new TextStyle(fontSize: 20.0, color: Colors.white)),
                       onPressed: (){
-                        auth.signInWithEmail(email:emailController.text, password: passwordController.text) == true? HomePage() : LogInPage();
+                        auth.signInWithEmail(email:emailController.text, password: passwordController.text).whenComplete(() => {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => BottomNavBar())
+                            )
+                        })
+                        .catchError((e) {
+                          print(e.message);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => LogInPage())
+                          );
+                        });
                       },
                     ),
                   )
@@ -94,7 +113,17 @@ class _LogInPageState extends State<LogInPage> {
                     height: 40.0,
                     child: new SignInButton(
                       Buttons.Google,
-                      onPressed: (){}
+                      onPressed: (){
+                        auth.signInWithGoogle().whenComplete(() => {
+                                            Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => BottomNavBar())
+                                            )
+                        }).catchError((e) {
+                          this.dispose();
+                          print(e.message);
+                        });
+                      }
                     )
                   )
                 ),
@@ -115,6 +144,7 @@ class _LogInPageState extends State<LogInPage> {
                       'Create an account' ,
                       style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
                   onPressed: (){
+                    this.dispose();
                     Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => SignUpPage())

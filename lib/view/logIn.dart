@@ -120,7 +120,6 @@ class _LogInPageState extends State<LogInPage> {
                                             MaterialPageRoute(builder: (context) => BottomNavBar())
                                             )
                         }).catchError((e) {
-                          this.dispose();
                           print(e.message);
                         });
                       }
@@ -144,7 +143,6 @@ class _LogInPageState extends State<LogInPage> {
                       'Create an account' ,
                       style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
                   onPressed: (){
-                    this.dispose();
                     Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => SignUpPage())
@@ -158,6 +156,4 @@ class _LogInPageState extends State<LogInPage> {
       )
     );
   }
-
-
 }

@@ -27,10 +27,3 @@ class User {
     }
   
 }
-
-//The roles for accounts
-enum roles {
-  bookworm,
-  aspiring_writer,
-  professional_writer
-}

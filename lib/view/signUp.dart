@@ -221,14 +221,13 @@ class _SignUpPageState extends State<SignUpPage> {
                                           Navigator.push(context,
                                               MaterialPageRoute(builder: (context) => BottomNavBar()))
                                       }).catchError((e) {
-                                        print(e.message);
+                                        print("error with sign up with Google");
                                       });
                                     }
                                   ),
                                   FlatButton(
                                     child: Text("Cancel"),
                                     onPressed: () {
-                                      this.dispose();
                                       Navigator.of(context).pop();
                                     }
                                   ,)
@@ -246,7 +245,60 @@ class _SignUpPageState extends State<SignUpPage> {
                     child: new SignInButton(
                       Buttons.Facebook,
                       text: "Sign up with Facebook",
-                      onPressed: (){}
+                      onPressed: (){
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(20.0)),
+                                title: Text("What is your role?"),
+                                content: Padding(
+                                    padding: const EdgeInsets.fromLTRB(35.0, 15.0, 0.0, 0.0),
+                                      child: new DropdownButton<String> (
+                                        icon: Icon(Icons.arrow_downward),
+                                        hint: Text("Select your role"),
+                                        value: selectedRole,
+                                        iconSize: 24,
+                                        elevation: 16,
+                                        items: roles.map((role) {
+                                          return DropdownMenuItem(
+                                            value: role,
+                                            child: new Text(role));
+                                        },
+                                        ).toList(),
+                                        onChanged: (String value) {
+                                          setState(() {
+                                            selectedRole = value;
+                                            roleController.text = value;
+                                          });
+                                        },
+                                      ),
+                                    ) ,
+                                actions: <Widget>[
+                                  FlatButton(
+                                    child: Text('Sign Up'),
+                                    onPressed: () {
+                                      /*auth.signUpWithFB(roleController.text).whenComplete(() => {
+                                          Navigator.of(context).pop(),
+                                          Navigator.push(context,
+                                              MaterialPageRoute(builder: (context) => BottomNavBar()))
+                                      }).catchError((e) {
+                                        print("error with sign up with FB");
+                                      });*/
+                                    }
+                                  ),
+                                  FlatButton(
+                                    child: Text("Cancel"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    }
+                                  ,)
+                                ],
+                              );
+                            });
+                          }
                     )
                   )
                 ),

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "939754657376",
+    "firebase_url": "https://webook-a430e.firebaseio.com",
+    "project_id": "webook-a430e",
+    "storage_bucket": "webook-a430e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:939754657376:android:04349e7fc8be456a485505",
+        "android_client_info": {
+          "package_name": "com.example.webookapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "939754657376-08u3tnuvn9dag51pms936o80hmbakshl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.webookapp",
+            "certificate_hash": "5aa7760c2383bef14930d501f1d3ea037688831a"
+          }
+        },
+        {
+          "client_id": "939754657376-p1rs6ksvei7rb016o3k63frap9prrq92.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAy1vv-auhWkm1dsOUw-YB_TR24pBBRQIk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "939754657376-p1rs6ksvei7rb016o3k63frap9prrq92.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

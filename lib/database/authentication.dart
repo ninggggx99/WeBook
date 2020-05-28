@@ -37,7 +37,7 @@ class Auth implements BaseAuth {
         email: email, password: password);
     FirebaseUser user = result.user;
 
-    User acc = User(firstName, lastName, email, password, role);
+    User acc = User(firstName, lastName, email, role);
     dbRef.child(user.uid).set(acc.toJson());
 
     return user.uid;

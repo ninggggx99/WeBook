@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "939754657376-08u3tnuvn9dag51pms936o80hmbakshl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.webookapp",
+            "certificate_hash": "5aa7760c2383bef14930d501f1d3ea037688831a"
+          }
+        },
+        {
           "client_id": "939754657376-p1rs6ksvei7rb016o3k63frap9prrq92.apps.googleusercontent.com",
           "client_type": 3
         }

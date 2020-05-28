@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:webookapp/database/authentication.dart';
-import 'package:webookapp/view/home.dart';
+import 'package:webookapp/view/HomePage.dart';
 import 'package:webookapp/view/Notification.dart';
 import 'package:webookapp/view/Profile.dart';
 import 'package:webookapp/view/CreateBook.dart';

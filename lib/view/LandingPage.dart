@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webookapp/database/authentication.dart';
-import 'package:webookapp/view/home.dart';
-import 'package:webookapp/view/login_signup_view.dart';
-import 'package:webookapp/view_model/auth_provider.dart';
 
+import 'package:webookapp/view/HomePage.dart';
+import 'package:webookapp/view/logIn.dart';
+
+import 'package:webookapp/view_model/auth_provider.dart';
+// import 'package:webookapp/database/authentication.dart';
+// import 'package:webookapp/view/login_signup_view.dart';
 class LandingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class LandingPage extends StatelessWidget {
       return HomePage();
     }
     else if (auth.status == AuthStatus.NOT_LOGGED_IN){
-      return LoginSignupPage();
+      return LogInPage();
     }
     else{
       return Scaffold(

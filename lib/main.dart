@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/view/LandingPage.dart';
-import 'package:webookapp/view/home.dart';
-import 'package:webookapp/view/login_signup_view.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 
 void main() {
@@ -30,6 +28,4 @@ class MyApp extends StatelessWidget {
 
   }
 
-    
-
-  }
+}

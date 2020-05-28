@@ -1,33 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:webookapp/view/appbar.dart';
-import 'package:webookapp/view/navbar.dart';
+import 'package:provider/provider.dart';
+import 'package:webookapp/view/logIn.dart';
+import 'package:webookapp/view_model/auth_provider.dart';
 
-class MyHomePage extends StatefulWidget{
-  MyHomePage({Key key}) : super(key:key);
+class HomePage extends StatefulWidget {
   @override
-  _MyHomePageState createState(){
-      return _MyHomePageState();
-  }
+  State<StatefulWidget> createState() => new _HomePageState();
 }
-class _MyHomePageState extends State<MyHomePage>{
+
+class _HomePageState extends State<HomePage> {
   @override
-  Widget build (BuildContext context){
-    return Scaffold(
-      appBar: AppBar(
-       title: const Text('Home'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'My Home Page',
-            ),
+  Widget build(BuildContext context) {
+    final auth = Provider.of<AuthProvider>(context);
+    return new Scaffold(
+        appBar: new AppBar(
+          title: new Text('Home'),
+          actions: <Widget>[
+            new FlatButton(
+                child: new Text('Logout',
+                    style: new TextStyle(fontSize: 17.0, color: Colors.white)),
+                onPressed: (){
+                  auth.signOut();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LogInPage()));
+                })
           ],
         ),
-      ),
-      //bottomNavigationBar: BottomNavBar(),
-    );
+        body: Text("This is nothing"),
+        );
   }
 }

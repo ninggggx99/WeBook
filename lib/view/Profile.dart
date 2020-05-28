@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:webookapp/view/appbar.dart';
-import 'package:webookapp/view/navbar.dart';
+
 
 class ProfilePage extends StatefulWidget{
   ProfilePage({Key key}) : super(key:key);
@@ -28,7 +27,6 @@ class _ProfilePageState extends State<ProfilePage>{
           ],
         ),
       ),
-      //bottomNavigationBar: BottomNavBar(),
     );
   }
 }

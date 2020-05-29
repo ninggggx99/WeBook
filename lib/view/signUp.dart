@@ -25,6 +25,8 @@ class _SignUpPageState extends State<SignUpPage> {
   ];
 
   String selectedRole = "Aspiring Writer";
+  String selectedRoleGoogle = "Aspiring Writer";
+  String selectedRoleFB = "Aspiring Writer";
 
   @override
   void dispose() {
@@ -195,7 +197,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                       child: new DropdownButton<String> (
                                         icon: Icon(Icons.arrow_downward),
                                         hint: Text("Select your role"),
-                                        value: selectedRole,
+                                        value: selectedRoleGoogle,
                                         iconSize: 24,
                                         elevation: 16,
                                         items: roles.map((role) {
@@ -206,7 +208,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                         ).toList(),
                                         onChanged: (String value) {
                                           setState(() {
-                                            selectedRole = value;
+                                            selectedRoleGoogle = value;
                                             roleController.text = value;
                                           });
                                         },
@@ -259,7 +261,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                       child: new DropdownButton<String> (
                                         icon: Icon(Icons.arrow_downward),
                                         hint: Text("Select your role"),
-                                        value: selectedRole,
+                                        value: selectedRoleFB,
                                         iconSize: 24,
                                         elevation: 16,
                                         items: roles.map((role) {
@@ -270,7 +272,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                         ).toList(),
                                         onChanged: (String value) {
                                           setState(() {
-                                            selectedRole = value;
+                                            selectedRoleFB = value;
                                             roleController.text = value;
                                           });
                                         },

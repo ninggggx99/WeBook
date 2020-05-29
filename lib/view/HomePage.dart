@@ -8,6 +8,7 @@ class HomePage extends StatefulWidget {
   State<StatefulWidget> createState() => new _HomePageState();
 }
 
+//The logout button will be moved to the profile page
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {

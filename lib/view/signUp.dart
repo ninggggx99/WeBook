@@ -11,6 +11,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final _formKey = new GlobalKey<FormState>();
   
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
@@ -38,6 +39,7 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
+  
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
@@ -167,10 +169,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                           Navigator.push(
                                                   context,
                                                   MaterialPageRoute(builder: (context) => LogInPage()))
-                                        )
-                            .catchError( (e) {
-                                print(e.message);
-                            });
+                                        ).catchError( (e) {
+                                          print("create user failed!");
+                                        });
+    
                       },
                     ),
                   )
@@ -310,8 +312,10 @@ class _SignUpPageState extends State<SignUpPage> {
                       'Have an account? Sign in' ,
                       style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
                   onPressed: (){
-                    Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => LogInPage())
+                    _formKey.currentState.reset();
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LogInPage())
                     );
                   }
                 ),

@@ -17,6 +17,16 @@ enum AuthStatus {
   LOGGED_IN,
 }
 
+enum AuthError{
+  ERROR_INVALID_EMAIL,
+  ERROR_WRONG_PASSWORD,
+  ERROR_USER_NOT_FOUND,
+  ERROR_USER_DISABLED,
+  ERROR_TOO_MANY_REQUESTS,
+  ERROR_OPERATION_NOT_ALLOWED,
+  ERROR_UNKNOWN,
+}
+
 class AuthProvider extends ChangeNotifier {
 
   DatabaseReference _dbRef;
@@ -32,6 +42,9 @@ class AuthProvider extends ChangeNotifier {
 
   AuthStatus _status;
   AuthStatus get status => _status;
+
+  AuthError _error;
+  AuthError get error => _error;
 
   AuthProvider() {
     _auth = FirebaseAuth.instance;
@@ -51,21 +64,6 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /*Future<User> retrieveUserData() async {
-    _user = await FirebaseAuth.instance.currentUser();
-    _dbRef.child("users").
-  }*/
-  /*Future<AuthResult> createUser({String email, String password}) async {
-    final result = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-
-    await signOut();
-    notifyListeners();
-    return result;
-  }*/
-
   Future<void> insertUser(String firstName, String lastName, String email, String role) async {
     //Convert to the user model and insert into db
     User acc = User(firstName, lastName, email, role);
@@ -83,8 +81,8 @@ class AuthProvider extends ChangeNotifier {
     return acc;
   }
 
-  Future<AuthResult> createUser({String firstName, String lastName, String email, String password, String role}) async {
     
+  Future<AuthResult> createUser({String firstName, String lastName, String email, String password, String role}) async {
     final result = await _auth.createUserWithEmailAndPassword(
       email: email,
       password: password,
@@ -92,17 +90,13 @@ class AuthProvider extends ChangeNotifier {
 
     await insertUser(firstName, lastName, email, role);
 
+    print("${user.uid}");
+
     await signOut();
     notifyListeners();
     return result;
 
   }
-
-  Future<bool> signInWithEmail({String email, String password}) async =>
-      _signIn(await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password, 
-      ));
 
   Future<bool> signInWithGoogle() async {
 
@@ -180,11 +174,48 @@ class AuthProvider extends ChangeNotifier {
     print('signUpWithFB succeeded: $user');
   }*/
 
+
+  Future <bool> signInWithEmail({String email, String password}) async{
+    try {
+      AuthResult result = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      _user = result.user;
+      _additionalUserInfo = result.additionalUserInfo;
+      notifyListeners();
+    }catch(e){
+      print(e.code);
+      switch(e.code){
+        case "ERROR_INVALID_EMAIL":
+          _error = AuthError.ERROR_INVALID_EMAIL;
+          break;
+        case "ERROR_WRONG_PASSWORD":
+          _error = AuthError.ERROR_WRONG_PASSWORD;
+          break;
+        case "ERROR_USER_NOT_FOUND":
+          _error = AuthError.ERROR_USER_NOT_FOUND;
+          break;
+        case "ERROR_USER_DISABLED":
+          _error = AuthError.ERROR_USER_DISABLED;
+          break;
+        case "ERROR_TOO_MANY_REQUESTS":
+          _error = AuthError.ERROR_TOO_MANY_REQUESTS;
+          break;
+        case "ERROR_OPERATION_NOT_ALLOWED":
+          _error = AuthError.ERROR_OPERATION_NOT_ALLOWED;
+          break;
+        default:
+          _error = AuthError.ERROR_UNKNOWN;
+          break;
+      }
+      notifyListeners();
+      
+    }
+    return _user == null ? false : true;
+  }
+
   Future<void> signOut() async {
     await _auth.signOut();
     await _googleSignIn.signOut();
-    //await _facebookLogin.logOut();
     notifyListeners();
   }
 
-}
+} 

@@ -16,7 +16,7 @@ class _LogInPageState extends State<LogInPage> {
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  
+
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
@@ -90,6 +90,8 @@ class _LogInPageState extends State<LogInPage> {
                             if (result == true){
                               print("Login success");
                               Navigator.pushReplacementNamed(context, '/mainHome');
+                              emailController.clear();
+                              passwordController.clear();
                             }
                             else{
                               AlertDialog alert = AlertDialog(
@@ -103,8 +105,7 @@ class _LogInPageState extends State<LogInPage> {
                                       emailController.clear();
                                       passwordController.clear();
                                       Navigator.of(context).pop();
-                                      
-                                     
+                                   
                                     },
                                     )
                                 ],
@@ -130,6 +131,7 @@ class _LogInPageState extends State<LogInPage> {
                             if (result == true) {
                               print("Login success");
                               Navigator.pushReplacementNamed(context, '/mainHome');
+                              this.dispose();
                             }
                           }
                           login();
@@ -144,7 +146,18 @@ class _LogInPageState extends State<LogInPage> {
                       height: 40.0,
                       child: new SignInButton(
                         Buttons.Facebook,
-                        onPressed: (){}
+                        onPressed: (){
+                          logIn() async {
+                            bool result = await auth.signInWithFB();
+                            if(result == true) {
+                              print("Login success");
+                              Navigator.pushReplacementNamed(context, '/mainHome');
+                            } else {
+                              print("log in with facebook failed!");
+                            }
+                          }
+                          logIn();
+                        }
                       )
                     )
                   ),
@@ -154,10 +167,7 @@ class _LogInPageState extends State<LogInPage> {
                         'Create an account' ,
                         style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
                     onPressed: (){
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SignUpPage())
-                      );
+                        Navigator.pushReplacementNamed(context, '/signUp');
                     }
                   ),
                 ],

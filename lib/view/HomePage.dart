@@ -22,9 +22,7 @@ class _HomePageState extends State<HomePage> {
                     style: new TextStyle(fontSize: 17.0, color: Colors.white)),
                 onPressed: (){
                   auth.signOut();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LogInPage()));
+                  Navigator.pushNamedAndRemoveUntil(context, "/logIn", (r) => false);
                 })
           ],
         ),

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/view/HomePage.dart';
 import 'package:webookapp/view/LandingPage.dart';
+import 'package:webookapp/view/logIn.dart';
 import 'package:webookapp/view/navbar.dart';
+import 'package:webookapp/view/signUp.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 
 void main() {
@@ -27,6 +29,8 @@ class MyApp extends StatelessWidget {
             home: LandingPage(),
             routes: {
               '/mainHome':(context) => BottomNavBar(),
+              '/logIn': (context) => LogInPage(),
+              '/signUp' : (context) => SignUpPage()
             },
             ) 
         );

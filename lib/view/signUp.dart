@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
@@ -161,21 +162,24 @@ class _SignUpPageState extends State<SignUpPage> {
                       child: new Text('Sign Up',
                           style: new TextStyle(fontSize: 20.0, color: Colors.white)),
                       onPressed: (){
-                        auth.createUser(firstName: firstNameController.text,
-                                        lastName: lastNameController.text,
-                                        email:emailRegController.text, 
-                                        password: passwordRegController.text,
-                                        role: roleController.text).whenComplete(() => 
-                                          Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(builder: (context) => LogInPage()))
-                                        ).catchError( (e) {
-                                          print("create user failed!");
-                                        });
+                        signUp() async {
+                          AuthResult result = await auth.createUser(firstName: firstNameController.text,
+                                          lastName: lastNameController.text,
+                                          email:emailRegController.text, 
+                                          password: passwordRegController.text,
+                                          role: roleController.text);
+                          if(result.user != null ) {
+                            print("Sign Up");
+                            Navigator.pushReplacementNamed(context, '/logIn');
+                          } else {
+                            print("Failed signUp");
+                          }
     
-                      },
-                    ),
-                  )
+                        }
+                        signUp();
+                      }
+                    )
+                  ),
                 ),
                 // Sign up with Google Button
                 Padding(
@@ -222,8 +226,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     onPressed: () {
                                       auth.signUpWithGoogle(roleController.text).whenComplete(() => {
                                           Navigator.of(context).pop(),
-                                          Navigator.push(context,
-                                              MaterialPageRoute(builder: (context) => BottomNavBar()))
+                                          Navigator.pushReplacementNamed(context, '/mainHome')
                                       }).catchError((e) {
                                         print("error with sign up with Google");
                                       });
@@ -284,13 +287,12 @@ class _SignUpPageState extends State<SignUpPage> {
                                   FlatButton(
                                     child: Text('Sign Up'),
                                     onPressed: () {
-                                      /*auth.signUpWithFB(roleController.text).whenComplete(() => {
+                                      auth.signUpWithFB(roleController.text).whenComplete(() => {
                                           Navigator.of(context).pop(),
-                                          Navigator.push(context,
-                                              MaterialPageRoute(builder: (context) => BottomNavBar()))
+                                          Navigator.pushReplacementNamed(context, '/mainHome')
                                       }).catchError((e) {
                                         print("error with sign up with FB");
-                                      });*/
+                                      });
                                     }
                                   ),
                                   FlatButton(
@@ -312,11 +314,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       'Have an account? Sign in' ,
                       style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
                   onPressed: (){
-                    _formKey.currentState.reset();
-                    Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LogInPage())
-                    );
+                    //_formKey.currentState.reset();
+                    Navigator.pushReplacementNamed(context, '/logIn');
                   }
                 ),
               ],

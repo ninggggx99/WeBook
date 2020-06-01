@@ -5,11 +5,11 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:webookapp/model/user_model.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-/*import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-
-import 'dart:convert' show json;
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http; */
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as JSON;
+
 
 enum AuthStatus {
   NOT_DETERMINED,
@@ -32,7 +32,7 @@ class AuthProvider extends ChangeNotifier {
   DatabaseReference _dbRef;
   FirebaseAuth _auth;
   GoogleSignIn _googleSignIn;
-  //FacebookLogin _facebookLogin;
+  FacebookLogin _facebookLogin;
 
   FirebaseUser _user;
   FirebaseUser get user => _user;
@@ -50,7 +50,7 @@ class AuthProvider extends ChangeNotifier {
     _auth = FirebaseAuth.instance;
     _dbRef = FirebaseDatabase.instance.reference();
     _googleSignIn = GoogleSignIn();
-    //_facebookLogin = FacebookLogin();
+    _facebookLogin = FacebookLogin();
     _getCurrentUser();
   }
 
@@ -114,7 +114,7 @@ class AuthProvider extends ChangeNotifier {
     return signInWithCredential(credential);
   }
 
-  /*Future<bool> signInWithFB() async {
+  Future<bool> signInWithFB() async {
     
     FacebookLoginResult result = await _facebookLogin.logIn(["email"]);
     print(result.status);
@@ -122,20 +122,21 @@ class AuthProvider extends ChangeNotifier {
     switch (result.status) {
       case FacebookLoginStatus.error:
         print("Error");
+        return false;
         break;
       case FacebookLoginStatus.cancelledByUser:
         print("CancelledByUser");
+        return false;
         break;
       case FacebookLoginStatus.loggedIn:
         FacebookAccessToken accessToken = result.accessToken;
         AuthCredential credential = FacebookAuthProvider.getCredential(
         accessToken: accessToken.token);
-        await signInWithCredential(credential);
         print("LoggedIn");
-
+        return signInWithCredential(credential);
         break;
     }
-  }*/
+  }
       
   Future<bool> signInWithCredential(AuthCredential credential) async =>
       _signIn(await _auth.signInWithCredential(credential));
@@ -163,16 +164,19 @@ class AuthProvider extends ChangeNotifier {
     print('signUpWithGoogle succeeded: ${user.uid}');
   }
 
-  /*Future<void> signUpWithFB(String role) async {
+  Future<void> signUpWithFB(String role) async {
+
     final result = await _facebookLogin.logIn(['email']);
     final token = result.accessToken.token;
-    final graphResponse = await http.get(
-            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=${token}');
-    final profile = json.decode(graphResponse.body);
-    await insertUser(profile.first_name, profile.last_name, profile.email, role);
+    AuthCredential credential = FacebookAuthProvider.getCredential(
+        accessToken: token);
 
+    await _auth.signInWithCredential(credential);
+    await insertUser(user.displayName, " ", user.email, role);
+    
     print('signUpWithFB succeeded: $user');
-  }*/
+
+  }
 
 
   Future <bool> signInWithEmail({String email, String password}) async{
@@ -215,6 +219,7 @@ class AuthProvider extends ChangeNotifier {
   Future<void> signOut() async {
     await _auth.signOut();
     await _googleSignIn.signOut();
+    await _facebookLogin.logOut();
     notifyListeners();
   }
 

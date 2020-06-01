@@ -5,10 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:webookapp/model/user_model.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert' as JSON;
 
 
 enum AuthStatus {
@@ -173,7 +170,7 @@ class AuthProvider extends ChangeNotifier {
 
     await _auth.signInWithCredential(credential);
     await insertUser(user.displayName, " ", user.email, role);
-    
+
     print('signUpWithFB succeeded: $user');
 
   }

@@ -155,20 +155,22 @@ class AuthProvider extends ChangeNotifier {
       idToken: googleSignInAuthentication.idToken,
     );
 
-    await _auth.signInWithCredential(credential);
+    await signInWithCredential(credential);
     await insertUser(user.displayName, " ", user.email, role);
 
     print('signUpWithGoogle succeeded: ${user.uid}');
   }
 
   Future<void> signUpWithFB(String role) async {
-
+    
     final result = await _facebookLogin.logIn(['email']);
+    print(result.status);
     final token = result.accessToken.token;
     AuthCredential credential = FacebookAuthProvider.getCredential(
         accessToken: token);
 
-    await _auth.signInWithCredential(credential);
+    await signInWithCredential(credential);
+    print(user);
     await insertUser(user.displayName, " ", user.email, role);
 
     print('signUpWithFB succeeded: $user');

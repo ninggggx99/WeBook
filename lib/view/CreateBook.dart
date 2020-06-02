@@ -167,9 +167,8 @@ class _CreateBookPageState extends State<CreateBookPage>{
                         upload () async {
                           if(_formKey.currentState.validate()){
                             User user = await auth.retrieveUser();
-                            print(user.email);
+                            
                             await fileUploader.uploadBook(
-                              auth.user.uid, 
                               user, 
                               titleController.text, 
                               descController.text, 

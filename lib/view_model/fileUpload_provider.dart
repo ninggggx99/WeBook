@@ -16,16 +16,18 @@ class FileUploadProvider {
 
   }
 
-  Future<void> uploadBook(String authID, User user, String title, String desc, String coverFilePath, String bookFilePath) async {
+  Future<void> uploadBook(User user, String title, String desc, String coverFilePath, String bookFilePath) async {
 
     String key =  _dbRef.child("books").push().key;
-    String coverURL = await uploadDocument(authID, key, title, coverFilePath, true);
-    String bookURL = await uploadDocument(authID, key, title, bookFilePath, false);
+    String coverURL = await uploadDocument(user.key, key, title, coverFilePath, true);
+    String bookURL = await uploadDocument(user.key, key, title, bookFilePath, false);
     String authorName = user.firstName + " " + user.lastName;
-    Book book = new Book(title, desc, coverURL,  0, authID, authorName, bookURL);
+    Book book = new Book(title, desc, coverURL,  0, user.key, authorName, bookURL);
 
     _dbRef.child("books").child(key).set(book.toJson());
     print("books");
+
+
   }
 
 

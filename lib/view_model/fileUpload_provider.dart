@@ -16,21 +16,6 @@ class FileUploadProvider {
 
   }
 
-   /*uploadBookCover(String id, String title, String desc, String coverURL, String authId, User user, File file) async {
-
-    String filePath = 'images/bookCovers/' + authId + "/" + file.uri.toFilePath();
-    
-    //upload file to Firebase Storage
-    _storage.ref().child(filePath).putFile(file);
-
-    String authorName = user.firstName + " " + user.lastName;
-
-    Book book = Book(title, desc, filePath, 0, authId, authorName);
-    _dbRef.child("books").child(id).set(book);
-
-
-  }*/
-
   Future<void> uploadBook(String authID, User user, String title, String desc, String coverFilePath, String bookFilePath) async {
 
     String key =  _dbRef.child("books").push().key;
@@ -50,6 +35,7 @@ class FileUploadProvider {
     String _extension = fileName.split(".").last;
     StorageReference storageReference = _storage.ref().child("books");
     StorageUploadTask uploadTask;
+    
     if (cover) {
       uploadTask = storageReference.child("$authID/$key/$title-cover").putFile(File(filePath), StorageMetadata(contentType: '$_extension'));
     } else {

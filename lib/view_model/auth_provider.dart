@@ -63,19 +63,19 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> insertUser(String firstName, String lastName, String email, String role) async {
     //Convert to the user model and insert into db
-    User acc = User(firstName, lastName, email, role);
+    User acc = new User(firstName, lastName, email, role);
     _dbRef.child("users").child(user.uid).set(acc.toJson());
-    print("${acc.firstName}");
 
   }
 
-  Future<User> retrieveUser() async {
+  Future<User> retrieveUser() async{
     //Retrieve a snapshot of the user data from the database
-    User acc;
-    _dbRef.child("users").once().then((DataSnapshot snapshot) {
+   User acc;
+    await _dbRef.child("users").child(user.uid).once().then((DataSnapshot snapshot) {
       acc = User.fromSnapShot(snapshot);
     });
     return acc;
+
   }
 
     

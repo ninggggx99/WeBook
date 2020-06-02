@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webookapp/view/HomePage.dart';
-import 'package:webookapp/view/navbar.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
-import 'package:webookapp/view/signUp.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 class LogInPage extends StatefulWidget {
@@ -12,7 +9,7 @@ class LogInPage extends StatefulWidget {
 }
 
 class _LogInPageState extends State<LogInPage> {
-  final formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -26,7 +23,7 @@ class _LogInPageState extends State<LogInPage> {
           Container(
             padding: EdgeInsets.all(16.0),
             child: Form(
-              key:formKey,
+              key:_formKey,
               child: new ListView(
                 shrinkWrap: true,
                 children: <Widget>[
@@ -86,31 +83,33 @@ class _LogInPageState extends State<LogInPage> {
                             style: new TextStyle(fontSize: 20.0, color: Colors.white)),
                         onPressed: (){
                           login() async{
-                            bool result = await auth.signInWithEmail(email:emailController.text, password: passwordController.text);
-                            if (result == true){
-                              print("Login success");
-                              Navigator.pushReplacementNamed(context, '/mainHome');
-                              emailController.clear();
-                              passwordController.clear();
-                            }
-                            else{
-                              AlertDialog alert = AlertDialog(
-                                title: Text("Error"), 
-                                content: Text(getErrorMessage(auth.error)),
-                                actions: <Widget>[
-                                  FlatButton(
-                                    child: Text("Ok"),
-                                    onPressed: (){
-                                      formKey.currentState.reset();
-                                      emailController.clear();
-                                      passwordController.clear();
-                                      Navigator.of(context).pop();
-                                   
-                                    },
-                                    )
-                                ],
-                                );
-                              showDialog(context: context, builder: (BuildContext context){return alert;});
+                            if(_formKey.currentState.validate()) {
+                              bool result = await auth.signInWithEmail(email:emailController.text, password: passwordController.text);
+                              if (result == true){
+                                print("Login success");
+                                Navigator.pushReplacementNamed(context, '/mainHome');
+                                emailController.clear();
+                                passwordController.clear();
+                              }
+                              else{
+                                AlertDialog alert = AlertDialog(
+                                  title: Text("Error"), 
+                                  content: Text(getErrorMessage(auth.error)),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                      child: Text("Ok"),
+                                      onPressed: (){
+                                        _formKey.currentState.reset();
+                                        emailController.clear();
+                                        passwordController.clear();
+                                        Navigator.of(context).pop();
+                                    
+                                      },
+                                      )
+                                  ],
+                                  );
+                                showDialog(context: context, builder: (BuildContext context){return alert;});
+                              }
                             }
                           }
                           login();

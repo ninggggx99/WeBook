@@ -2,9 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
-import 'package:webookapp/view/logIn.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:webookapp/view/navbar.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -29,17 +27,6 @@ class _SignUpPageState extends State<SignUpPage> {
   String selectedRole = "Aspiring Writer";
   String selectedRoleGoogle = "Aspiring Writer";
   String selectedRoleFB = "Aspiring Writer";
-
-  @override
-  void dispose() {
-    firstNameController.dispose();
-    lastNameController.dispose();
-    emailRegController.dispose();
-    passwordRegController.dispose();
-    roleController.dispose();
-    super.dispose();
-  }
-
   
   @override
   Widget build(BuildContext context) {
@@ -49,7 +36,9 @@ class _SignUpPageState extends State<SignUpPage> {
         children: <Widget>[
           Container(
             padding: EdgeInsets.all(16.0),
-            child: new ListView(
+            child: Form(
+              key: _formKey,
+              child: new ListView(
               shrinkWrap: true,
               children: <Widget>[
                 // Logo 
@@ -163,18 +152,19 @@ class _SignUpPageState extends State<SignUpPage> {
                           style: new TextStyle(fontSize: 20.0, color: Colors.white)),
                       onPressed: (){
                         signUp() async {
-                          AuthResult result = await auth.createUser(firstName: firstNameController.text,
-                                          lastName: lastNameController.text,
-                                          email:emailRegController.text, 
-                                          password: passwordRegController.text,
-                                          role: roleController.text);
-                          if(result.user != null ) {
-                            print("Sign Up");
-                            Navigator.pushReplacementNamed(context, '/logIn');
-                          } else {
-                            print("Failed signUp");
+                          if (_formKey.currentState.validate()) {
+                            AuthResult result = await auth.createUser(firstName: firstNameController.text,
+                                            lastName: lastNameController.text,
+                                            email:emailRegController.text, 
+                                            password: passwordRegController.text,
+                                            role: roleController.text);
+                            if(result.user != null ) {
+                              print("Sign Up");
+                              Navigator.pushReplacementNamed(context, '/logIn');
+                            } else {
+                              print("Failed signUp");
+                            }
                           }
-    
                         }
                         signUp();
                       }
@@ -314,12 +304,13 @@ class _SignUpPageState extends State<SignUpPage> {
                       'Have an account? Sign in' ,
                       style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
                   onPressed: (){
-                    //_formKey.currentState.reset();
+                    _formKey.currentState.reset();
                     Navigator.pushReplacementNamed(context, '/logIn');
                   }
                 ),
               ],
             ),
+          )
           )
         ],
       )

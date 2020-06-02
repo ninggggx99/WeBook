@@ -6,10 +6,6 @@ class User {
   
   User(this.firstName, this.lastName, this.email, this.role);
 
-  String get fName {
-    return firstName;
-  }
-
   User.fromSnapShot(DataSnapshot snapshot) :
     key = snapshot.key,
     firstName = snapshot.value["firstName"],

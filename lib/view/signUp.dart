@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
@@ -31,6 +32,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
+    final pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -153,6 +155,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       onPressed: (){
                         signUp() async {
                           if (_formKey.currentState.validate()) {
+                            await pr.show();
                             AuthResult result = await auth.createUser(firstName: firstNameController.text,
                                             lastName: lastNameController.text,
                                             email:emailRegController.text, 
@@ -160,6 +163,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                             role: roleController.text);
                             if(result.user != null ) {
                               print("Sign Up");
+                              await pr.hide();
                               Navigator.pushReplacementNamed(context, '/logIn');
                             } else {
                               print("Failed signUp");

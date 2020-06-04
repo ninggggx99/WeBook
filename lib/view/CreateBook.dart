@@ -1,14 +1,14 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/model/user_model.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
-import 'package:webookapp/view_model/fileUpload_provider.dart';
+import 'package:webookapp/view_model/file_provider.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class CreateBookPage extends StatefulWidget{
   CreateBookPage({Key key}) : super(key:key);
@@ -24,14 +24,15 @@ class _CreateBookPageState extends State<CreateBookPage>{
   TextEditingController coverController = TextEditingController();
   TextEditingController bookController = TextEditingController();
 
-
-
   final _formKey = GlobalKey<FormState>();
+
+  
 
   @override
   Widget build (BuildContext context){
     final auth = Provider.of<AuthProvider>(context);
-    final fileUploader = Provider.of<FileUploadProvider>(context);
+    final fileUploader = Provider.of<FileProvider>(context);
+    final pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
     return Scaffold(
       appBar: AppBar(
         leading: Image.asset('assets/logo_transparent.png'),
@@ -121,7 +122,7 @@ class _CreateBookPageState extends State<CreateBookPage>{
                     child: Row(
                       children: <Widget>[
                         Expanded(
-                          child: new Text("eBook")
+                          child: new Text("eBook (.pdf)")
                         ),
                         Expanded(
                           child: TextFormField(
@@ -130,6 +131,7 @@ class _CreateBookPageState extends State<CreateBookPage>{
                             ),
                             controller: bookController,
                             enabled: false,
+                            validator: (value) => value.isEmpty ? 'A document must be uploaded': null,
                             )
                         ),
                         Expanded(
@@ -138,7 +140,7 @@ class _CreateBookPageState extends State<CreateBookPage>{
                             onPressed: () {
                               openFileExplorer() async {
                                 try {
-                                  bookController.text = await FilePicker.getFilePath(type: FileType.any);
+                                  bookController.text = await FilePicker.getFilePath(type: FileType.custom, allowedExtensions: ['pdf']);
                                 } on PlatformException catch (e) {
                                   print('Unsupported Operation ' + e.toString());
                                 }
@@ -166,14 +168,29 @@ class _CreateBookPageState extends State<CreateBookPage>{
                       onPressed: () {
                         upload () async {
                           if(_formKey.currentState.validate()){
+                            await pr.show();
                             User user = await auth.retrieveUser();
-                            
+
+                            await fileUploader.uploadProfilePic(user, coverController.text);
+
                             await fileUploader.uploadBook(
                               user, 
                               titleController.text, 
                               descController.text, 
                               coverController.text, 
                               bookController.text);
+
+                            final snackBar = SnackBar(
+                              content: Text('Yay! Your work has been uploaded!'),
+                              duration: Duration(seconds: 3),);
+
+                            await pr.hide();
+
+                            titleController.clear();
+                            descController.clear();
+                            coverController.clear();
+                            bookController.clear();
+                            Scaffold.of(context).showSnackBar(snackBar);
 
                             print("Submitted");
                           } else {

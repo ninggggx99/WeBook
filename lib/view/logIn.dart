@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
@@ -17,6 +18,7 @@ class _LogInPageState extends State<LogInPage> {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
+    final pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -84,9 +86,11 @@ class _LogInPageState extends State<LogInPage> {
                         onPressed: (){
                           login() async{
                             if(_formKey.currentState.validate()) {
+                              await pr.show();
                               bool result = await auth.signInWithEmail(email:emailController.text, password: passwordController.text);
                               if (result == true){
                                 print("Login success");
+                                await pr.hide();
                                 Navigator.pushReplacementNamed(context, '/mainHome');
                                 emailController.clear();
                                 passwordController.clear();
@@ -103,11 +107,11 @@ class _LogInPageState extends State<LogInPage> {
                                         emailController.clear();
                                         passwordController.clear();
                                         Navigator.of(context).pop();
-                                    
                                       },
                                       )
                                   ],
                                   );
+                                await pr.hide();
                                 showDialog(context: context, builder: (BuildContext context){return alert;});
                               }
                             }
@@ -126,11 +130,13 @@ class _LogInPageState extends State<LogInPage> {
                         Buttons.Google,
                         onPressed: () {
                           login() async{
+                            await pr.show();
                             bool result = await auth.signInWithGoogle();
                             if (result == true) {
                               print("Login success");
+                              await pr.hide();
                               Navigator.pushReplacementNamed(context, '/mainHome');
-                              this.dispose();
+                              _formKey.currentState.reset();
                             }
                           }
                           login();
@@ -147,9 +153,11 @@ class _LogInPageState extends State<LogInPage> {
                         Buttons.Facebook,
                         onPressed: (){
                           logIn() async {
+                            await pr.show();
                             bool result = await auth.signInWithFB();
                             if(result == true) {
                               print("Login success");
+                              await pr.hide();
                               Navigator.pushReplacementNamed(context, '/mainHome');
                             } else {
                               print("log in with facebook failed!");

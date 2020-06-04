@@ -10,6 +10,11 @@ import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view_model/file_provider.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
+import 'package:path_provider/path_provider.dart';
+
 class CreateBookPage extends StatefulWidget{
   CreateBookPage({Key key}) : super(key:key);
   @override
@@ -25,8 +30,6 @@ class _CreateBookPageState extends State<CreateBookPage>{
   TextEditingController bookController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-
-  
 
   @override
   Widget build (BuildContext context){
@@ -201,7 +204,6 @@ class _CreateBookPageState extends State<CreateBookPage>{
                       },
                     )
                   ),
-
                 ]
               )
             ),
@@ -212,4 +214,5 @@ class _CreateBookPageState extends State<CreateBookPage>{
       // bottomNavigationBar: BottomNavBar(),
     );
   }
+  
 }

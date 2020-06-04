@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:webookapp/model/book_model.dart';
 import 'package:webookapp/model/user_model.dart';
+
+
 
 class FileProvider {
   
@@ -37,9 +40,9 @@ class FileProvider {
     StorageUploadTask uploadTask;
     
     if (cover) {
-      uploadTask = storageReference.child("$authID/$key/$title-cover").putFile(File(filePath), StorageMetadata(contentType: '$_extension'));
+      uploadTask = storageReference.child("$authID/$key/$title-cover").putFile(File(filePath), StorageMetadata(contentType: 'image/$_extension'));
     } else {
-      uploadTask = storageReference.child("$authID/$key/$title-book").putFile(File(filePath), StorageMetadata(contentType: '$_extension'));
+      uploadTask = storageReference.child("$authID/$key/$title-book").putFile(File(filePath), StorageMetadata(contentType: 'application/$_extension'));
     }
     
     var url = await (await uploadTask.onComplete).ref.getDownloadURL();
@@ -62,12 +65,12 @@ class FileProvider {
     String _extension = fileName.split(".").last;
     StorageReference storageReference = _storage.ref().child("profile");
     //Uploading the image
-    StorageUploadTask uploadTask = storageReference.child("${user.key}").putFile(File(filePath), StorageMetadata(contentType: '$_extension'));
+    StorageUploadTask uploadTask = storageReference.child("${user.key}").putFile(File(filePath), StorageMetadata(contentType: 'image/$_extension'));
     
     //Getting the image url
     var url = await (await uploadTask.onComplete).ref.getDownloadURL();
 
     await _dbRef.child("users/${user.key}").child("profilePic").set(url);
   }
-  
+
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webookapp/view/HomePage.dart';
 import 'package:webookapp/view/LandingPage.dart';
 import 'package:webookapp/view/logIn.dart';
 import 'package:webookapp/view/navbar.dart';

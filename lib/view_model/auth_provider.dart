@@ -78,8 +78,8 @@ class AuthProvider extends ChangeNotifier {
 
   }
 
-    
   Future<AuthResult> createUser({String firstName, String lastName, String email, String password, String role}) async {
+    
     final result = await _auth.createUserWithEmailAndPassword(
       email: email,
       password: password,

@@ -32,13 +32,7 @@ class _HomePageState extends State<HomePage> {
         appBar: new AppBar(
           title: new Text('Home'),
           actions: <Widget>[
-            new FlatButton(
-                child: new Text('Logout',
-                    style: new TextStyle(fontSize: 17.0, color: Colors.white)),
-                onPressed: (){
-                  auth.signOut();
-                  Navigator.pushNamedAndRemoveUntil(context, "/logIn", (r) => false);
-                })
+
           ],
         ),
         body: Text("This is nothing"),

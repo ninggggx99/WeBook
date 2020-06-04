@@ -87,12 +87,7 @@ class AuthProvider extends ChangeNotifier {
     return result;
 
   }
-
-  // Future<bool> signInWithEmail({String email, String password}) async =>
-  //     _signIn(await _auth.signInWithEmailAndPassword(
-  //       email: email,
-  //       password: password, 
-  //     ));
+  
   Future <bool> signInWithEmail({String email, String password}) async{
     try {
       AuthResult result = await _auth.signInWithEmailAndPassword(email: email, password: password);
@@ -184,6 +179,7 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> signOut() async {
     await _auth.signOut();
+    _getCurrentUser();
     notifyListeners();
   }
 

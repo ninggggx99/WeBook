@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/view/LandingPage.dart';
+import 'package:webookapp/view/logIn.dart';
 import 'package:webookapp/view/navbar.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 
@@ -22,10 +23,10 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.teal,
             ),
-            // home: context.watch<AuthProvider>().status == AuthStatus.LOGGED_IN? HomePage():LoginSignupPage(),
             home: LandingPage(),
             routes: {
               '/mainHome': (context) => BottomNavBar(),
+              '/login': (context) => LogInPage(),
             },
             )  
         );

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:webookapp/view/LandingPage.dart';
-import 'package:webookapp/view/logIn.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -9,6 +7,7 @@ class HomePage extends StatefulWidget {
   State<StatefulWidget> createState() => new _HomePageState();
 }
 
+//The logout button will be moved to the profile page
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
@@ -22,7 +21,7 @@ class _HomePageState extends State<HomePage> {
                     style: new TextStyle(fontSize: 17.0, color: Colors.white)),
                 onPressed: (){
                   logout() async{
-                      await auth.signOut().then((__) =>  Navigator.pushNamedAndRemoveUntil(context, "/login", (r) => false));   
+                      await auth.signOut().then((__) =>  Navigator.pushNamedAndRemoveUntil(context, "/logIn", (r) => false));   
                   }
                   logout();                            
                  

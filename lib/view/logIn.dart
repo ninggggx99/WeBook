@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
-import 'package:webookapp/view/signUp.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 class LogInPage extends StatefulWidget {
@@ -10,11 +9,11 @@ class LogInPage extends StatefulWidget {
 }
 
 class _LogInPageState extends State<LogInPage> {
-  final formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  
+
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
@@ -24,7 +23,7 @@ class _LogInPageState extends State<LogInPage> {
           Container(
             padding: EdgeInsets.all(16.0),
             child: Form(
-              key:formKey,
+              key:_formKey,
               child: new ListView(
                 shrinkWrap: true,
                 children: <Widget>[
@@ -84,30 +83,33 @@ class _LogInPageState extends State<LogInPage> {
                             style: new TextStyle(fontSize: 20.0, color: Colors.white)),
                         onPressed: (){
                           login() async{
-                            bool result = await auth.signInWithEmail(email:emailController.text, password: passwordController.text);
-                            if (result == true){
-                              print("Login success");
-                              Navigator.pushReplacementNamed(context, '/mainHome');
-                            }
-                            else{
-                              AlertDialog alert = AlertDialog(
-                                title: Text("Error"), 
-                                content: Text(getErrorMessage(auth.error)),
-                                actions: <Widget>[
-                                  FlatButton(
-                                    child: Text("Ok"),
-                                    onPressed: (){
-                                      formKey.currentState.reset();
-                                      emailController.clear();
-                                      passwordController.clear();
-                                      Navigator.of(context).pop();
-                                      
-                                     
-                                    },
-                                    )
-                                ],
-                                );
-                              showDialog(context: context, builder: (BuildContext context){return alert;});
+                            if(_formKey.currentState.validate()) {
+                              bool result = await auth.signInWithEmail(email:emailController.text, password: passwordController.text);
+                              if (result == true){
+                                print("Login success");
+                                Navigator.pushReplacementNamed(context, '/mainHome');
+                                emailController.clear();
+                                passwordController.clear();
+                              }
+                              else{
+                                AlertDialog alert = AlertDialog(
+                                  title: Text("Error"), 
+                                  content: Text(getErrorMessage(auth.error)),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                      child: Text("Ok"),
+                                      onPressed: (){
+                                        _formKey.currentState.reset();
+                                        emailController.clear();
+                                        passwordController.clear();
+                                        Navigator.of(context).pop();
+                                    
+                                      },
+                                      )
+                                  ],
+                                  );
+                                showDialog(context: context, builder: (BuildContext context){return alert;});
+                              }
                             }
                           }
                           login();
@@ -122,7 +124,17 @@ class _LogInPageState extends State<LogInPage> {
                       height: 40.0,
                       child: new SignInButton(
                         Buttons.Google,
-                        onPressed: (){}
+                        onPressed: () {
+                          login() async{
+                            bool result = await auth.signInWithGoogle();
+                            if (result == true) {
+                              print("Login success");
+                              Navigator.pushReplacementNamed(context, '/mainHome');
+                              this.dispose();
+                            }
+                          }
+                          login();
+                        }
                       )
                     )
                   ),
@@ -133,7 +145,18 @@ class _LogInPageState extends State<LogInPage> {
                       height: 40.0,
                       child: new SignInButton(
                         Buttons.Facebook,
-                        onPressed: (){}
+                        onPressed: (){
+                          logIn() async {
+                            bool result = await auth.signInWithFB();
+                            if(result == true) {
+                              print("Login success");
+                              Navigator.pushReplacementNamed(context, '/mainHome');
+                            } else {
+                              print("log in with facebook failed!");
+                            }
+                          }
+                          logIn();
+                        }
                       )
                     )
                   ),
@@ -143,10 +166,7 @@ class _LogInPageState extends State<LogInPage> {
                         'Create an account' ,
                         style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
                     onPressed: (){
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SignUpPage())
-                      );
+                        Navigator.pushReplacementNamed(context, '/signUp');
                     }
                   ),
                 ],
@@ -178,6 +198,12 @@ class _LogInPageState extends State<LogInPage> {
       case AuthError.ERROR_OPERATION_NOT_ALLOWED:
         return "Internal Error" ;
         break;
+      case AuthError.ERROR_UNKNOWN:
+        if (emailController.text == "" || passwordController.text == "") {
+          return "Email/Password cannot be blank";
+        }
+        return "Unknown Error";
+        break;        
       default:
         return "Unknown Error";
         break;

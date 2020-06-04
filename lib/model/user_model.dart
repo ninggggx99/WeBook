@@ -6,10 +6,6 @@ class User {
   
   User(this.firstName, this.lastName, this.email, this.role);
 
-  String get fName {
-    return firstName;
-  }
-
   User.fromSnapShot(DataSnapshot snapshot) :
     key = snapshot.key,
     firstName = snapshot.value["firstName"],
@@ -26,11 +22,4 @@ class User {
       };
     }
   
-}
-
-//The roles for accounts
-enum roles {
-  bookworm,
-  aspiring_writer,
-  professional_writer
 }

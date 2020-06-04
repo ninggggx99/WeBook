@@ -28,8 +28,9 @@ apply plugin: 'com.google.gms.google-services'
 dependencies {
 
     implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
-    //implementation 'com.facebook.android:facebook-android-sdk:4.x'
+    implementation 'com.facebook.android:facebook-login:[5,6)'
     implementation 'com.google.firebase:firebase-database:19.3.0'
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
 }
 
 android {
@@ -46,6 +47,7 @@ android {
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -55,6 +57,11 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+}
+
+dependencies {
+  implementation 'com.android.support:multidex:1.0.3'  //with support libraries
+  //implementation 'androidx.multidex:multidex:2.0.1'  //with androidx libraries
 }
 
 flutter {

@@ -24,7 +24,8 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
             title: 'WeBook',
             theme: ThemeData(
-              primarySwatch: Colors.teal,
+              // primarySwatch: Colors.teal,
+              primaryColor: Colors.teal.shade400
             ),
             home: LandingPage(),
             routes: {

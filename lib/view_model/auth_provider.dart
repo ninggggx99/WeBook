@@ -63,7 +63,7 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> insertUser(String firstName, String lastName, String email, String role) async {
     //Convert to the user model and insert into db
-    User acc = new User(firstName, lastName, email, role);
+    User acc = new User(" ", firstName, lastName, email, role);
     _dbRef.child("users").child(user.uid).set(acc.toJson());
 
   }
@@ -78,8 +78,8 @@ class AuthProvider extends ChangeNotifier {
 
   }
 
-    
   Future<AuthResult> createUser({String firstName, String lastName, String email, String password, String role}) async {
+    
     final result = await _auth.createUserWithEmailAndPassword(
       email: email,
       password: password,

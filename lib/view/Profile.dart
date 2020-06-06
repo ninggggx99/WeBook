@@ -25,51 +25,64 @@ class _ProfilePageState extends State<ProfilePage> {
     final user = await _auth.retrieveUser();
     setState(() {
       _user = user;
+      if (_user.profilePic == null){
+        _user.profilePic = "https://i.pinimg.com/originals/c7/2c/a6/c72ca6b569e9729191b465dba7dda209.png";
+      }
     });
   }
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    if (_user == null){
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(
+            backgroundColor: Colors.tealAccent,
+          ),
+          )
+      );
+    }
+    else{
+      return Scaffold(
+        key: _scaffoldKey,
         body: Container(
-      child: Stack(
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(color: Colors.tealAccent.shade700),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 160.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-            ),
-          ),
-          Column(
+          child: Stack(
             children: <Widget>[
-              //profile picture
-              Padding(
-                padding: EdgeInsets.only(top: 100.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      width: 100.0,
-                      height: 100.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white60, width: 2.0),
-                      ),
-                      padding: EdgeInsets.all(8.0),
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            'https://i.pinimg.com/originals/c7/2c/a6/c72ca6b569e9729191b465dba7dda209.png'),
-                      ),
-                    ),
-                  ],
+              Container(
+                decoration: BoxDecoration(color: Colors.tealAccent.shade700),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 160.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
                 ),
               ),
-              (_user == null)
-                  ? Container(child: CircularProgressIndicator())
-                  : Column(
+              Column(
+                children: <Widget>[
+                  //profile picture
+                  Padding(
+                    padding: EdgeInsets.only(top: 100.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          width: 100.0,
+                          height: 100.0,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white60, width: 2.0),
+                          ),
+                          padding: EdgeInsets.all(8.0),
+                          child: CircleAvatar(                          
+                            backgroundImage: NetworkImage(_user.profilePic)
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
                       children: <Widget>[
                         Text(
                           _user.firstName,
@@ -89,23 +102,66 @@ class _ProfilePageState extends State<ProfilePage> {
                         )
                       ],
                     ),
+                  ],
+                ),
+              // settings button
+              Align(
+                alignment: Alignment(1.4, -1.1),
+                child: Container(
+                  width: 150.0,
+                  height: 150.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  padding: EdgeInsets.all(8.0),
+                  child: FlatButton(onPressed: ()=> _scaffoldKey.currentState.openEndDrawer() ,child: new Icon(Icons.settings, color: Colors.white)),
+                ),
+              ),
             ],
           ),
-          // settings button
-          Align(
-            alignment: Alignment(1.4, -1.1),
-            child: Container(
-              width: 150.0,
-              height: 150.0,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
+        ),
+        endDrawer: Drawer(
+          elevation: 20.0,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              
+              UserAccountsDrawerHeader(
+                accountName: Text(_user.firstName), 
+                accountEmail: Text(_user.email),
+                currentAccountPicture: CircleAvatar(
+                  backgroundImage: NetworkImage(_user.profilePic),
+                  backgroundColor: Colors.tealAccent,
+                ),
               ),
-              padding: EdgeInsets.all(8.0),
-              child: Icon(Icons.settings, color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-    ));
+              ListTile(
+                title: Text('Edit Profile'),
+                onTap:(){
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text('Change Password'),
+                onTap:(){
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text('Logout'),
+                onTap:(){
+                  logout() async{
+                      await _auth.signOut().then((__) =>  Navigator.pushNamedAndRemoveUntil(context, "/logIn", (r) => false));   
+                  }
+                  logout(); 
+                  Navigator.pop(context);
+                },
+              ),
+            ]
+          )
+        ) ,
+      );
+
+    }
+   
   }
 }

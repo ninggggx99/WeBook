@@ -19,6 +19,7 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController passwordRegController = TextEditingController();
   TextEditingController roleController = TextEditingController();
 
+
   List<String> roles = <String>[
     "Aspiring Writer",
     "Professional Writer",
@@ -119,27 +120,45 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 //Role Dropdown
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(35.0, 15.0, 0.0, 0.0),
-                    child: new DropdownButton<String> (
-                      icon: Icon(Icons.arrow_downward),
-                      hint: Text("Select your role"),
-                      value: selectedRole,
-                      iconSize: 24,
-                      elevation: 16,
-                      items: roles.map((role) {
-                        return DropdownMenuItem(
-                          value: role,
-                          child: new Text(role));
-                      },
-                      ).toList(),
-                      onChanged: (String value) {
-                        setState(() {
-                          selectedRole = value;
-                          roleController.text = value;
-                        });
-                      },
-                    ),
-                  ),
+                  padding: const EdgeInsets.fromLTRB(0,10,0,0),
+                  child: Row(
+                    children: <Widget> [
+                      Icon(Icons.account_box, color: Colors.grey,),
+                      
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15.0, 5.0, 0.0, 0.0),
+                        child: Row(
+                          children: <Widget> [
+                          Text(
+                            "Role : ", 
+                            style: TextStyle(color: Colors.black.withOpacity(0.6), 
+                            fontSize: 15),
+                          ),
+                          new DropdownButton<String> (
+                          icon: Icon(Icons.arrow_downward),
+                          hint: Text("Select your role"),
+                          value: selectedRole,
+                          iconSize: 24,
+                          elevation: 16,
+                          items: roles.map((role) {
+                            return DropdownMenuItem(
+                              value: role,
+                              child: new Text(role));
+                          },).toList(),
+                            onChanged: (String value) {
+                              setState(() {
+                                selectedRole = value;
+                                roleController.text = value;
+                              });
+                            },
+                        ), 
+                          ]
+
+                        )
+                      )
+                    ]
+                  )
+                ),
                 // Sign up Button
                 Padding(
                   padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
@@ -193,27 +212,34 @@ class _SignUpPageState extends State<SignUpPage> {
                                         BorderRadius.circular(20.0)),
                                 title: Text("What is your role?"),
                                 content: Padding(
-                                    padding: const EdgeInsets.fromLTRB(35.0, 15.0, 0.0, 0.0),
-                                      child: new DropdownButton<String> (
-                                        icon: Icon(Icons.arrow_downward),
-                                        hint: Text("Select your role"),
-                                        value: selectedRoleGoogle,
-                                        iconSize: 24,
-                                        elevation: 16,
-                                        items: roles.map((role) {
-                                          return DropdownMenuItem(
-                                            value: role,
-                                            child: new Text(role));
-                                        },
-                                        ).toList(),
-                                        onChanged: (String value) {
-                                          setState(() {
-                                            selectedRoleGoogle = value;
-                                            roleController.text = value;
-                                          });
-                                        },
-                                      ),
-                                    ) ,
+                                    padding: const EdgeInsets.fromLTRB(0,10,0,0),
+                                    child: Row (
+                                      children: <Widget> [
+                                        Icon(Icons.account_box, color: Colors.grey,),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(15.0, 5.0, 0.0, 0.0),
+                                          child: new DropdownButton<String> (
+                                            icon: Icon(Icons.arrow_downward),
+                                            hint: Text("Select your role"),
+                                            value: selectedRoleGoogle,
+                                            iconSize: 24,
+                                            elevation: 16,
+                                            items: roles.map((role) {
+                                              return DropdownMenuItem(
+                                                value: role,
+                                                child: new Text(role));
+                                            },).toList(),
+                                              onChanged: (String value) {
+                                                setState(() {
+                                                  selectedRoleGoogle = value;
+                                                  roleController.text = value;
+                                                });
+                                              },
+                                          ), 
+                                        )
+                                      ]
+                                    )
+                                  ),
                                 actions: <Widget>[
                                   FlatButton(
                                     child: Text('Sign Up'),
@@ -256,27 +282,34 @@ class _SignUpPageState extends State<SignUpPage> {
                                         BorderRadius.circular(20.0)),
                                 title: Text("What is your role?"),
                                 content: Padding(
-                                    padding: const EdgeInsets.fromLTRB(35.0, 15.0, 0.0, 0.0),
-                                      child: new DropdownButton<String> (
-                                        icon: Icon(Icons.arrow_downward),
-                                        hint: Text("Select your role"),
-                                        value: selectedRoleFB,
-                                        iconSize: 24,
-                                        elevation: 16,
-                                        items: roles.map((role) {
-                                          return DropdownMenuItem(
-                                            value: role,
-                                            child: new Text(role));
-                                        },
-                                        ).toList(),
-                                        onChanged: (String value) {
-                                          setState(() {
-                                            selectedRoleFB = value;
-                                            roleController.text = value;
-                                          });
-                                        },
-                                      ),
-                                    ) ,
+                                    padding: const EdgeInsets.fromLTRB(0,10,0,0),
+                                    child: Row (
+                                      children: <Widget> [
+                                        Icon(Icons.account_box, color: Colors.grey,),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(15.0, 5.0, 0.0, 0.0),
+                                          child: new DropdownButton<String> (
+                                            icon: Icon(Icons.arrow_downward),
+                                            hint: Text("Select your role"),
+                                            value: selectedRoleFB,
+                                            iconSize: 24,
+                                            elevation: 16,
+                                            items: roles.map((role) {
+                                              return DropdownMenuItem(
+                                                value: role,
+                                                child: new Text(role));
+                                            },).toList(),
+                                              onChanged: (String value) {
+                                                setState(() {
+                                                  selectedRoleFB = value;
+                                                  roleController.text = value;
+                                                });
+                                              },
+                                          ), 
+                                        )
+                                      ]
+                                    )
+                                  ),
                                 actions: <Widget>[
                                   FlatButton(
                                     child: Text('Sign Up'),

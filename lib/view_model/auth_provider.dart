@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,8 +31,10 @@ class AuthProvider extends ChangeNotifier {
 
   DatabaseReference _dbRef;
   FirebaseAuth _auth;
+  FirebaseStorage _storage;
   GoogleSignIn _googleSignIn;
   FacebookLogin _facebookLogin;
+  
 
   FirebaseUser _user;
   FirebaseUser get user => _user;
@@ -46,6 +51,7 @@ class AuthProvider extends ChangeNotifier {
   AuthProvider() {
     _auth = FirebaseAuth.instance;
     _dbRef = FirebaseDatabase.instance.reference();
+    _storage = FirebaseStorage(storageBucket: "gs://webook-a430e.appspot.com");
     _googleSignIn = GoogleSignIn();
     _facebookLogin = FacebookLogin();
     _getCurrentUser();
@@ -213,6 +219,69 @@ class AuthProvider extends ChangeNotifier {
       
     }
     return _user == null ? false : true;
+  }
+
+  //This can update and insert a new profile pic
+  Future<void> uploadProfilePic(User user, String filePath) async {
+
+    String fileName = filePath.split('/').last;
+    String _extension = fileName.split(".").last;
+    StorageReference storageReference = _storage.ref().child("profile");
+    //Uploading the image
+    StorageUploadTask uploadTask = storageReference.child("${user.key}").putFile(File(filePath), StorageMetadata(contentType: 'image/$_extension'));
+    
+    //Getting the image url
+    var url = await (await uploadTask.onComplete).ref.getDownloadURL();
+
+    await _dbRef.child("users/${user.key}").child("profilePic").set(url);
+  }
+
+
+  Future<void> updatePassword(String oldPassword, String newPassword) async {
+
+    //Require reauthentication 
+    AuthCredential credential = EmailAuthProvider.getCredential(email: user.email, password: oldPassword);
+    await user.reauthenticateWithCredential(credential).then((value) async =>  {
+        
+        //On success, update the password
+        await user.updatePassword(newPassword)
+          .then((_) => {
+              print("Password updated")
+          }).catchError((e) {
+              print("Error password is not updated: " + e.toString());
+          })
+
+      }
+    
+    ).catchError( (e) {
+      print("Reauthentication Failed: " + e.toString());
+    }
+    );
+
+    AuthCredential newCredential = EmailAuthProvider.getCredential(email: user.email, password: newPassword);
+    //Re-sign in
+    await signInWithCredential(newCredential);
+  }
+
+  //Havent test out yet
+  Future<void> deleteUser() async {
+
+    //Delete user from the real time database
+    await _dbRef.child("users/${user.uid}").remove().then((value) => {
+      print("User deleted")
+    }).catchError((e) {
+      print("Error deleting user from realtime DB: " + e.toString());
+    });
+
+    await signOut();
+
+    //Delete from auth
+    await user.delete().then((value) => {
+      print("User deleted")
+    }).catchError((e) {
+      print("Error deleting user from Firebase Auth: " + e.toString());
+    });
+
   }
 
   Future<void> signOut() async {

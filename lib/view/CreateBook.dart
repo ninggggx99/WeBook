@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -11,9 +10,6 @@ import 'package:webookapp/view_model/file_provider.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
-import 'package:path_provider/path_provider.dart';
 
 class CreateBookPage extends StatefulWidget{
   CreateBookPage({Key key}) : super(key:key);
@@ -26,10 +22,22 @@ class _CreateBookPageState extends State<CreateBookPage>{
 
   TextEditingController titleController = TextEditingController();
   TextEditingController descController = TextEditingController();
+  TextEditingController catController = TextEditingController();
   TextEditingController coverController = TextEditingController();
   TextEditingController bookController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+
+  //Can add more
+  List<String> category = <String>[
+    "Romance",
+    "Thriller",
+    "Fantasy",
+    "Poetry",
+    "Horror"
+  ];
+
+  String selectedCat = "Romance";
 
   @override
   Widget build (BuildContext context){
@@ -41,11 +49,11 @@ class _CreateBookPageState extends State<CreateBookPage>{
         leading: Image.asset('assets/logo_transparent.png'),
         backgroundColor: Colors.white,
         title: new Text(
-                        "Create",
-                        style: new TextStyle(
-                          fontSize: 16,
-                          color: Colors.black
-                        )),
+          "Create",
+          style: new TextStyle(
+          fontSize: 16,
+           color: Colors.black
+        )),
       ),
     
       body: Center(
@@ -82,6 +90,36 @@ class _CreateBookPageState extends State<CreateBookPage>{
                       )
                     ),
                     validator: (value) => value.isEmpty ? 'Book Description can\'t be empty' : null,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    child: Row(
+                        children: <Widget> [
+                          Icon(Icons.category, color: Colors.grey),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(15.0, 5.0, 0.0, 0.0),
+                            child: new DropdownButton<String> (
+                              icon: Icon(Icons.arrow_downward),
+                              hint: Text("Select your category"),
+                              value: selectedCat,
+                              iconSize: 24,
+                              elevation: 16,
+                              items: category.map((category) {
+                                return DropdownMenuItem(
+                                  value: category,
+                                  child: new Text(category));
+                              },
+                              ).toList(),
+                              onChanged: (String value) {
+                                setState(() {
+                                  selectedCat = value;
+                                  catController.text = value;
+                                });
+                              },
+                            ),
+                          )
+                        ]
+                      )
                   ),
                   //Upload Image
                   Padding(
@@ -172,14 +210,13 @@ class _CreateBookPageState extends State<CreateBookPage>{
                         upload () async {
                           if(_formKey.currentState.validate()){
                             await pr.show();
-                            User user = await auth.retrieveUser();
-
-                            await fileUploader.uploadProfilePic(user, coverController.text);
+                            User user = await auth.retrieveUser(); 
 
                             await fileUploader.uploadBook(
                               user, 
                               titleController.text, 
                               descController.text, 
+                              catController.text,
                               coverController.text, 
                               bookController.text);
 

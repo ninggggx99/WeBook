@@ -236,7 +236,9 @@ class AuthProvider extends ChangeNotifier {
     await _dbRef.child("users/${user.key}").child("profilePic").set(url);
   }
 
-
+  Future<void> updateFirstName (String first) async{
+    await _dbRef.child("users/${user.uid}/firstName").set(first);
+  }
   Future<void> updatePassword(String oldPassword, String newPassword) async {
 
     //Require reauthentication 
@@ -286,6 +288,7 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> signOut() async {
     await _auth.signOut();
+    print("Signout");
     await _googleSignIn.signOut();
     await _facebookLogin.logOut();
     _getCurrentUser();

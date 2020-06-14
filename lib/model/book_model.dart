@@ -6,7 +6,7 @@ class Book {
   
   String key, title, description, category, coverURL, authorId, authorName, bookURL;
   int rating;
-  List<Comment> comments;
+  String comments;
   
   Book(this.title, this.description, this.category, this.coverURL, this.rating, this.comments, this.authorId, this.authorName, this.bookURL);
 

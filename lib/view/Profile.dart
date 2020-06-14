@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/model/user_model.dart';
+import 'package:webookapp/view/EditProfileScreen.dart';
+import 'package:webookapp/view/ChangePassword.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -22,13 +24,19 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void load() async {
-    final user = await _auth.retrieveUser();
-    setState(() {
-      _user = user;
-      if (_user.profilePic == null){
-        _user.profilePic = "https://i.pinimg.com/originals/c7/2c/a6/c72ca6b569e9729191b465dba7dda209.png";
-      }
-    });
+    if (_auth.user.uid != null){
+      final user = await _auth.retrieveUser();
+      setState(() {
+        _user = user;
+        if (_user.profilePic == null){
+          _user.profilePic = "https://i.pinimg.com/originals/c7/2c/a6/c72ca6b569e9729191b465dba7dda209.png";
+        }
+      });
+    }
+    else{
+      _user = null;
+    }
+   
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -137,20 +145,21 @@ class _ProfilePageState extends State<ProfilePage> {
               ListTile(
                 title: Text('Edit Profile'),
                 onTap:(){
-                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfileScreen())).then((value) => setState((){print("hi"); load();}));
                 },
               ),
               ListTile(
                 title: Text('Change Password'),
                 onTap:(){
-                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordScreen())).then((value) => setState((){print("changed"); load();}));
                 },
               ),
               ListTile(
                 title: Text('Logout'),
                 onTap:(){
                   logout() async{
-                      await _auth.signOut().then((__) =>  Navigator.pushNamedAndRemoveUntil(context, "/logIn", (r) => false));   
+                    await _auth.signOut().then((__) =>  Navigator.pushNamedAndRemoveUntil(context, "/logIn", (r) => false)); 
+                   
                   }
                   logout(); 
                   Navigator.pop(context);

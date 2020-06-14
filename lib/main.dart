@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:webookapp/view/EditProfileScreen.dart';
 import 'package:webookapp/view/LandingPage.dart';
 import 'package:webookapp/view/logIn.dart';
 import 'package:webookapp/view/navbar.dart';
@@ -35,7 +36,8 @@ class MyApp extends StatelessWidget {
             routes: {
               '/mainHome':(context) => BottomNavBar(),
               '/logIn': (context) => LogInPage(),
-              '/signUp' : (context) => SignUpPage()
+              '/signUp' : (context) => SignUpPage(),
+              '/editProfile': (context) => EditProfileScreen(),
             },
             ) 
         );

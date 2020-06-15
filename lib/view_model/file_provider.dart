@@ -23,7 +23,7 @@ class FileProvider {
     String coverURL = await uploadDocument(user.key, key, title, coverFilePath, true);
     String bookURL = await uploadDocument(user.key, key, title, bookFilePath, false);
     String authorName = user.firstName + " " + user.lastName;
-    Book book = new Book(title, desc, category, coverURL, 0, null, user.key, authorName, bookURL);
+    Book book = new Book(title, desc, category, coverURL, [], [], user.key, authorName, bookURL);
 
     //Add the book to the database
     _dbRef.child("books").child(key).set(book.toJson());

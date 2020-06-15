@@ -2,7 +2,8 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:webookapp/model/book_model.dart';
 import 'package:webookapp/model/bookFeed_model.dart';
-
+import 'package:webookapp/model/comment_model.dart';
+import 'package:webookapp/model/rating_model.dart';
 
 class HomeProvider {
 
@@ -13,18 +14,31 @@ class HomeProvider {
   }
 
   Future<Book> retrieveBook(String bookID) async {
+   
     Book book;
+
     await _dbRef.child("books/$bookID").once().then((DataSnapshot snapshot) {
-      book = Book.fromSnapShot(snapshot);
+      book = Book.fromJson(new Map<String, dynamic>.from(snapshot.value));
     });
 
     return book;
   }
 
-  /*Future<Book> addComment(String bookID, User user, String desc) async {
-    Comment comment = new Comment()
-    await _dbRef.child("books/$bookID/comments").set(comment.toJson);
-  }*/
+  Future<void> addComment(String bookID, String userId, String desc) async {
+
+    Comment comment = new Comment(userId, desc, new DateTime.now());
+    String key = _dbRef.child("books/$bookID/comments").push().key;
+    await _dbRef.child("books/$bookID/comments/$key").set(comment.toJson());
+
+  }
+
+  Future<void> addRating(String bookID, String userId, double rating) async {
+    
+    Rating rate = new Rating(userId, rating);
+    String key = _dbRef.child("books/$bookID/ratings").push().key;
+    await _dbRef.child("books/$bookID/ratings/$key").set(rate.toJson());
+
+  }
 
   Future<List<Book>> getBooks() async {
    
@@ -32,6 +46,16 @@ class HomeProvider {
     BookFeed _bookFeed = BookFeed.fromSnapshot(snapshot);
     return _bookFeed.books;
  
+  }
+
+  Future<List<Comment>> getComments(Book book) async {
+
+    List<Comment> comments;
+    await _dbRef.child("books/${book.key}").once().then((DataSnapshot snapshot) {
+      comments = Book.fromSnapShot(snapshot).comments;
+      print(comments);
+    });
+    return comments;
   }
 
 }

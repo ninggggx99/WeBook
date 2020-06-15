@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:webookapp/view/appbar.dart';
-import 'package:webookapp/view/navbar.dart';
 
 class NotificationPage extends StatefulWidget{
   NotificationPage({Key key}) : super(key:key);

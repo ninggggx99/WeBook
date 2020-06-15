@@ -37,9 +37,10 @@ class _HomePageState extends State<HomePage> {
                       Material(
                         child: InkWell(
                           onTap: () {
+                            //Home Page's Book Details
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => BookDetailsScreen(book))
+                              MaterialPageRoute(builder: (context) => BookDetailsScreen(book, true))
                             );
                           },
                           child:  Container(

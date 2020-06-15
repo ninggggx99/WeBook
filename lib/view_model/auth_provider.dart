@@ -75,13 +75,24 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<User> retrieveUser() async{
-    //Retrieve a snapshot of the user data from the database
-   User acc;
+    //Retrieve a snapshot of the user data from the databaseF
+    User acc;
     await _dbRef.child("users").child(user.uid).once().then((DataSnapshot snapshot) {
       acc = User.fromSnapShot(snapshot);
     });
+
     return acc;
 
+  }
+
+  Future<User> findUser(String userId) async {
+   
+    User acc;
+    await _dbRef.child("users").child(userId).once().then((DataSnapshot snapshot) {
+      acc = User.fromSnapShot(snapshot);
+    });
+    
+    return acc;
   }
 
   Future<AuthResult> createUser({String firstName, String lastName, String email, String password, String role}) async {
@@ -90,6 +101,8 @@ class AuthProvider extends ChangeNotifier {
       email: email,
       password: password,
     );
+
+    _user = result.user;
 
     await insertUser(firstName, lastName, email, role);
 
@@ -138,7 +151,9 @@ class AuthProvider extends ChangeNotifier {
         print("LoggedIn");
         return signInWithCredential(credential);
         break;
-    }
+      default: 
+        return false;
+    } 
   }
       
   Future<bool> signInWithCredential(AuthCredential credential) async =>
@@ -261,6 +276,14 @@ class AuthProvider extends ChangeNotifier {
     AuthCredential newCredential = EmailAuthProvider.getCredential(email: user.email, password: newPassword);
     //Re-sign in
     await signInWithCredential(newCredential);
+  }
+
+  Future<void> updateFirstName(String first) async {
+    await _dbRef.child("users/${user.uid}/firstName").set(first);
+  }
+  
+  Future<void> updateLastName(String last) async {
+    await _dbRef.child("users/${user.uid}/lastName").set(last);
   }
 
   //Havent test out yet

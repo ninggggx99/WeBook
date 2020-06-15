@@ -3,7 +3,6 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 
-
 class ProfilePage extends StatefulWidget{
   ProfilePage({Key key}) : super(key:key);
   @override
@@ -36,6 +35,15 @@ class _ProfilePageState extends State<ProfilePage>{
             Text(
               'My Profile Page',
             ),
+            RaisedButton(
+              onPressed: () async {
+               
+                //Book book = await feed.retrieveBook("-M9qc6-EujKrGjRehNFw");
+                //print(book.authorId);
+                //await feed.addComment("-M9qofNQb0neTvNWcC0O", auth.user.uid, "Testing out if it can have multi lines with many many many words, if it extends the boxx");
+                print("done");
+              },
+            )
           ],
         ),
       ),

@@ -38,15 +38,56 @@ class LibraryProvider {
   }
 
   //Add Book into the library
-  Future<void> addBook(String bookId, String uid) async {
+  Future<bool> addBook(String bookId, String uid) async {
 
-    BookRecord record = new BookRecord(bookId, uid, false);
-    String key =  _dbRef.child("bookRecords").push().key;
+    bool exist = false;
 
-    await _dbRef.child("bookRecords/$key").set(record.toJson());
+    //Checking if it exist in the library akready
+    await _dbRef.child("bookRecords").orderByChild("bookId").equalTo(bookId).once().then((DataSnapshot snapshot) { 
+      if (snapshot.value != null) {
+        Map<dynamic, dynamic> values = snapshot.value;
+        values.forEach((key, value) {
+          if (value["userId"] == uid) {
+            exist = true;
+          }
+        });
+      } else {
+        exist = false;
+      }
+    });
 
+    if (!exist) {
+
+      BookRecord record = new BookRecord(bookId, uid, false);
+      String key =  _dbRef.child("bookRecords").push().key;
+
+      await _dbRef.child("bookRecords/$key").set(record.toJson());
+    }
+
+    return exist;
   }
 
-  //Add the checking of whether the book is inside the library alr
+  Future<bool> deleteBook(String bookId, String uid) async {
+    
+    bool deleted = false;
+
+    //Search for the revord
+    await _dbRef.child("bookRecords").orderByChild("userId").equalTo(uid).once().then((DataSnapshot snapshot) async { 
+      if (snapshot.value != null) {
+        Map<dynamic, dynamic> values = snapshot.value;
+        values.forEach((key, value) {
+          if (value["bookId"] == bookId) {
+             _dbRef.child("bookRecords/$key").remove();
+            deleted = true;
+          }
+        });
+      } else {
+        deleted = false;
+      }
+    });
+
+    return deleted;
+
+  }
 
 }

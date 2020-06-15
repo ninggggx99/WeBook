@@ -151,7 +151,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ListTile(
                 title: Text('Change Password'),
                 onTap:(){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordScreen())).then((value) => setState((){print("changed"); load();}));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordScreen()));
                 },
               ),
               ListTile(

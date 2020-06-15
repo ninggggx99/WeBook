@@ -18,16 +18,36 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
+ 
   @override
   Widget build(BuildContext context) {
     final feed = Provider.of<HomeProvider>(context);
+     final _auth = Provider.of<AuthProvider>(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Home')),
       body: 
        Center(
         child:Text("Not ready yet")
-      )
+      ),
+      // endDrawer: Drawer(
+      //   elevation: 20.0,
+      //   child: ListView(
+      //     padding: EdgeInsets.zero,
+      //     children: <Widget>[
+      //       ListTile(
+      //         title: Text('Logout'),
+      //         onTap:(){
+      //           logout() async{
+      //             await _auth.signOut().then((__) =>  Navigator.pushNamedAndRemoveUntil(context, "/logIn", (r) => false)); 
+                  
+      //           }
+      //           logout(); 
+      //           Navigator.pop(context);
+      //         },
+      //       ),
+      //     ]
+      //   )
+      //   ) ,
       //  new FutureBuilder(
       //   future: feed.getBooks(),
       //   builder: (context, snapshot) {

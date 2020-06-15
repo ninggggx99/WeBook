@@ -105,7 +105,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           color: Colors.grey,
                     )
                     ),
-                  validator: (value) => value.isEmpty ? 'Confirm password can\'t be empty' : null,
+                  validator: (value) => value.isEmpty ? 'Confirm password can\'t be empty' : (value == newPasswordController.text) ? null : 'Password don\'t match',
                   ),
                 ),
                 Padding(
@@ -116,23 +116,38 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         await pr.show();
                         print(conPasswordController.text);
                         if(_formKey.currentState.validate()){
-                          if (newPasswordController.text == conPasswordController.text){
-                            await _auth.updatePassword(oldPasswordController.text, newPasswordController.text);
-                            oldPasswordController.clear();
-                            newPasswordController.clear();
-                            conPasswordController.clear();
+                         
+                          bool result = await _auth.updatePassword(oldPasswordController.text, newPasswordController.text);
+                          oldPasswordController.clear();
+                          newPasswordController.clear();
+                          conPasswordController.clear();
+                          print(result);
+                          if (result == true){
+                            await pr.hide();
+                            Navigator.pop(context); 
                           }
                           else{
-                            
+                            AlertDialog alert = AlertDialog(
+                              title: Text("Error"), 
+                              content: Text(getErrorMessage(_auth.error)),
+                              actions: <Widget>[
+                                FlatButton(
+                                  child: Text("Ok"),
+                                  onPressed: (){
+                                    _formKey.currentState.reset();
+                                    Navigator.of(context).pop();
+                                  },
+                                  )
+                              ],
+                            );
+                            await pr.hide();
+                            showDialog(context: context, builder: (BuildContext context){return alert;});
                           }
+                         
                         }
                         else{
                           print("Not Submitted");
-                        }
-                        
-                        await pr.hide();
-                        Navigator.pop(context); 
-                      
+                        }                   
                         
                       }                           
                       editSave();          
@@ -152,4 +167,21 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     ),
   );
  }
+ String getErrorMessage(AuthError errorcode){
+   
+    // String error = " ";
+    print(errorcode.toString() + "ERROR");
+    switch (errorcode) {
+      case AuthError.ERROR_WRONG_PASSWORD:
+        return "Incorrect Email/Password";
+        break;
+      case AuthError.ERROR_UNKNOWN:
+        return "Unknown Error";
+        break;        
+      default:
+        return "Unknown Error";
+        break;
+    }    
+  }
 }
+

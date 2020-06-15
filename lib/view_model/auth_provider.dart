@@ -25,6 +25,8 @@ enum AuthError{
   ERROR_TOO_MANY_REQUESTS,
   ERROR_OPERATION_NOT_ALLOWED,
   ERROR_UNKNOWN,
+  ERROR_INVALID_CREDENTIAL,
+  ERROR_REQUIRES_RECENT_LOGIN
 }
 
 class AuthProvider extends ChangeNotifier {
@@ -91,6 +93,7 @@ class AuthProvider extends ChangeNotifier {
       password: password,
     );
 
+    _user = result.user;
     await insertUser(firstName, lastName, email, role);
 
     print("${user.uid}");
@@ -239,30 +242,43 @@ class AuthProvider extends ChangeNotifier {
   Future<void> updateFirstName (String first) async{
     await _dbRef.child("users/${user.uid}/firstName").set(first);
   }
-  Future<void> updatePassword(String oldPassword, String newPassword) async {
-
-    //Require reauthentication 
-    AuthCredential credential = EmailAuthProvider.getCredential(email: user.email, password: oldPassword);
-    await user.reauthenticateWithCredential(credential).then((value) async =>  {
-        
-        //On success, update the password
-        await user.updatePassword(newPassword)
-          .then((_) => {
-              print("Password updated")
-          }).catchError((e) {
-              print("Error password is not updated: " + e.toString());
-          })
-
-      }
+  Future<bool> updatePassword(String oldPassword, String newPassword) async {
     
-    ).catchError( (e) {
-      print("Reauthentication Failed: " + e.toString());
+    //Require reauthentication 
+    try{
+      AuthCredential credential = EmailAuthProvider.getCredential(email:user.email,password:oldPassword);
+      AuthResult result = await user.reauthenticateWithCredential(credential);
+      await result.user.updatePassword(newPassword);
+      print("Password updated");
+      return true;
     }
-    );
-
-    AuthCredential newCredential = EmailAuthProvider.getCredential(email: user.email, password: newPassword);
-    //Re-sign in
-    await signInWithCredential(newCredential);
+    catch (e){
+      print(e.code);
+      switch(e.code){
+        case "ERROR_INVALID_CREDENTIAL":
+          _error = AuthError.ERROR_INVALID_CREDENTIAL;
+          break;
+        case "ERROR_WRONG_PASSWORD":
+          _error = AuthError.ERROR_WRONG_PASSWORD;
+          break;
+        case "ERROR_USER_NOT_FOUND":
+          _error = AuthError.ERROR_USER_NOT_FOUND;
+          break;
+        case "ERROR_USER_DISABLED":
+          _error = AuthError.ERROR_USER_DISABLED;
+          break;
+        case "ERROR_OPERATION_NOT_ALLOWED":
+          _error = AuthError.ERROR_OPERATION_NOT_ALLOWED;
+          break;
+        case "ERROR_REQUIRES_RECENT_LOGIN":
+        _error = AuthError.ERROR_REQUIRES_RECENT_LOGIN;
+        break;
+        default:
+          _error = AuthError.ERROR_UNKNOWN;
+          break;
+      }
+      return false;
+    }
   }
 
   //Havent test out yet

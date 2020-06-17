@@ -34,10 +34,11 @@ class _CommentScreenState extends State<CommentScreen> {
             future: feed.getComments(widget.book),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
+                if (snapshot.data != null ) {
                 return new ListView.builder(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
-                  itemCount: snapshot.data.length,
+                  itemCount: snapshot.data.length ,
                   itemBuilder: (context, index) {
                     final Comment comment = snapshot.data[index];
                     String formattedDate = DateFormat('yyyy-MM-dd kk:mm').format(comment.dateCreated);
@@ -74,7 +75,9 @@ class _CommentScreenState extends State<CommentScreen> {
                         }
                       }
                     ); 
-              });
+              });} else {
+                return Container();
+              }
               } else {
                 return Container(
                   alignment: Alignment(0.0, 0.0),

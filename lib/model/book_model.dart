@@ -5,11 +5,12 @@ import 'package:webookapp/model/rating_model.dart';
 class Book {
   
   String key, title, description, category, coverURL, authorId, authorName, bookURL;
-  List<Rating> rating;
+  
+  List<Rating> ratings;
 
   List<Comment> comments;
   
-  Book(this.title, this.description, this.category, this.coverURL, this.rating, this.comments, this.authorId, this.authorName, this.bookURL);
+  Book(this.title, this.description, this.category, this.coverURL, this.ratings, this.comments, this.authorId, this.authorName, this.bookURL);
 
   Book.fromSnapShot(DataSnapshot snapshot) :
     key = snapshot.key,
@@ -17,7 +18,7 @@ class Book {
     description = snapshot.value["description"] != null ? snapshot.value["description"] : null,
     category = snapshot.value["category"] != null ? snapshot.value["category"] : null,
     coverURL = snapshot.value["coverURL"] != null ? snapshot.value["coverURL"] : null,
-    rating = snapshot.value["rating"] != null ? convertRatings(snapshot.value["rating"]) : null,
+    ratings = snapshot.value["ratings"] != null ? convertRatings(snapshot.value["ratings"]) : null,
     comments = snapshot.value["comments"] != null ? convertComments(snapshot.value["comments"]) : null,
     authorId = snapshot.value["authorId"] != null ? snapshot.value["authorId"] : null,
     authorName = snapshot.value["authorName"] != null ? snapshot.value["authorName"] : null,
@@ -29,7 +30,7 @@ class Book {
         "description" : description != null ? description : null, 
         "category": category != null ? category : null,
         "coverURL" : coverURL != null ? coverURL : null,
-        "rating" : rating != null ? List<dynamic>.from(rating.map((e) => e.toJson())): null,
+        "ratings" : ratings != null ? List<dynamic>.from(ratings.map((e) => e.toJson())) : null,
         "comments" : comments != null ? List<dynamic>.from(comments.map((x) => x.toJson())) : null,
         "authorId": authorId != null ? authorId : null,
         "authorName": authorName != null ? authorName : null,
@@ -39,13 +40,12 @@ class Book {
 
   factory Book.fromJson(Map<String,dynamic> parsedJson) {
 
-
     return Book(
       parsedJson["title"] != null ? parsedJson["title"] : null, 
       parsedJson["description"] != null ? parsedJson["description"] : null,
       parsedJson["category"] != null ? parsedJson["category"] : null,
       parsedJson["coverURL"] != null ? parsedJson["coverURL"] : null,
-      parsedJson["rating"] != null ? convertRatings(parsedJson["rating"]) : null,
+      parsedJson["ratings"] != null ? convertRatings(parsedJson["ratings"]) : null,
       parsedJson["comments"] != null ? convertComments(parsedJson["comments"]) : null,
       parsedJson["authorId"] != null ? parsedJson["authorId"] : null,
       parsedJson["authorName"] != null ? parsedJson["authorName"] : null,
@@ -85,15 +85,18 @@ List<Rating> convertRatings(Map<dynamic, dynamic> data) {
   List<Rating> ratings = [];
   
   Map<String, dynamic> parsedJson = Map.from(data);
+  print(parsedJson);
 
   parsedJson.forEach((key, value) {
 
     Map<String, dynamic> ra = Map.from(value);
- 
+    print(ra["userId"]);
     Rating r = Rating.fromJson(ra);
     r.setKey(key);
     ratings.add(r);
+
   });
 
+  print(ratings);
   return ratings;
 }

@@ -21,7 +21,8 @@ class FileProvider {
 
     String key =  _dbRef.child("books").push().key;
     String coverURL = await uploadDocument(user.key, key, title, coverFilePath, true);
-    String bookURL = await uploadDocument(user.key, key, title, bookFilePath, false);
+    //String bookURL = await uploadDocument(user.key, key, title, bookFilePath, false);
+    String bookURL = await uploadEPub(user.key, key, title, bookFilePath);
     String authorName = user.firstName + " " + user.lastName;
     Book book = new Book(title, desc, category, coverURL, [], [], user.key, authorName, bookURL);
 
@@ -49,7 +50,22 @@ class FileProvider {
     return url.toString();
   }
 
+    //Testing the uploading of epub
+    Future<String> uploadEPub(String authID, String key, String title, String filePath) async {
+
+    StorageReference storageReference = _storage.ref().child("books");
+    StorageUploadTask uploadTask;
+
+    uploadTask = storageReference.child("$authID/$key/$title-book").putFile(File(filePath), StorageMetadata(contentType: 'application/epub+zip'));
+    
+    var url = await (await uploadTask.onComplete).ref.getDownloadURL();
+
+    return url.toString();
+  }
+
+
   Future<Book> retrieveBook(String bookID) async {
+    
     Book book;
     await _dbRef.child("books/$bookID").once().then((DataSnapshot snapshot) {
       book = Book.fromSnapShot(snapshot);

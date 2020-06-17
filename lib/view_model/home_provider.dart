@@ -16,9 +16,9 @@ class HomeProvider {
   Future<Book> retrieveBook(String bookID) async {
    
     Book book;
-
     await _dbRef.child("books/$bookID").once().then((DataSnapshot snapshot) {
       book = Book.fromJson(new Map<String, dynamic>.from(snapshot.value));
+      print(book.comments);
     });
 
     return book;

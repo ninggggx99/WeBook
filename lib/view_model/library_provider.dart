@@ -14,27 +14,50 @@ class LibraryProvider {
 
     List<Book> books = [];
     List<BookRecord> records = [];
-    
-    //Collecting all the book records
-    await _dbRef.child("bookRecords").once().then((DataSnapshot snapshot) {
+
+    try{
+      DataSnapshot snapshot =  await _dbRef.child("bookRecords").once();
       Map<dynamic, dynamic> values = snapshot.value;
       values.forEach((key, value) {
         if (value["userId"] == uid) {
           records.add(BookRecord.fromJson(Map.from(value)));
         }
       });
-    });
+      print('Successfully get Records');
 
-    print('Successfully get Records');
-    //Adding all the books
-    for (BookRecord record in records) {
+      for (BookRecord record in records) {
       await _dbRef.child("books/${record.bookId}").once().then((DataSnapshot snapshot) {
         books.add(Book.fromSnapShot(snapshot));
-      });
-    }
+        });
+      }
 
-    print('Successfully get book');
-    return books;
+      print('Successfully get book');
+      return books;
+    }catch(e){
+      print ("NO BOOK");
+      return null;
+    }
+    
+    //Collecting all the book records
+    // await _dbRef.child("bookRecords").once().then((DataSnapshot snapshot) {
+    //   Map<dynamic, dynamic> values = snapshot.value;
+    //   values.forEach((key, value) {
+    //     if (value["userId"] == uid) {
+    //       records.add(BookRecord.fromJson(Map.from(value)));
+    //     }
+    //   });
+    // });
+
+    // print('Successfully get Records');
+    //Adding all the books
+    // for (BookRecord record in records) {
+    //   await _dbRef.child("books/${record.bookId}").once().then((DataSnapshot snapshot) {
+    //     books.add(Book.fromSnapShot(snapshot));
+    //   });
+    // }
+
+    // print('Successfully get book');
+    // return books;
   }
 
   //Add Book into the library

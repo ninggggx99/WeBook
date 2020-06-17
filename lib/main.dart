@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:webookapp/view/EditProfileScreen.dart';
 import 'package:webookapp/view/LandingPage.dart';
 import 'package:webookapp/view/logIn.dart';
 import 'package:webookapp/view/navbar.dart';
@@ -28,14 +29,15 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
             title: 'WeBook',
             theme: ThemeData(
-              primarySwatch: Colors.teal,
+              // primarySwatch: Colors.teal,
+              primaryColor: Colors.teal.shade400
             ),
-            // home: context.watch<AuthProvider>().status == AuthStatus.LOGGED_IN? HomePage():LoginSignupPage(),
             home: LandingPage(),
             routes: {
               '/mainHome':(context) => BottomNavBar(),
               '/logIn': (context) => LogInPage(),
               '/signUp' : (context) => SignUpPage(),
+              '/editProfile': (context) => EditProfileScreen(),
             },
             ) 
         );

@@ -6,8 +6,6 @@ import 'package:webookapp/view/logIn.dart';
 import 'package:webookapp/view/navbar.dart';
 
 import 'package:webookapp/view_model/auth_provider.dart';
-// import 'package:webookapp/database/authentication.dart';
-// import 'package:webookapp/view/login_signup_view.dart';
 
 class LandingPage extends StatelessWidget {
   @override

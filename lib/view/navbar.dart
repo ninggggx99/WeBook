@@ -6,14 +6,6 @@ import 'package:webookapp/view/Profile.dart';
 import 'package:webookapp/view/CreateBook.dart';
 import 'package:webookapp/view/Library.dart';
 class BottomNavBar extends StatefulWidget{
-  @override
- 
-   BottomNavBar({Key key, this.userId, this.logoutCallback})
-      : super(key: key);
-
-  final VoidCallback logoutCallback;
-  final String userId;
-  final DatabaseReference dbRef = FirebaseDatabase.instance.reference().child("users");
 
   @override
    State<StatefulWidget> createState() => _BottomNavBarState();
@@ -24,7 +16,7 @@ class _BottomNavBarState extends State<BottomNavBar>{
   final List <Widget> _children = [HomePage(),LibraryPage(),CreateBookPage(),NotificationPage(),ProfilePage()];
   void onTappedBar(int index){
     setState(() {
-      _currentIndex= index;
+      _currentIndex = index;
     });
   }
   @override

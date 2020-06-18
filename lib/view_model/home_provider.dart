@@ -17,8 +17,9 @@ class HomeProvider {
    
     Book book;
     await _dbRef.child("books/$bookID").once().then((DataSnapshot snapshot) {
+      
       book = Book.fromJson(new Map<String, dynamic>.from(snapshot.value));
-      print(book.comments);
+
     });
 
     return book;
@@ -52,8 +53,9 @@ class HomeProvider {
 
     List<Comment> comments;
     await _dbRef.child("books/${book.key}").once().then((DataSnapshot snapshot) {
+      
       comments = Book.fromSnapShot(snapshot).comments;
-      print(comments);
+ 
     });
     return comments;
   }

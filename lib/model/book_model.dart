@@ -9,8 +9,10 @@ class Book {
   List<Rating> ratings;
 
   List<Comment> comments;
+
+  DateTime dateCreated;
   
-  Book(this.title, this.description, this.category, this.coverURL, this.ratings, this.comments, this.authorId, this.authorName, this.bookURL);
+  Book(this.title, this.description, this.category, this.coverURL, this.ratings, this.comments, this.authorId, this.authorName, this.bookURL, this.dateCreated);
 
   Book.fromSnapShot(DataSnapshot snapshot) :
     key = snapshot.key,
@@ -22,7 +24,8 @@ class Book {
     comments = snapshot.value["comments"] != null ? convertComments(snapshot.value["comments"]) : null,
     authorId = snapshot.value["authorId"] != null ? snapshot.value["authorId"] : null,
     authorName = snapshot.value["authorName"] != null ? snapshot.value["authorName"] : null,
-    bookURL = snapshot.value["bookURL"] != null ? snapshot.value["bookURL"] : null;
+    bookURL = snapshot.value["bookURL"] != null ? snapshot.value["bookURL"] : null,
+       dateCreated = snapshot.value["dateCreated"] != null ? convertTimeStampToDateTime(snapshot.value["dateCreated"]) : null;
 
     toJson() {
       return {
@@ -34,7 +37,8 @@ class Book {
         "comments" : comments != null ? List<dynamic>.from(comments.map((x) => x.toJson())) : null,
         "authorId": authorId != null ? authorId : null,
         "authorName": authorName != null ? authorName : null,
-        "bookURL": bookURL != null ? bookURL : null
+        "bookURL": bookURL != null ? bookURL : null,
+        "dateCreated" : dateCreated != null ? convertDateToTimeStamp(dateCreated)  : null
       };
     }
 
@@ -49,7 +53,8 @@ class Book {
       parsedJson["comments"] != null ? convertComments(parsedJson["comments"]) : null,
       parsedJson["authorId"] != null ? parsedJson["authorId"] : null,
       parsedJson["authorName"] != null ? parsedJson["authorName"] : null,
-      parsedJson["bookURL"] != null ? parsedJson["bookURL"] : null);
+      parsedJson["bookURL"] != null ? parsedJson["bookURL"] : null, 
+      convertTimeStampToDateTime(parsedJson["dateCreated"]) );
   }
   
   setKey(String key) {
@@ -85,18 +90,24 @@ List<Rating> convertRatings(Map<dynamic, dynamic> data) {
   List<Rating> ratings = [];
   
   Map<String, dynamic> parsedJson = Map.from(data);
-  print(parsedJson);
 
   parsedJson.forEach((key, value) {
 
     Map<String, dynamic> ra = Map.from(value);
-    print(ra["userId"]);
     Rating r = Rating.fromJson(ra);
     r.setKey(key);
     ratings.add(r);
 
   });
 
-  print(ratings);
   return ratings;
 }
+
+convertDateToTimeStamp(DateTime date) {
+  return date.millisecondsSinceEpoch;
+}
+
+convertTimeStampToDateTime(int date) {
+  return DateTime.fromMillisecondsSinceEpoch(date);
+}
+

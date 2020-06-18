@@ -1,4 +1,6 @@
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +12,7 @@ import 'package:webookapp/view_model/file_provider.dart';
 import 'package:webookapp/view_model/home_provider.dart';
 import 'package:webookapp/view_model/library_provider.dart';
 
-import 'PDFScreen.dart';
+import 'package:epub_kitty/epub_kitty.dart';
 
 class BookDetailsScreen extends StatefulWidget {
   @override
@@ -23,6 +25,8 @@ class BookDetailsScreen extends StatefulWidget {
 }
 
 class _BookDetailsScreenState extends State<BookDetailsScreen> {
+
+  static const pageChannel = EventChannel('com.xiaofwang.epub_kitty/page');
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   //REFORMAT THIS PAGE
@@ -132,14 +136,17 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
               onPressed: () async {
                 String pdfPath = "";
                 await pr.show();
-                await file.createFileOfPdfUrl(widget.book.bookURL).then((f) {
-                  pdfPath = f.path;
-                });
-                await pr.hide();
 
-                await Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => PDFScreen(pathPDF: pdfPath, book: widget.book,) )
-                );
+                await file.convertFile(widget.book.bookURL).then((f) {
+                  
+                  pdfPath = f.path;
+                  
+                });
+                
+                await pr.hide();
+                EpubKitty.setConfig("androidBook", "#32a852", "vertical", true);    
+                EpubKitty.open(pdfPath);
+
             },)
           ]
         ),

@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:archive/archive.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -20,38 +22,18 @@ class FileProvider {
   Future<void> uploadBook(User user, String title, String desc, String category, String coverFilePath, String bookFilePath) async {
 
     String key =  _dbRef.child("books").push().key;
-    String coverURL = await uploadDocument(user.key, key, title, coverFilePath, true);
-    //String bookURL = await uploadDocument(user.key, key, title, bookFilePath, false);
+    String coverURL = await uploadBookCover(user.key, key, title, coverFilePath);
     String bookURL = await uploadEPub(user.key, key, title, bookFilePath);
     String authorName = user.firstName + " " + user.lastName;
-    Book book = new Book(title, desc, category, coverURL, [], [], user.key, authorName, bookURL);
+    Book book = new Book(title, desc, category, coverURL, [], [], user.key, authorName, bookURL, new DateTime.now());
 
     //Add the book to the database
     _dbRef.child("books").child(key).set(book.toJson());
     
   }
 
-  //Upload cover or book
-  Future<String> uploadDocument(String authID, String key, String title, String filePath, bool cover) async {
-
-    String fileName = filePath.split('/').last;
-    String _extension = fileName.split(".").last;
-    StorageReference storageReference = _storage.ref().child("books");
-    StorageUploadTask uploadTask;
-    
-    if (cover) {
-      uploadTask = storageReference.child("$authID/$key/$title-cover").putFile(File(filePath), StorageMetadata(contentType: 'image/$_extension'));
-    } else {
-      uploadTask = storageReference.child("$authID/$key/$title-book").putFile(File(filePath), StorageMetadata(contentType: 'application/$_extension'));
-    }
-    
-    var url = await (await uploadTask.onComplete).ref.getDownloadURL();
-
-    return url.toString();
-  }
-
     //Testing the uploading of epub
-    Future<String> uploadEPub(String authID, String key, String title, String filePath) async {
+  Future<String> uploadEPub(String authID, String key, String title, String filePath) async {
 
     StorageReference storageReference = _storage.ref().child("books");
     StorageUploadTask uploadTask;
@@ -60,6 +42,18 @@ class FileProvider {
     
     var url = await (await uploadTask.onComplete).ref.getDownloadURL();
 
+    return url.toString();
+  }
+
+  Future<String> uploadBookCover(String authID, String key, String title, String filePath) async {
+
+    String fileName = filePath.split('/').last;
+    String _extension = fileName.split(".").last;
+
+    StorageReference storageReference = _storage.ref().child("books");
+    StorageUploadTask uploadTask = storageReference.child("$authID/$key/$title-cover").putFile(File(filePath), StorageMetadata(contentType: 'image/$_extension'));
+    var url = await (await uploadTask.onComplete).ref.getDownloadURL();
+    
     return url.toString();
   }
 
@@ -89,18 +83,19 @@ class FileProvider {
     await _dbRef.child("users/${user.key}").child("profilePic").set(url);
   }
 
-  Future<File> createFileOfPdfUrl(String path) async {
+  Future<File> convertFile(String path) async {
     
     String url = path;
-    final filename = url.substring(url.lastIndexOf("/") + 1);
     var request = await HttpClient().getUrl(Uri.parse(url));
     var response = await request.close();
     var bytes = await consolidateHttpClientResponseBytes(response);
     String dir = (await getApplicationDocumentsDirectory()).path;
-    File file = new File('$dir/$filename');
+    //Test out more 
+    File file = new File('$dir/temp.epub');
     await file.writeAsBytes(bytes);
     return file;
 
   }
+
 
 }

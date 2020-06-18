@@ -30,7 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
       final user = await _auth.retrieveUser();
       setState(() {
         _user = user;
-        if (_user.profilePic == null){
+        if (_user.profilePic == null ||_user.profilePic == " "){
           _user.profilePic = "https://i.pinimg.com/originals/c7/2c/a6/c72ca6b569e9729191b465dba7dda209.png";
         }
       });

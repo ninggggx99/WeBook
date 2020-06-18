@@ -32,7 +32,7 @@ class FileProvider {
     
   }
 
-    //Testing the uploading of epub
+  //Uploading of Epub type of File
   Future<String> uploadEPub(String authID, String key, String title, String filePath) async {
 
     StorageReference storageReference = _storage.ref().child("books");
@@ -45,6 +45,22 @@ class FileProvider {
     return url.toString();
   }
 
+  //Uploading of any type of files except for EPUB and images (eg. PDF)
+  /* Future<String> uploadDocument(String authID, String key, String title, String filePath) async {
+
+    String fileName = filePath.split('/').last;
+    String _extension = fileName.split(".").last;
+    StorageReference storageReference = _storage.ref().child("books");
+    StorageUploadTask uploadTask;
+  
+    uploadTask = storageReference.child("$authID/$key/$title-book").putFile(File(filePath), StorageMetadata(contentType: 'application/$_extension'));
+      
+    var url = await (await uploadTask.onComplete).ref.getDownloadURL();
+
+    return url.toString();
+  } */
+
+  //Uploading of Image for Book Cover
   Future<String> uploadBookCover(String authID, String key, String title, String filePath) async {
 
     String fileName = filePath.split('/').last;
@@ -96,6 +112,20 @@ class FileProvider {
     return file;
 
   }
+
+  /*Future<File> createFileOfPdfUrl(String path) async {
+    
+    String url = path;
+    final filename = url.substring(url.lastIndexOf("/") + 1);
+    var request = await HttpClient().getUrl(Uri.parse(url));
+    var response = await request.close();
+    var bytes = await consolidateHttpClientResponseBytes(response);
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    File file = new File('$dir/$filename');
+    await file.writeAsBytes(bytes);
+    return file;
+
+  }*/
 
 
 }

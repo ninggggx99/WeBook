@@ -13,6 +13,7 @@ import 'package:webookapp/view_model/home_provider.dart';
 import 'package:webookapp/view_model/library_provider.dart';
 
 import 'package:epub_kitty/epub_kitty.dart';
+//import 'PDFScreen.dart';
 
 class BookDetailsScreen extends StatefulWidget {
   @override
@@ -134,18 +135,25 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
             IconButton(
               icon: Icon(Icons.chrome_reader_mode), 
               onPressed: () async {
-                String pdfPath = "";
+                //String pdfPath = "";
+                String epubPath = "";
                 await pr.show();
 
-                await file.convertFile(widget.book.bookURL).then((f) {
-                  
+                /* await file.createFileOfPdfUrl(widget.book.bookURL).then((f) {
                   pdfPath = f.path;
-                  
+                }); */
+
+                await file.convertFile(widget.book.bookURL).then((f) {
+                  epubPath = f.path;
                 });
+
+                /* await Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => PDFScreen(pathPDF: pdfPath, book: widget.book,) )
+                ); */
                 
                 await pr.hide();
                 EpubKitty.setConfig("androidBook", "#32a852", "vertical", true);    
-                EpubKitty.open(pdfPath);
+                EpubKitty.open(epubPath);
 
             },)
           ]

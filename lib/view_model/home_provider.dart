@@ -52,7 +52,7 @@ class HomeProvider {
   Future<List<Comment>> getComments(Book book) async {
 
     List<Comment> comments;
-    await _dbRef.child("books/${book.key}").once().then((DataSnapshot snapshot) {
+    await _dbRef.child("books/${book.key}").orderByChild("dateCreated").once().then((DataSnapshot snapshot) {
       
       comments = Book.fromSnapShot(snapshot).comments;
  

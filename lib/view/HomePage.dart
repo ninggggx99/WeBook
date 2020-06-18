@@ -7,7 +7,6 @@ import 'package:webookapp/model/user_model.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -41,6 +40,10 @@ class _HomePageState extends State<HomePage> {
         _user = user;
       });
     }
+  }
+  @override
+  void dispose(){
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
@@ -219,14 +222,14 @@ class _HomePageState extends State<HomePage> {
                       ),
                       child: InkWell(
                         onTap: () async{
-                          String str = await Navigator.push(
+                          await Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => BookDetailsScreen(book, false))
+                            MaterialPageRoute(builder: (context) => BookDetailsScreen(book,auth))
                           );
                           
-                          if (str == "delete") {
-                            load();
-                          } 
+                          // if (str == "delete") {
+                          //   load();
+                          // } 
                         }
                       ),
                     );

@@ -64,14 +64,14 @@ class _LibraryPageState extends State<LibraryPage>{
                           Material(
                             child: InkWell(
                               onTap: () async {
-                                String str = await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => BookDetailsScreen(book, false))
-                                );
+                                // String str = await Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(builder: (context) => BookDetailsScreen(bookModel: book))
+                                // );
                                 
-                                if (str == "delete") {
-                                  load();
-                                }         //Show notification upon success
+                                // if (str == "delete") {
+                                //   load();
+                                // }         //Show notification upon success
                               },
                               child:  Container(
                                 constraints: BoxConstraints.expand(

@@ -225,83 +225,108 @@ class _BookDetailsScreenState extends State <BookDetailsScreen>{
                       )
                     ),
                     Container(
-                      height: 28,
+                      height: 300,
                       margin: EdgeInsets.only(top:23, bottom:36),
                       padding: EdgeInsets.only(left:25),
                       child: DefaultTabController(
                         length: 3,
-                        child: TabBar(
-                          labelPadding: EdgeInsets.all(0),
-                          indicatorPadding: EdgeInsets.all(0),
-                          isScrollable: true,
-                          labelColor: Colors.black,
-                          unselectedLabelColor: Colors.grey,
-                          labelStyle: GoogleFonts.openSans(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700  
-                          ),
-                          unselectedLabelStyle: GoogleFonts.openSans(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600
-                          ),
-                          indicator: RoundedRectangleTabIndicator(
-                            weight:2,
-                            width: 30,
-                            color: Colors.black
-                          ),
-                          tabs: <Widget>[
-                            Tab(
-                              child: Container(
-                                margin:EdgeInsets.only(right:39),
-                                child:Text('Description'),
-                              ) ,
-                            ),
-                            Tab(
-                              child: Container(
-                                margin:EdgeInsets.only(right:39),
-                                child:Text('Reviews'),
-                              ) ,
-                            ),
-                            Tab(
-                              child: Container(
-                                margin:EdgeInsets.only(right:39),
-                                child:Text('Similar'),
-                              ) ,
-                            ),
-                          ],
-                        ),
-                        TabBarView(                         
-                          children:[                            
-                            Padding(
-                              padding: EdgeInsets.only(left:25,right:25,bottom:25),
-                              child: Text(
-                                widget.bookModel.description,
-                                style: GoogleFonts.openSans(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 1.5,
-                                  height: 2
-                                )
-                              ),
+
+                        child: Column(
+                          children: <Widget>[
                             
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(left:25,right:25,bottom:25),
-                              child: Text(
-                                widget.bookModel.description,
-                                style: GoogleFonts.openSans(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w400,
-                                  letterSpacing: 1.5,
-                                  height: 2
-                                )
+                            TabBar(
+                              labelPadding: EdgeInsets.all(0),
+                              indicatorPadding: EdgeInsets.all(0),
+                              isScrollable: true,
+                              labelColor: Colors.black,
+                              unselectedLabelColor: Colors.grey,
+                              labelStyle: GoogleFonts.openSans(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700  
                               ),
-                            
+                              unselectedLabelStyle: GoogleFonts.openSans(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600
+                              ),
+                              indicator: RoundedRectangleTabIndicator(
+                                weight:2,
+                                width: 30,
+                                color: Colors.black
+                              ),
+                              tabs: <Widget>[
+                                Tab(
+                                  child: Container(
+                                    margin:EdgeInsets.only(right:39),
+                                    child:Text('Description'),
+                                  ) ,
+                                ),
+                                Tab(
+                                  child: Container(
+                                    margin:EdgeInsets.only(right:39),
+                                    child:Text('Reviews'),
+                                  ) ,
+                                ),
+                                Tab(
+                                  child: Container(
+                                    margin:EdgeInsets.only(right:39),
+                                    child:Text('Similar'),
+                                  ) ,
+                                ),
+                              ],
                             ),
-                          ],
+                            Expanded(
+                              child:  TabBarView(                         
+                                children:[                            
+                                  Padding(
+                                    padding: EdgeInsets.only(left:0,right:25,top:20),
+                                    child: Text(
+                                      widget.bookModel.description,
+                                      style: GoogleFonts.openSans(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.w400,
+                                        letterSpacing: 1.5,
+                                        height: 2
+                                      )
+                                    ),
+                                  
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left:0,right:25,top:20),
+                                    child: Text(
+                                      widget.bookModel.description,
+                                      style: GoogleFonts.openSans(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.w400,
+                                        letterSpacing: 1.5,
+                                        height: 2
+                                      )
+                                    ),
+                                  
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(left:0,right:25,top:20),
+                                    child: Text(
+                                      widget.bookModel.description,
+                                      style: GoogleFonts.openSans(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.w400,
+                                        letterSpacing: 1.5,
+                                        height: 2
+                                      )
+                                    ),
+                                  
+                                  ),
+                                ],
+                              )
+                            ),
+                           
+                          ]
+
                         )
+                        
                       ),
                     ),
                     // Padding(

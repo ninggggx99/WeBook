@@ -5,11 +5,14 @@ import 'package:webookapp/model/rating_model.dart';
 class Book {
   
   String key, title, description, category, coverURL, authorId, authorName, bookURL;
-  List<Rating> rating;
+  
+  List<Rating> ratings;
 
   List<Comment> comments;
+
+  DateTime dateCreated;
   
-  Book(this.title, this.description, this.category, this.coverURL, this.rating, this.comments, this.authorId, this.authorName, this.bookURL);
+  Book(this.title, this.description, this.category, this.coverURL, this.ratings, this.comments, this.authorId, this.authorName, this.bookURL, this.dateCreated);
 
   Book.fromSnapShot(DataSnapshot snapshot) :
     key = snapshot.key,
@@ -17,11 +20,12 @@ class Book {
     description = snapshot.value["description"] != null ? snapshot.value["description"] : null,
     category = snapshot.value["category"] != null ? snapshot.value["category"] : null,
     coverURL = snapshot.value["coverURL"] != null ? snapshot.value["coverURL"] : null,
-    rating = snapshot.value["rating"] != null ? convertRatings(snapshot.value["rating"]) : null,
+    ratings = snapshot.value["ratings"] != null ? convertRatings(snapshot.value["ratings"]) : null,
     comments = snapshot.value["comments"] != null ? convertComments(snapshot.value["comments"]) : null,
     authorId = snapshot.value["authorId"] != null ? snapshot.value["authorId"] : null,
     authorName = snapshot.value["authorName"] != null ? snapshot.value["authorName"] : null,
-    bookURL = snapshot.value["bookURL"] != null ? snapshot.value["bookURL"] : null;
+    bookURL = snapshot.value["bookURL"] != null ? snapshot.value["bookURL"] : null,
+       dateCreated = snapshot.value["dateCreated"] != null ? convertTimeStampToDateTime(snapshot.value["dateCreated"]) : null;
 
     toJson() {
       return {
@@ -29,27 +33,28 @@ class Book {
         "description" : description != null ? description : null, 
         "category": category != null ? category : null,
         "coverURL" : coverURL != null ? coverURL : null,
-        "rating" : rating != null ? List<dynamic>.from(rating.map((e) => e.toJson())): null,
+        "ratings" : ratings != null ? List<dynamic>.from(ratings.map((e) => e.toJson())) : null,
         "comments" : comments != null ? List<dynamic>.from(comments.map((x) => x.toJson())) : null,
         "authorId": authorId != null ? authorId : null,
         "authorName": authorName != null ? authorName : null,
-        "bookURL": bookURL != null ? bookURL : null
+        "bookURL": bookURL != null ? bookURL : null,
+        "dateCreated" : dateCreated != null ? convertDateToTimeStamp(dateCreated)  : null
       };
     }
 
   factory Book.fromJson(Map<String,dynamic> parsedJson) {
-
 
     return Book(
       parsedJson["title"] != null ? parsedJson["title"] : null, 
       parsedJson["description"] != null ? parsedJson["description"] : null,
       parsedJson["category"] != null ? parsedJson["category"] : null,
       parsedJson["coverURL"] != null ? parsedJson["coverURL"] : null,
-      parsedJson["rating"] != null ? convertRatings(parsedJson["rating"]) : null,
+      parsedJson["ratings"] != null ? convertRatings(parsedJson["ratings"]) : null,
       parsedJson["comments"] != null ? convertComments(parsedJson["comments"]) : null,
       parsedJson["authorId"] != null ? parsedJson["authorId"] : null,
       parsedJson["authorName"] != null ? parsedJson["authorName"] : null,
-      parsedJson["bookURL"] != null ? parsedJson["bookURL"] : null);
+      parsedJson["bookURL"] != null ? parsedJson["bookURL"] : null, 
+      convertTimeStampToDateTime(parsedJson["dateCreated"]) );
   }
   
   setKey(String key) {
@@ -89,11 +94,20 @@ List<Rating> convertRatings(Map<dynamic, dynamic> data) {
   parsedJson.forEach((key, value) {
 
     Map<String, dynamic> ra = Map.from(value);
- 
     Rating r = Rating.fromJson(ra);
     r.setKey(key);
     ratings.add(r);
+
   });
 
   return ratings;
 }
+
+convertDateToTimeStamp(DateTime date) {
+  return date.millisecondsSinceEpoch;
+}
+
+convertTimeStampToDateTime(int date) {
+  return DateTime.fromMillisecondsSinceEpoch(date);
+}
+

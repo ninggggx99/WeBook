@@ -16,9 +16,10 @@ class HomeProvider {
   Future<Book> retrieveBook(String bookID) async {
    
     Book book;
-
     await _dbRef.child("books/$bookID").once().then((DataSnapshot snapshot) {
+      
       book = Book.fromJson(new Map<String, dynamic>.from(snapshot.value));
+
     });
 
     return book;
@@ -51,9 +52,10 @@ class HomeProvider {
   Future<List<Comment>> getComments(Book book) async {
 
     List<Comment> comments;
-    await _dbRef.child("books/${book.key}").once().then((DataSnapshot snapshot) {
+    await _dbRef.child("books/${book.key}").orderByChild("dateCreated").once().then((DataSnapshot snapshot) {
+      
       comments = Book.fromSnapShot(snapshot).comments;
-      print(comments);
+ 
     });
     return comments;
   }

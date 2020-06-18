@@ -181,7 +181,7 @@ class _CreateBookPageState extends State<CreateBookPage>{
                             onPressed: () {
                               openFileExplorer() async {
                                 try {
-                                  bookController.text = await FilePicker.getFilePath(type: FileType.custom, allowedExtensions: ['pdf']);
+                                  bookController.text = await FilePicker.getFilePath(type: FileType.custom, allowedExtensions: ['.epub+zip']);
                                 } on PlatformException catch (e) {
                                   print('Unsupported Operation ' + e.toString());
                                 }

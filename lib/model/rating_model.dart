@@ -5,11 +5,10 @@ class Rating {
   String key, userId;
   double rate;
   
-  Rating(this.userId, rate);
+  Rating(this.userId, this.rate);
 
   Rating.fromSnapShot(DataSnapshot snapshot) :
     key = snapshot.key,
-   
     userId = snapshot.value["userId"] != null ? snapshot.value["userId"] : null,
     rate = snapshot.value["rate"] != null ? snapshot.value["rate"] : null;
     
@@ -19,12 +18,12 @@ class Rating {
         "rate": rate != null ? rate : null,
       };
     }
-  
-  factory Rating.fromJson(Map<dynamic, dynamic> parsedJson) {
-    return Rating(
-      parsedJson["userId"],
-      parsedJson["rate"],
-    ); 
+
+  factory Rating.fromJson(Map<String,dynamic> parsedJson) {
+      return Rating(
+        parsedJson["userId"] != null ? parsedJson["userId"] : null,
+        parsedJson["rate"] != null ? (parsedJson["rate"].toDouble()) : null
+      );
   }
 
   setKey(String key) {

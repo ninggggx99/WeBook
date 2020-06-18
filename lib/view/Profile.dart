@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/model/user_model.dart';
 import 'package:webookapp/view/EditProfileScreen.dart';
 import 'package:webookapp/view/ChangePassword.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
+import 'package:webookapp/view_model/home_provider.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -28,7 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
       final user = await _auth.retrieveUser();
       setState(() {
         _user = user;
-        if (_user.profilePic == null){
+        if (_user.profilePic == null ||_user.profilePic == " "){
           _user.profilePic = "https://i.pinimg.com/originals/c7/2c/a6/c72ca6b569e9729191b465dba7dda209.png";
         }
       });

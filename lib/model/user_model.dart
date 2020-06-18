@@ -8,7 +8,7 @@ class User {
 
   User.fromSnapShot(DataSnapshot snapshot) :
     key = snapshot.key,
-    profilePic = snapshot.value["correprofilePic"] != null ? snapshot.value["profilePic"] : null ,
+    profilePic = snapshot.value["profilePic"] != null ? snapshot.value["profilePic"] : null ,
     firstName = snapshot.value["firstName"] != null ? snapshot.value["firstName"] : null,
     lastName = snapshot.value["lastName"] != null ? snapshot.value["lastName"] : null,
     email = snapshot.value["email"] != null ? snapshot.value["email"] : null,

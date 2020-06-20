@@ -256,13 +256,12 @@ class _HomePageState extends State<HomePage> {
 
                     final book = _book[index];
                     return GestureDetector(
-                      onTap: (){
+                      onTap: () async{
                         print('vertical tapped');
-                        // Navigator.pushReplacement(context,
-                        // MaterialPageRoute(
-                        //   builder: (context) => BookDetailsScreen(book),
-                        //   ),
-                        // );
+                        Navigator.pushReplacement( context,
+                            MaterialPageRoute(builder: (context) => BookDetailsScreen(book,auth))
+                          );
+        
                       },
                       child: Container(
                         margin: EdgeInsets.only(bottom:19),
@@ -327,64 +326,6 @@ class _HomePageState extends State<HomePage> {
             ],
           )
         ),
-        // appBar: AppBar(title: const Text('Home')),
-        // body: 
-        //  new FutureBuilder(
-        //   future: feed.getBooks(),
-        //   builder: (context, snapshot) {
-        //     if (snapshot.hasData) {
-        //       return ListView.builder(
-        //         scrollDirection: Axis.horizontal,
-        //         itemCount: snapshot.data.length,
-        //         itemBuilder: (context, index) {
-        //           final book = snapshot.data[index];
-        //           return Padding( 
-        //             padding: EdgeInsets.all(5),
-        //             child: Container(
-        //             margin: const EdgeInsets.fromLTRB(10, 40, 10, 40),
-        //             height: 200,
-        //             width: 150,
-        //             child: Column(
-        //               children: [
-        //                 Material(
-        //                   child: InkWell(
-        //                     onTap: () {
-        //                       //Home Page's Book Details
-        //                       Navigator.push(
-        //                         context,
-        //                         MaterialPageRoute(builder: (context) => BookDetailsScreen(book, true))
-        //                       );
-        //                     },
-        //                     child:  Container(
-        //                       constraints: BoxConstraints.expand(
-        //                         height: Theme.of(context).textTheme.headline4.fontSize * 1.1 + 200.0,
-        //                       ),
-        //                       decoration: BoxDecoration(
-        //                         border: Border.all(),
-        //                       ),
-        //                       width: 150,
-        //                       child:Image.network(book.coverURL),
-        //                     ),
-        //                   )
-        //                 ),
-        //                 Text(
-        //                   book.title, 
-        //                   style: TextStyle(fontWeight: FontWeight.bold)
-        //                 )
-        //               ]
-        //             )
-        //           )  
-        //         );
-        //        },
-        //       );
-        //     } else {
-        //       return Container(
-        //         alignment: Alignment(0.0, 0.0),
-        //         child: CircularProgressIndicator(),
-        //       );
-        //     }
-        //   }   
-        // )
       );
 
     }

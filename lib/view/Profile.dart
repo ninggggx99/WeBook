@@ -45,6 +45,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final feed = Provider.of<HomeProvider>(context);
     if (_user == null){
       return Scaffold(
         body: Center(
@@ -170,6 +171,10 @@ class _ProfilePageState extends State<ProfilePage> {
             ]
           )
         ) ,
+        bottomNavigationBar: RaisedButton(
+          onPressed:() async {
+
+          } ,) ,
       );
 
     }

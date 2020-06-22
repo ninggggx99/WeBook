@@ -53,7 +53,7 @@ class _BookDetailsScreenState extends State <BookDetailsScreen>{
       final comment = await feed.getComments(widget.bookModel);
       print(widget.bookModel.title);
       // print(comment.length);
-      // await feed.addComment(widget.bookModel.key, widget.auth.user.uid, 'Helphelp');
+      //await feed.addComment(widget.bookModel.key, widget.auth.user.uid, 'Helphelp', 3);
       for (book in bookOwn){
         if (book.bookURL == widget.bookModel.bookURL){
           checking = true;

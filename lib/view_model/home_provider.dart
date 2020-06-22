@@ -20,30 +20,38 @@ class HomeProvider {
       
       book = Book.fromJson(new Map<String, dynamic>.from(snapshot.value));
 
+    }).catchError((e) {
+      print("Error with retrieving a book from RTDB " + e.toString());
     });
 
     return book;
   }
 
-  Future<void> addComment(String bookID, String userId, String desc) async {
+  Future<void> addComment(String bookID, String userId, String desc, int rate) async {
 
-    Comment comment = new Comment(userId, desc, new DateTime.now());
+    Comment comment = new Comment(userId, desc, rate, new DateTime.now());
     String key = _dbRef.child("books/$bookID/comments").push().key;
-    await _dbRef.child("books/$bookID/comments/$key").set(comment.toJson());
+    await _dbRef.child("books/$bookID/comments/$key").set(comment.toJson()).catchError((e) {
+      print("Error with adding comment to RTDB " + e.toString());
+    });
 
   }
 
-  Future<void> addRating(String bookID, String userId, double rating) async {
+  /*Future<void> addRating(String bookID, String userId, double rating) async {
     
     Rating rate = new Rating(userId, rating);
     String key = _dbRef.child("books/$bookID/ratings").push().key;
     await _dbRef.child("books/$bookID/ratings/$key").set(rate.toJson());
 
-  }
+  }*/
 
   Future<List<Book>> getBooks(String id) async {
    
-    DataSnapshot snapshot = await _dbRef.child("books").once();
+    DataSnapshot snapshot = await _dbRef.child("books").once()
+                                .catchError((e) { 
+                                  print("Error getting Books from RTDB for home " + e.toString());
+                                });
+
     BookFeed _bookFeed = BookFeed.fromSnapshot(snapshot, id);
     
     //Sort by Record = No. of people reading
@@ -61,16 +69,20 @@ class HomeProvider {
 
   Future<List<Comment>> getComments(Book book) async {
 
-    List<Comment> comments;
+    List<Comment> comments = [];
+    
     await _dbRef.child("books/${book.key}").orderByChild("dateCreated").once().then((DataSnapshot snapshot) {
       
-      comments = Book.fromSnapShot(snapshot).comments;
+      if (Book.fromSnapShot(snapshot).comments != null) {
+        
+        comments = Book.fromSnapShot(snapshot).comments;
+        Comparator<Comment> dateComparator = (a, b) => b.dateCreated.compareTo(a.dateCreated);
+        comments.sort(dateComparator);
+      }
  
+    }).catchError((e) {
+      print("Error getting comments from realtime DB " + e.toString());
     });
-
-    Comparator<Comment> dateComparator = (a, b) => b.dateCreated.compareTo(a.dateCreated);
-
-    comments.sort(dateComparator);
 
     return comments;
   }
@@ -102,6 +114,8 @@ class HomeProvider {
         });
       }
       
+    }).catchError((e) {
+      print("Error with checking for number of readers for a book " + e.toString());
     });
 
     return no;

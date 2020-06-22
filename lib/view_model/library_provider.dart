@@ -16,6 +16,7 @@ class LibraryProvider {
     List<BookRecord> records = [];
 
     try{
+      
       DataSnapshot snapshot =  await _dbRef.child("bookRecords").once();
       Map<dynamic, dynamic> values = snapshot.value;
       values.forEach((key, value) {
@@ -32,6 +33,11 @@ class LibraryProvider {
       }
 
       print('Successfully get book');
+      
+      //Sort by Recency
+      Comparator<Book> dateComparator = (a, b) => b.dateCreated.compareTo(a.dateCreated);
+      books.sort(dateComparator);
+
       return books;
     }catch(e){
       print ("NO BOOK");
@@ -81,7 +87,7 @@ class LibraryProvider {
 
     if (!exist) {
 
-      BookRecord record = new BookRecord(bookId, uid, false);
+      BookRecord record = new BookRecord(bookId, uid, new DateTime.now());
       String key =  _dbRef.child("bookRecords").push().key;
 
       await _dbRef.child("bookRecords/$key").set(record.toJson());

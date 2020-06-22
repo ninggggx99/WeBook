@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(title: const Text('Home')),
       body: 
        new FutureBuilder(
-        future: feed.getBooks(),
+        future: feed.getBooks(_auth.user.uid),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(

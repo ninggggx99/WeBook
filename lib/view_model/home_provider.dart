@@ -41,11 +41,21 @@ class HomeProvider {
 
   }
 
-  Future<List<Book>> getBooks() async {
+  Future<List<Book>> getBooks(String id) async {
    
     DataSnapshot snapshot = await _dbRef.child("books").once();
-    BookFeed _bookFeed = BookFeed.fromSnapshot(snapshot);
-    return _bookFeed.books;
+    BookFeed _bookFeed = BookFeed.fromSnapshot(snapshot, id);
+    
+    //Sort by Record = No. of people reading
+    //List<Book> sorted = await sortByRecord(_bookFeed.books);
+
+    //Sort by Rating 
+    //List<Book> sorted = _bookFeed.sortByRatings();
+
+    //Sort by Date
+    List<Book> sorted = _bookFeed.sortByRecent();
+
+    return sorted;
  
   }
 
@@ -57,8 +67,47 @@ class HomeProvider {
       comments = Book.fromSnapShot(snapshot).comments;
  
     });
+
+    Comparator<Comment> dateComparator = (a, b) => b.dateCreated.compareTo(a.dateCreated);
+
+    comments.sort(dateComparator);
+
     return comments;
   }
+
+  Future<List<Book>> sortByRecord(List<Book> books) async {
+
+    List<Book> sorted = books;
+    
+    for (Book book in sorted) {
+      book.setReaders(await checkNoOfReaders(book));
+    }
+
+    Comparator<Book> readersComparator = (a, b) => b.readers.compareTo(a.readers);
+    sorted.sort(readersComparator);
+    return sorted;
+
+  }
+
+
+  Future<int> checkNoOfReaders(Book book) async {
+    
+    int no = 0;
+
+    await _dbRef.child("bookRecords").orderByChild("bookId").equalTo(book.key).once().then((DataSnapshot snapshot) {
+      if(snapshot.value != null) {
+        Map<String, dynamic> maps = Map.from(snapshot.value);
+        maps.forEach((key, value) {
+          no++;
+        });
+      }
+      
+    });
+
+    return no;
+  }
+
+
 
 }
 

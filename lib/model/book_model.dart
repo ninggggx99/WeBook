@@ -8,6 +8,8 @@ class Book {
   
   List<Rating> ratings;
 
+  int readers;
+
   List<Comment> comments;
 
   DateTime dateCreated;
@@ -25,7 +27,7 @@ class Book {
     authorId = snapshot.value["authorId"] != null ? snapshot.value["authorId"] : null,
     authorName = snapshot.value["authorName"] != null ? snapshot.value["authorName"] : null,
     bookURL = snapshot.value["bookURL"] != null ? snapshot.value["bookURL"] : null,
-       dateCreated = snapshot.value["dateCreated"] != null ? convertTimeStampToDateTime(snapshot.value["dateCreated"]) : null;
+    dateCreated = snapshot.value["dateCreated"] != null ? convertTimeStampToDateTime(snapshot.value["dateCreated"]) : null;
 
     toJson() {
       return {
@@ -65,6 +67,9 @@ class Book {
     this.comments.add(comment);
   }
 
+  setReaders(int no) {
+    this.readers = no;
+  }
 }
 
 List<Comment> convertComments(Map<dynamic, dynamic> data) {
@@ -110,4 +115,5 @@ convertDateToTimeStamp(DateTime date) {
 convertTimeStampToDateTime(int date) {
   return DateTime.fromMillisecondsSinceEpoch(date);
 }
+
 

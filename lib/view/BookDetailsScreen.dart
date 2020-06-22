@@ -34,7 +34,8 @@ class BookDetailsScreen extends StatefulWidget{
 class _BookDetailsScreenState extends State <BookDetailsScreen>{
   LibraryProvider library;
   HomeProvider feed;
-  bool _exist = false;
+  bool _exist;
+  bool checking = false;
   int tabbed = 0;
   
   
@@ -51,29 +52,19 @@ class _BookDetailsScreenState extends State <BookDetailsScreen>{
       final bookOwn = await library.getBooks(widget.auth.user.uid);
       final comment = await feed.getComments(widget.bookModel);
       print(widget.bookModel.title);
-      print(comment.length);
+      // print(comment.length);
       // await feed.addComment(widget.bookModel.key, widget.auth.user.uid, 'Helphelp');
       for (book in bookOwn){
         if (book.bookURL == widget.bookModel.bookURL){
-          final exist = true;
-          setState(() {
-            _comment = comment ;
-            _exist = exist;
-            
-            print(_comment.length);
-          });
-        }
-        else{
-          final exist = false;
-          setState(() {
-            _comment = comment ;
-            _exist = exist;
-            
-            print(_comment.length);
-          });
+          checking = true;
         }
       }
-
+      final exist = checking;
+      setState(() {
+        _comment = comment;
+        _exist = exist;
+      });
+      print(_exist);
     
     }
   }
@@ -92,6 +83,7 @@ class _BookDetailsScreenState extends State <BookDetailsScreen>{
   Widget build (BuildContext context){
    
     final pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    if (_exist != null){
       return Scaffold(
         key:_scaffoldKey,
         bottomNavigationBar: Container(
@@ -164,26 +156,7 @@ class _BookDetailsScreenState extends State <BookDetailsScreen>{
                 });
               }
             }, 
-            // child: _exist == true 
-            //   ? Text(
-            //     'Delete',
-            //     style: GoogleFonts.openSans(
-            //       fontSize: 14,
-            //       fontWeight: FontWeight.w600,
-            //       color: Colors.white
-            //     ),
-            //   )
-            //   : Text(
-            //     'Add to Library',
-            //     style: GoogleFonts.openSans(
-            //       fontSize: 14,
-            //       fontWeight: FontWeight.w600,
-            //       color: Colors.white
-            //     ),
-            //   ),
-            child : 
-            _tabcontroller == null 
-            ? (_exist == true 
+            child: _exist == true 
               ? Text(
                 'Delete',
                 style: GoogleFonts.openSans(
@@ -199,44 +172,63 @@ class _BookDetailsScreenState extends State <BookDetailsScreen>{
                   fontWeight: FontWeight.w600,
                   color: Colors.white
                 ),
-              ))
-            : (tabbed == 0 
-              ? _exist == true 
-                ? Text(
-                  'Delete',
-                  style: GoogleFonts.openSans(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white
-                  ),
-                )
-                : Text(
-                  'Add to Library',
-                  style: GoogleFonts.openSans(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white
-                  ),
-                )
-              : (tabbed== 1  
-                ? Text(
-                  'Add a review',
-                  style: GoogleFonts.openSans(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white
-                  ),
-                )
-                :
-                Text(
-                  'similar',
-                  style: GoogleFonts.openSans(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white
-                  ),
-                )
-              )),
+              ),
+            // child : 
+            // _tabcontroller == null 
+            // ? (_exist == true 
+            //   ? Text(
+            //     'Delete',
+            //     style: GoogleFonts.openSans(
+            //       fontSize: 14,
+            //       fontWeight: FontWeight.w600,
+            //       color: Colors.white
+            //     ),
+            //   )
+            //   : Text(
+            //     'Add to Library',
+            //     style: GoogleFonts.openSans(
+            //       fontSize: 14,
+            //       fontWeight: FontWeight.w600,
+            //       color: Colors.white
+            //     ),
+            //   ))
+            // : (tabbed == 0 
+            //   ? _exist == true 
+            //     ? Text(
+            //       'Delete',
+            //       style: GoogleFonts.openSans(
+            //         fontSize: 14,
+            //         fontWeight: FontWeight.w600,
+            //         color: Colors.white
+            //       ),
+            //     )
+            //     : Text(
+            //       'Add to Library',
+            //       style: GoogleFonts.openSans(
+            //         fontSize: 14,
+            //         fontWeight: FontWeight.w600,
+            //         color: Colors.white
+            //       ),
+            //     )
+            //   : (tabbed== 1  
+            //     ? Text(
+            //       'Add a review',
+            //       style: GoogleFonts.openSans(
+            //         fontSize: 14,
+            //         fontWeight: FontWeight.w600,
+            //         color: Colors.white
+            //       ),
+            //     )
+            //     :
+            //     Text(
+            //       'similar',
+            //       style: GoogleFonts.openSans(
+            //         fontSize: 14,
+            //         fontWeight: FontWeight.w600,
+            //         color: Colors.white
+            //       ),
+            //     )
+            //   )),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10)
             ),
@@ -479,7 +471,29 @@ class _BookDetailsScreenState extends State <BookDetailsScreen>{
           )
         ),
       );
-    // }
+    }
+    else{
+      return Scaffold( 
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              CircularProgressIndicator(
+                  backgroundColor: const Color(0x009688),
+              ),
+              Text(
+                'Loading..',
+                style: GoogleFonts.openSans(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black
+                    ),
+              )
+            ],
+          )
+        )
+      );
+    }
   }
   
   }

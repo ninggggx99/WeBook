@@ -1,6 +1,8 @@
+import 'package:archive/archive.dart';
 import 'package:epub_kitty/epub_kitty.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/model/book_model.dart';
@@ -9,6 +11,7 @@ import 'package:webookapp/view/BookDetailsScreen.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view_model/file_provider.dart';
 import 'package:webookapp/view_model/library_provider.dart';
+import 'package:webookapp/widget/custom_bookItem.dart';
 
 class LibraryPage extends StatefulWidget{
   LibraryPage({Key key}) : super(key:key);
@@ -41,93 +44,117 @@ class _LibraryPageState extends State<LibraryPage>{
   }
   @override
   Widget build(BuildContext context) {
-    final pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
     if (_book != null){
       if(_book.length == 0){
-         return Scaffold(
-          appBar: AppBar(title: const Text('Library')),
+         return Scaffold( 
           body: Center(
-            child: Text('Explore more')
-            ),
-          );
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                CircularProgressIndicator(
+                    backgroundColor: const Color(0x009688),
+                ),
+                Text(
+                  'Loading..',
+                  style: GoogleFonts.openSans(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black
+                      ),
+                )
+              ],
+            )
+          )
+        );
       }
       else{
-        return Scaffold(
-          appBar: AppBar(title: const Text('Library')),
-          body: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: _book.length,
-                itemBuilder: (context, index) {
-                  final book = _book[index];
-                  return Padding( 
-                    padding: EdgeInsets.all(5),
-                    child: Container(
-                      margin: const EdgeInsets.fromLTRB(10, 40, 10, 40),
-                      height: 200,
-                      width: 150,
-                      child: Column(
-                        children: [
-                          Material(
-                            child: InkWell(
-                              onTap: () async {
-                                String epubPath = "";
-                                await pr.show();
-
-                                /* await file.createFileOfPdfUrl(widget.book.bookURL).then((f) {
-                                  pdfPath = f.path;
-                                }); */
-
-                                await file.convertFile(book.bookURL).then((f) {
-                                  epubPath = f.path;
-                                });
-
-                                /* await Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) => PDFScreen(pathPDF: pdfPath, book: widget.book,) )
-                                ); */
-                                
-                                await pr.hide();
-                                EpubKitty.setConfig("androidBook", "#32a852", "vertical", true);    
-                                EpubKitty.open(epubPath);
-
-                              },
-                              child:  Container(
-                                constraints: BoxConstraints.expand(
-                                  height: Theme.of(context).textTheme.headline4.fontSize * 1.1 + 200.0,
-                                ),
-                                decoration: BoxDecoration(
-                                  border: Border.all(),
-                                ),
-                                width: 150,
-                                child:Image.network(book.coverURL),
-                              ),
-                            )
+        return Scaffold(          
+          body: Container(
+            child: ListView(
+              physics: BouncingScrollPhysics(),
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(left: 25, top:25),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'What are you',
+                        style: GoogleFonts.openSans(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w100,
+                          color: Colors.black
+                        ),
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Text(
+                            'reading ',
+                            style: GoogleFonts.openSans(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w100,
+                              color: Colors.black
+                            ),
                           ),
                           Text(
-                            book.title, 
-                            style: TextStyle(fontWeight: FontWeight.bold)
+                            'today ?',
+                            style: GoogleFonts.openSans(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black
+                            ),
                           )
-                        ]
+                        ],
                       )
-                    )  
-                  );
-                },
+                    ],
+                  )
+                ),
+                GridView.builder(
+                  padding: EdgeInsets.fromLTRB(10, 20, 10, 0),
+                  shrinkWrap: true,
+                  itemCount: _book.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    childAspectRatio: 200 / 300,
+                  
+                  ),
+                  itemBuilder: (context,index){
+                    final book =_book[index];
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal:8),
+                      child: BookItem(book: book,img: book.coverURL,title: book.title, file: file,),
+                    );
+                  },
+                )
+              ]
             )
-          );
+          )
+        );
       }
       
     }
     else{
     
-      return Scaffold(
-        appBar: AppBar(title: const Text('Library')),
+     return Scaffold( 
         body: Center(
-          child: CircularProgressIndicator(
-            backgroundColor: Colors.tealAccent,
-          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              CircularProgressIndicator(
+                  backgroundColor: const Color(0x009688),
+              ),
+              Text(
+                'Loading..',
+                style: GoogleFonts.openSans(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black
+                    ),
+              )
+            ],
+          )
         )
       );
-
-
     }
    
     

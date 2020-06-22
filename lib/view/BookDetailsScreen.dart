@@ -54,11 +54,14 @@ class _BookDetailsScreenState extends State <BookDetailsScreen>{
       print(widget.bookModel.title);
       // print(comment.length);
       //await feed.addComment(widget.bookModel.key, widget.auth.user.uid, 'Helphelp', 3);
-      for (book in bookOwn){
-        if (book.bookURL == widget.bookModel.bookURL){
-          checking = true;
+      // if (library.error != LibraryError.NO_BOOK){
+        for (book in bookOwn){
+          if (book.bookURL == widget.bookModel.bookURL){
+            checking = true;
+          }
         }
-      }
+      // }
+     
       final exist = checking;
       setState(() {
         _comment = comment;

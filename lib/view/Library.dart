@@ -32,6 +32,7 @@ class _LibraryPageState extends State<LibraryPage>{
   }
   void load() async{
     if(auth.user.uid != null){
+      print(auth.user.uid);
       final book = await library.getBooks(auth.user.uid);
       setState(() {
         _book = book;
@@ -40,30 +41,7 @@ class _LibraryPageState extends State<LibraryPage>{
   }
   @override
   Widget build(BuildContext context) {
-    if (_book != null){
-      if(_book.length == 0){
-         return Scaffold( 
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                CircularProgressIndicator(
-                    backgroundColor: const Color(0x009688),
-                ),
-                Text(
-                  'Loading..',
-                  style: GoogleFonts.openSans(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black
-                      ),
-                )
-              ],
-            )
-          )
-        );
-      }
-      else{
+      if ( _book != null){       
         return Scaffold(          
           body: Container(
             child: ListView(
@@ -127,32 +105,30 @@ class _LibraryPageState extends State<LibraryPage>{
           )
         );
       }
-      
-    }
-    else{
-    
-     return Scaffold( 
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              CircularProgressIndicator(
-                  backgroundColor: const Color(0x009688),
-              ),
-              Text(
-                'Loading..',
-                style: GoogleFonts.openSans(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black
-                    ),
+      else{
+          return Scaffold( 
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  CircularProgressIndicator(
+                      backgroundColor: const Color(0x009688),
+                  ),
+                  Text(
+                    'Loading..',
+                    style: GoogleFonts.openSans(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black
+                        ),
+                  )
+                ],
               )
-            ],
-          )
-        )
-      );
-    }
-   
+            )
+          );
+      }
+      
+    // }
     
   }
 

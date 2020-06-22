@@ -23,6 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  google_fonts: ^1.1.0
+  flutter_svg: ^0.17.4
   firebase_auth: ^0.16.0
   firebase_database: ^3.1.5
   consumer: ^2.0.0

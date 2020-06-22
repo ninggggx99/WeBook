@@ -1,10 +1,13 @@
+import 'package:epub_kitty/epub_kitty.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/model/book_model.dart';
 import 'package:webookapp/model/user_model.dart';
 import 'package:webookapp/view/BookDetailsScreen.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
+import 'package:webookapp/view_model/file_provider.dart';
 import 'package:webookapp/view_model/library_provider.dart';
 
 class LibraryPage extends StatefulWidget{
@@ -17,6 +20,7 @@ class LibraryPage extends StatefulWidget{
 class _LibraryPageState extends State<LibraryPage>{
   AuthProvider auth;
   LibraryProvider library;
+  FileProvider file;
   User user;
   List<Book> _book;
   
@@ -24,6 +28,7 @@ class _LibraryPageState extends State<LibraryPage>{
     super.didChangeDependencies();
     auth = Provider.of<AuthProvider>(context);
     library = Provider.of<LibraryProvider>(context);
+    file = Provider.of<FileProvider>(context);
     load();
   }
   void load() async{
@@ -36,6 +41,7 @@ class _LibraryPageState extends State<LibraryPage>{
   }
   @override
   Widget build(BuildContext context) {
+    final pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
     if (_book != null){
       if(_book.length == 0){
          return Scaffold(
@@ -64,14 +70,25 @@ class _LibraryPageState extends State<LibraryPage>{
                           Material(
                             child: InkWell(
                               onTap: () async {
-                                String str = await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => BookDetailsScreen(book, false))
-                                );
+                                String epubPath = "";
+                                await pr.show();
+
+                                /* await file.createFileOfPdfUrl(widget.book.bookURL).then((f) {
+                                  pdfPath = f.path;
+                                }); */
+
+                                await file.convertFile(book.bookURL).then((f) {
+                                  epubPath = f.path;
+                                });
+
+                                /* await Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) => PDFScreen(pathPDF: pdfPath, book: widget.book,) )
+                                ); */
                                 
-                                if (str == "delete") {
-                                  load();
-                                }         //Show notification upon success
+                                await pr.hide();
+                                EpubKitty.setConfig("androidBook", "#32a852", "vertical", true);    
+                                EpubKitty.open(epubPath);
+
                               },
                               child:  Container(
                                 constraints: BoxConstraints.expand(

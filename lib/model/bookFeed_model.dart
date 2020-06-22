@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:webookapp/model/rating_model.dart';
 
 import 'book_model.dart';
+import 'comment_model.dart';
 
 class BookFeed{
 
@@ -41,12 +41,12 @@ class BookFeed{
 
   double calculateAverageRating(Book b) {
 
-    List<Rating> ratings = b.ratings;
-    if (ratings != null) {
-      int noRate = ratings.length;
+    List<Comment> comments = b.comments;
+    if (comments != null) {
+      int noRate = comments.length;
       double total = 0;
-      for (Rating r in ratings) {
-        total += r.rate;
+      for (Comment c in comments) {
+        total += c.rate;
       }
       
       double avg = double.parse((total/noRate).toStringAsFixed(2));

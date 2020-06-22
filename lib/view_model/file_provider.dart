@@ -1,7 +1,5 @@
 import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:archive/archive.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -25,7 +23,7 @@ class FileProvider {
     String coverURL = await uploadBookCover(user.key, key, title, coverFilePath);
     String bookURL = await uploadEPub(user.key, key, title, bookFilePath);
     String authorName = user.firstName + " " + user.lastName;
-    Book book = new Book(title, desc, category, coverURL, [], [], user.key, authorName, bookURL, new DateTime.now());
+    Book book = new Book(title, desc, category, coverURL, [], user.key, authorName, bookURL, new DateTime.now());
 
     //Add the book to the database
     _dbRef.child("books").child(key).set(book.toJson());

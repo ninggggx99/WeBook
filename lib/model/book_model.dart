@@ -1,12 +1,11 @@
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:webookapp/model/comment_model.dart';
-import 'package:webookapp/model/rating_model.dart';
+
 class Book {
   
   String key, title, description, category, coverURL, authorId, authorName, bookURL;
-  
-  List<Rating> ratings;
+
 
   int readers;
 
@@ -14,7 +13,7 @@ class Book {
 
   DateTime dateCreated;
   
-  Book(this.title, this.description, this.category, this.coverURL, this.ratings, this.comments, this.authorId, this.authorName, this.bookURL, this.dateCreated);
+  Book(this.title, this.description, this.category, this.coverURL, this.comments, this.authorId, this.authorName, this.bookURL, this.dateCreated);
 
   Book.fromSnapShot(DataSnapshot snapshot) :
     key = snapshot.key,
@@ -22,7 +21,6 @@ class Book {
     description = snapshot.value["description"] != null ? snapshot.value["description"] : null,
     category = snapshot.value["category"] != null ? snapshot.value["category"] : null,
     coverURL = snapshot.value["coverURL"] != null ? snapshot.value["coverURL"] : null,
-    ratings = snapshot.value["ratings"] != null ? convertRatings(snapshot.value["ratings"]) : null,
     comments = snapshot.value["comments"] != null ? convertComments(snapshot.value["comments"]) : null,
     authorId = snapshot.value["authorId"] != null ? snapshot.value["authorId"] : null,
     authorName = snapshot.value["authorName"] != null ? snapshot.value["authorName"] : null,
@@ -35,7 +33,6 @@ class Book {
         "description" : description != null ? description : null, 
         "category": category != null ? category : null,
         "coverURL" : coverURL != null ? coverURL : null,
-        "ratings" : ratings != null ? List<dynamic>.from(ratings.map((e) => e.toJson())) : null,
         "comments" : comments != null ? List<dynamic>.from(comments.map((x) => x.toJson())) : null,
         "authorId": authorId != null ? authorId : null,
         "authorName": authorName != null ? authorName : null,
@@ -51,7 +48,6 @@ class Book {
       parsedJson["description"] != null ? parsedJson["description"] : null,
       parsedJson["category"] != null ? parsedJson["category"] : null,
       parsedJson["coverURL"] != null ? parsedJson["coverURL"] : null,
-      parsedJson["ratings"] != null ? convertRatings(parsedJson["ratings"]) : null,
       parsedJson["comments"] != null ? convertComments(parsedJson["comments"]) : null,
       parsedJson["authorId"] != null ? parsedJson["authorId"] : null,
       parsedJson["authorName"] != null ? parsedJson["authorName"] : null,
@@ -90,7 +86,7 @@ List<Comment> convertComments(Map<dynamic, dynamic> data) {
   return comments;
 }
 
-List<Rating> convertRatings(Map<dynamic, dynamic> data) {
+/*List<Rating> convertRatings(Map<dynamic, dynamic> data) {
 
   List<Rating> ratings = [];
   
@@ -106,7 +102,7 @@ List<Rating> convertRatings(Map<dynamic, dynamic> data) {
   });
 
   return ratings;
-}
+}*/
 
 convertDateToTimeStamp(DateTime date) {
   return date.millisecondsSinceEpoch;

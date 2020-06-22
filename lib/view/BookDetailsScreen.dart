@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/model/book_model.dart';
 import 'package:webookapp/model/comment_model.dart';
-import 'package:webookapp/model/rating_model.dart';
 import 'package:webookapp/model/user_model.dart';
-import 'package:webookapp/view/CommentScreen.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view_model/file_provider.dart';
 import 'package:webookapp/view_model/home_provider.dart';

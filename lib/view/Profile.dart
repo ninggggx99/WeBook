@@ -181,3 +181,61 @@ class _ProfilePageState extends State<ProfilePage> {
    
   }
 }
+
+// Container(
+//                     height: 200,
+//                     margin: EdgeInsets.only(top:5),
+//                     padding: EdgeInsets.only(left: 25),
+//                     child: Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: <Widget>[
+//                         Text(
+//                           'Works by me',
+//                           style: GoogleFonts.openSans(
+//                             fontSize: 14,
+//                             fontWeight: FontWeight.w600
+//                           ),
+//                         ),
+//                         Container(
+//                           margin: EdgeInsets.only(top:21),
+//                           height:150,
+//                           child: ListView.builder(
+//                             padding: EdgeInsets.only(left:25, right:6),
+//                             itemCount: _bookwritten.length,
+//                             physics: BouncingScrollPhysics(),
+//                             scrollDirection: Axis.horizontal,
+//                             itemBuilder: (context, index){
+//                               final book = _bookwritten[index];
+//                               return Container(
+//                                 margin: EdgeInsets.only(right:19),
+//                                 height: 180,
+//                                 width: 120,
+//                                 decoration: BoxDecoration(
+//                                   borderRadius: BorderRadius.circular(10),
+//                                   color: const Color(0xe0f2f1),
+//                                   image: DecorationImage(
+//                                     image: NetworkImage(book.coverURL),
+//                                     fit: BoxFit.scaleDown
+//                                   ),
+//                                 ),
+//                                 child: InkWell(
+//                                   onTap: () async{
+//                                     await Navigator.pushReplacement(
+//                                       context,
+//                                       MaterialPageRoute(builder: (context) => BookDetailsScreen(book,_auth))
+//                                     );
+                                    
+//                                     // if (str == "delete") {
+//                                     //   load();
+//                                     // } 
+//                                   }
+//                                 ),
+//                               );
+//                             },
+//                           ),
+//                         )
+
+//                       ],
+//                     ),
+
+//                   ),

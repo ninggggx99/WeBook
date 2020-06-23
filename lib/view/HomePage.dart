@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:webookapp/view/BookDetailsScreen.dart';
 import 'package:webookapp/view_model/home_provider.dart';
+import 'package:webookapp/widget/custom_homeTabBar.dart';
 import 'package:webookapp/widget/custom_tab_indicator.dart';
 
 class HomePage extends StatefulWidget {
@@ -35,6 +36,7 @@ class _HomePageState extends State<HomePage> {
     if(auth.user.uid != null){
       final book = await home.getBooks(auth.user.uid);
       final user = await auth.retrieveUser();
+     
       setState(() {
         _book = book;
         _user = user;
@@ -151,90 +153,11 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              Container(
-                height: 25,
-                margin: EdgeInsets.only(top:30),
-                padding: EdgeInsets.only(left:25),
-                child: DefaultTabController(
-                  length: 3,
-                  child: TabBar(
-                    labelPadding: EdgeInsets.all(0),
-                    indicatorPadding: EdgeInsets.all(0),
-                    isScrollable: true,
-                    labelColor: Colors.black,
-                    unselectedLabelColor: Colors.grey,
-                    labelStyle: GoogleFonts.openSans(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700  
-                    ),
-                    unselectedLabelStyle: GoogleFonts.openSans(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600
-                    ),
-                    indicator: RoundedRectangleTabIndicator(
-                      weight:2,
-                      width: 10,
-                      color: Colors.black
-                    ),
-                    tabs: <Widget>[
-                      Tab(
-                        child: Container(
-                          margin:EdgeInsets.only(right:23),
-                          child:Text('New'),
-                        ) ,
-                      ),
-                      Tab(
-                        child: Container(
-                          margin:EdgeInsets.only(right:23),
-                          child:Text('Trending'),
-                        ) ,
-                      ),
-                      Tab(
-                        child: Container(
-                          margin:EdgeInsets.only(right:23),
-                          child:Text('Best Rated'),
-                        ) ,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top:21),
-                height: 200,
-                child: ListView.builder(
-                  padding: EdgeInsets.only(left:25, right:6),
-                  itemCount: _book.length,
-                  physics: BouncingScrollPhysics(),
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index){
-                    final book = _book[index];
-                    return Container(
-                      margin: EdgeInsets.only(right:19),
-                      height: 200,
-                      width: 150,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: const Color(0xe0f2f1),
-                        image: DecorationImage(
-                          image: NetworkImage(book.coverURL),
-                        ),
-                      ),
-                      child: InkWell(
-                        onTap: () async{
-                          await Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => BookDetailsScreen(book,auth))
-                          );
-                          
-                          // if (str == "delete") {
-                          //   load();
-                          // } 
-                        }
-                      ),
-                    );
-                  },
-                ),
+              custom_homeTabBar(
+                auth: auth,
+                newBook: _book,
+                bestBook: _book,
+                trendBook: _book,
               ),
               Padding(
                 padding: EdgeInsets.only(left: 25, top:25, bottom: 25),               

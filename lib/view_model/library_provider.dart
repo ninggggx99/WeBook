@@ -85,7 +85,7 @@ class LibraryProvider {
 
     if (!exist) {
 
-      BookRecord record = new BookRecord(bookId, uid, new DateTime.now());
+      BookRecord record = new BookRecord(bookId, uid, false);
       String key =  _dbRef.child("bookRecords").push().key;
 
       await _dbRef.child("bookRecords/$key").set(record.toJson());

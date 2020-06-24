@@ -28,11 +28,11 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
             title: 'WeBook',
-            theme: ThemeData(
+            /*theme: ThemeData(
               accentColor:  const Color(0x009688),
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
-            ),
+            ),*/
             home: LandingPage(),
             routes: {
               '/mainHome':(context) => BottomNavBar(),

@@ -39,13 +39,14 @@ class BookItem extends StatelessWidget {
         await file.convertFile(book.bookURL).then((f) {
           epubPath = f.path;
         });
-
         /* await Navigator.push(context,
           MaterialPageRoute(builder: (context) => PDFScreen(pathPDF: pdfPath, book: widget.book,) )
         ); */
         
         await pr.hide();
-        EpubKitty.setConfig("androidBook", "#32a852", "vertical", true);    
+        EpubKitty.setConfig('book', "#32a852", 'vertical', true);
+
+        //This is the part experiencing errors for me
         EpubKitty.open(epubPath);
       },
       child: Column(

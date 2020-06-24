@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:webookapp/model/book_model.dart';
 import 'package:webookapp/model/user_model.dart';
+import 'package:webookapp/view/BookDetailsScreen.dart';
 import 'package:webookapp/view/EditProfileScreen.dart';
 import 'package:webookapp/view/ChangePassword.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
+import 'package:webookapp/view_model/file_provider.dart';
 import 'package:webookapp/view_model/home_provider.dart';
+import 'package:webookapp/view_model/library_provider.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -18,20 +23,28 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   User _user;
   AuthProvider _auth;
+  LibraryProvider library;
+  FileProvider file;
+  List<Book> _book;
 
   void didChangeDependencies() {
     super.didChangeDependencies();
     _auth = Provider.of<AuthProvider>(context);
+    library = Provider.of<LibraryProvider>(context);
+    file = Provider.of<FileProvider>(context);
     load();
   }
 
   void load() async {
     if (_auth.user.uid != null){
       final user = await _auth.retrieveUser();
+      final book = await library.getBooks(_auth.user.uid);
       setState(() {
         _user = user;
+        _book = book;
+        print(book.length);
         if (_user.profilePic == null ||_user.profilePic == " "){
-          _user.profilePic = "https://i.pinimg.com/originals/c7/2c/a6/c72ca6b569e9729191b465dba7dda209.png";
+          _user.profilePic = "https://img.icons8.com/pastel-glyph/2x/person-male.png";
         }
       });
     }
@@ -62,7 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Stack(
             children: <Widget>[
               Container(
-                decoration: BoxDecoration(color: Colors.tealAccent.shade700),
+                decoration: BoxDecoration( color:const Color(0x009688).withOpacity(0.5)),
               ),
               Container(
                 margin: EdgeInsets.only(top: 160.0),
@@ -87,7 +100,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           padding: EdgeInsets.all(8.0),
                           child: CircleAvatar(                          
-                            backgroundImage: NetworkImage(_user.profilePic)
+                            backgroundImage: NetworkImage(_user.profilePic),
+                            backgroundColor: Colors.grey.shade200,
                           ),
                         ),
                       ],
@@ -110,9 +124,146 @@ class _ProfilePageState extends State<ProfilePage> {
                             fontSize: 12.0,
                             color: Colors.black,
                           ),
-                        )
+                        ),
                       ],
                     ),
+                   
+                    _book == null
+                    ?Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        CircularProgressIndicator(
+                            backgroundColor: const Color(0x009688),
+                        ),
+                        Text(
+                          'Loading..',
+                          style: GoogleFonts.openSans(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black
+                              ),
+                        )
+                      ],
+                    )
+                    :ListView(
+                      physics: BouncingScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      children: <Widget>[
+                           Container(                     
+                            padding: EdgeInsets.only(left: 25),
+                            margin: EdgeInsets.only(top: 0),
+                            height: 20,
+                            child:
+                              Text(
+                                'Work by me',
+                                style: GoogleFonts.openSans(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w500  ,
+                                  color: Colors.grey.shade600
+                                ),
+                              ),
+                          ),
+                          Container(
+                          height: 150,
+                          padding: EdgeInsets.only(top: 10 ),
+                          child: Column(
+                            children: <Widget>[
+                              Expanded(
+                                child: ListView.builder(
+                                  padding: EdgeInsets.only(left:25, right:6, ),
+                                  itemCount: _book.length,
+                                  physics: BouncingScrollPhysics(),
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (context, index){
+                                    final book = _book[index];
+                                    return Container(
+                                      margin: EdgeInsets.only(right:19),
+                                      height: 150,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: const Color(0xe0f2f1),
+                                        image: DecorationImage(
+                                          image: NetworkImage(book.coverURL),
+                                          fit: BoxFit.fill,
+                                          
+                                        ),
+                                      ),
+                                      child: InkWell(
+                                        onTap: () async{
+                                          await Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => BookDetailsScreen(book,_auth))
+                                          );
+                                        }
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                            ],
+                          )
+                        ),
+                        SizedBox(height: 10),
+                        Container(                     
+                          padding: EdgeInsets.only(left:25),
+                          height: 20,
+                          child:
+                            Text(
+                              'My Reading List',
+                              style: GoogleFonts.openSans(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500  ,
+                                color: Colors.grey.shade600
+                              ),
+                            ),
+                        ),
+                        Container(
+                          height: 150,
+                          padding: EdgeInsets.only(top: 10 ),
+                          child: Column(
+                            children: <Widget>[
+                              Expanded(
+                                child: ListView.builder(
+                                  padding: EdgeInsets.only(left:25, right:6, ),
+                                  itemCount: _book.length,
+                                  physics: BouncingScrollPhysics(),
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (context, index){
+                                    final book = _book[index];
+                                    return Container(
+                                      margin: EdgeInsets.only(right:19),
+                                      height: 150,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: const Color(0xe0f2f1),
+                                        image: DecorationImage(
+                                          image: NetworkImage(book.coverURL),
+                                          fit: BoxFit.fill,
+                                          
+                                        ),
+                                      ),
+                                      child: InkWell(
+                                        onTap: () async{
+                                          await Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => BookDetailsScreen(book,_auth))
+                                          );
+                                        }
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                            ],
+                          )
+                        ),
+
+                      ],
+                    )
+                    
                   ],
                 ),
               // settings button
@@ -140,9 +291,12 @@ class _ProfilePageState extends State<ProfilePage> {
               UserAccountsDrawerHeader(
                 accountName: Text(_user.firstName), 
                 accountEmail: Text(_user.email),
+                decoration: BoxDecoration(
+                  color:const Color(0x009688).withOpacity(0.5),
+                ),
                 currentAccountPicture: CircleAvatar(
                   backgroundImage: NetworkImage(_user.profilePic),
-                  backgroundColor: Colors.tealAccent,
+                  backgroundColor: Colors.grey.shade200,
                 ),
               ),
               ListTile(
@@ -171,10 +325,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ]
           )
         ) ,
-        bottomNavigationBar: RaisedButton(
-          onPressed:() async {
-
-          } ,) ,
       );
 
     }

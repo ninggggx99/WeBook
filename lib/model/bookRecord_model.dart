@@ -22,7 +22,6 @@ class BookRecord {
     }
 
     factory BookRecord.fromJson(Map<String,dynamic> parsedJson) {
-//    print(parsedJson);
     return BookRecord(
       parsedJson["bookId"] != null ? parsedJson["bookId"] : null,
       parsedJson["userId"] != null ? parsedJson["userId"] : null,

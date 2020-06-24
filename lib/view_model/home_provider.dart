@@ -3,7 +3,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:webookapp/model/book_model.dart';
 import 'package:webookapp/model/bookFeed_model.dart';
 import 'package:webookapp/model/comment_model.dart';
-import 'package:webookapp/model/rating_model.dart';
 
 class HomeProvider {
 

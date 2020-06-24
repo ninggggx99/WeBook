@@ -1,4 +1,4 @@
-import 'package:firebase_database/firebase_database.dart';
+/*import 'package:firebase_database/firebase_database.dart';
 
 class Rating {
   
@@ -29,4 +29,4 @@ class Rating {
   setKey(String key) {
     this.key = key;
   }
-}
+}*/

@@ -29,6 +29,10 @@ class LibraryProvider {
       await _dbRef.child("books/${record.bookId}").once().then((DataSnapshot snapshot) {
         books.add(Book.fromSnapShot(snapshot));
         });
+        
+        Comparator<Book> dateComparator = (a, b) => b.dateCreated.compareTo(a.dateCreated);
+        books.sort(dateComparator);
+
       }
 
       print('Successfully get book');

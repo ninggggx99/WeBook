@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:webookapp/model/bookRecord_model.dart';
 import 'package:webookapp/model/book_model.dart';
+import 'package:webookapp/view/BookDetailsScreen.dart';
 
 class LibraryProvider {
 
@@ -117,4 +118,19 @@ class LibraryProvider {
 
   }
 
+  Future<List<Book>> getUserBooks(String uid) async {
+
+    List<Book> books = [];
+
+    await _dbRef.child("books").orderByChild("authorId").equalTo(uid).once().then((DataSnapshot snapshot) async { 
+      Map<dynamic, dynamic> values = Map.from(snapshot.value);
+      values.forEach((key, value) {
+        Book book = Book.fromJson(Map.from(value));
+        book.setKey(key);
+        books.add(book);
+      });
+    });
+
+    return books;
+  }
 }

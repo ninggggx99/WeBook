@@ -34,7 +34,11 @@ class _CreateBookPageState extends State<CreateBookPage>{
     "Thriller",
     "Fantasy",
     "Poetry",
-    "Horror"
+    "Horror",
+    "Action and Adventure",
+    "Detective and Mystery",
+    "Sci-Fi", 
+    "Short Story"
   ];
 
   String selectedCat = "Romance";

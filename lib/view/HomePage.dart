@@ -36,7 +36,6 @@ class _HomePageState extends State<HomePage> {
     if(auth.user.uid != null){
       final book = await home.getBooks(auth.user.uid);
       final user = await auth.retrieveUser();
-     
       setState(() {
         _book = book;
         _user = user;

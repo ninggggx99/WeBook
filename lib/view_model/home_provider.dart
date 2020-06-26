@@ -61,7 +61,7 @@ class HomeProvider {
 
     //Sort by Date
     List<Book> sorted = _bookFeed.sortByRecent();
-
+    print(sorted);
     return sorted;
  
   }

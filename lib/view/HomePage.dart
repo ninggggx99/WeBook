@@ -13,7 +13,8 @@ import 'package:http/http.dart' as http;
 import 'package:webookapp/view/BookDetailsScreen.dart';
 import 'package:webookapp/view_model/home_provider.dart';
 import 'package:webookapp/widget/custom_homeTabBar.dart';
-import 'package:webookapp/widget/custom_tab_indicator.dart';
+import 'package:webookapp/widget/custom_loadingPage.dart';
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -24,7 +25,9 @@ class _HomePageState extends State<HomePage> {
   AuthProvider auth;
   HomeProvider home;
   User _user;
-  List<Book> _book;
+  List<Book> _bookRec;
+  List<Book> _bookPop;
+  List<Book> _bookRate;
   
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -34,11 +37,15 @@ class _HomePageState extends State<HomePage> {
   }
   void load() async{
     if(auth.user.uid != null){
-      final book = await home.getBooks(auth.user.uid);
+      final bookRec = await home.getBookByRecency(auth.user.uid);
+      final bookPop = await home.getBookByVolume(auth.user.uid);
+      final bookRate = await home.getBookByRatings(auth.user.uid);
       final user = await auth.retrieveUser();
      
       setState(() {
-        _book = book;
+        _bookRec = bookRec;
+        _bookPop = bookPop;
+        _bookRate = bookRate;
         _user = user;
       });
     }
@@ -49,27 +56,8 @@ class _HomePageState extends State<HomePage> {
   }
   @override
   Widget build(BuildContext context) {
-    if(_user == null ||_book== null){
-      return Scaffold( 
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              CircularProgressIndicator(
-                  backgroundColor: const Color(0x009688),
-              ),
-              Text(
-                'Loading..',
-                style: GoogleFonts.openSans(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black
-                    ),
-              )
-            ],
-          )
-        )
-      );
+    if(_user == null || _bookRec == null || _bookPop == null || _bookRate == null){
+      return CustomLoadingPage();
     }
     else{
        return Scaffold(
@@ -155,9 +143,9 @@ class _HomePageState extends State<HomePage> {
               ),
               custom_homeTabBar(
                 auth: auth,
-                newBook: _book,
-                bestBook: _book,
-                trendBook: _book,
+                newBook: _bookRec,
+                bestBook: _bookRate,
+                trendBook: _bookPop,
               ),
               Padding(
                 padding: EdgeInsets.only(left: 25, top:25, bottom: 25),               
@@ -172,12 +160,12 @@ class _HomePageState extends State<HomePage> {
               ),
               ListView.builder(
                   padding: EdgeInsets.only(left:25, right:6),
-                  itemCount: _book.length,
+                  itemCount: _bookPop.length,
                   physics: BouncingScrollPhysics(),
                   shrinkWrap: true,
                   itemBuilder: (context, index){
 
-                    final book = _book[index];
+                    final book = _bookPop[index];
                     return GestureDetector(
                       onTap: () async{
                         print('vertical tapped');

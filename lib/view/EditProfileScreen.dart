@@ -6,6 +6,8 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/model/user_model.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
+import 'package:webookapp/widget/custom_loadingPage.dart';
+import 'package:webookapp/widget/custom_text.dart';
 
 class EditProfileScreen extends StatefulWidget {
   @override
@@ -39,19 +41,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
+  FocusNode userFocus = new FocusNode();
 
   @override
   Widget build(BuildContext context) {
-     final pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    final pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
     if (_user == null){
-      print("hohoho");
-      return Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(
-            backgroundColor: Colors.tealAccent,
-          ),
-          )
-      );
+      return CustomLoadingPage();
     }
     else{
       usernameController.value = usernameController.value.copyWith(
@@ -61,6 +57,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
+          backgroundColor: Color(0x009688).withOpacity(0.5),
 
         ),
         body: Container(
@@ -111,15 +108,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   }
                                   openFileExplorer();
                                 } ,
-                                child: Text("Change profile photo"),
+                                child: CustomText(
+                                  text: 'Change Profile Photo',
+                                  size: 14,
+                                  weight: FontWeight.normal ,
+                                  colors: Colors.black,
+                                ),
                             ),
                           ],
                         ),
                       ),
                       TextFormField(
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.person),
+                          focusNode: userFocus,
+                          decoration: InputDecoration(
+                            
+                            icon: Icon(
+                              Icons.person,
+                              color: Colors.grey
+                            ),
                             labelText: 'Username *',
+                            labelStyle: TextStyle(
+                              color: userFocus.hasFocus? Color(0x009688).withOpacity(0.8) : Colors.grey
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color:const Color(0x009688).withOpacity(0.8))
+                            )
                           ),
                           style: new TextStyle(
                             fontSize: 15,
@@ -130,8 +143,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top:15),
+                        padding: EdgeInsets.fromLTRB(110,10,110,10),
                         child: FlatButton(
+                          color: const Color(0x009688).withOpacity(0.6),
+                          hoverColor: const Color(0x009688).withOpacity(0.8),
+                          
                           onPressed: (){
                             editSave() async{
                               await pr.show();
@@ -156,7 +172,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             editSave();          
                                       
                           } ,
-                            child: Text("Save changes"),
+                            child: CustomText(
+                              text: 'Save Changes',
+                              size: 14,
+                              weight: FontWeight.w700 ,
+                              colors: Colors.white,
+                            ),
                         ),
                       )
                       

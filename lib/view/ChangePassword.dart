@@ -6,6 +6,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/model/user_model.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
+import 'package:webookapp/widget/custom_text.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   @override
@@ -47,7 +48,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     final pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
   
    return Scaffold(
-    appBar: AppBar(),
+    appBar: AppBar(
+       backgroundColor: Color(0x009688).withOpacity(0.5),
+    ),
     body: Stack(
       children: <Widget>[
         Container(
@@ -65,11 +68,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     controller: oldPasswordController,
                     autofocus: false,
                     decoration: new InputDecoration(
-                        hintText:'Old Password',
-                        icon: new Icon(
-                          Icons.lock,
-                          color: Colors.grey,
-                        )
+                      focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color:const Color(0x009688).withOpacity(0.8))
+                      ),
+                      hintText:'Old Password',
+                      icon: new Icon(
+                        Icons.lock,
+                        color: Colors.grey,
+                      )
                     ),
                   validator: (value) => value.isEmpty ? 'Old password can\'t be empty' : null,
                   ),
@@ -82,11 +88,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     controller: newPasswordController,
                     autofocus: false,
                     decoration: new InputDecoration(
-                        hintText:'New Password',
-                        icon: new Icon(
-                          Icons.lock,
-                          color: Colors.grey,
-                    )
+                      focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color:const Color(0x009688).withOpacity(0.8))
+                      ),
+                      hintText:'New Password',
+                      icon: new Icon(
+                        Icons.lock,
+                        color: Colors.grey,
+                      )
                     ),
                   validator: (value) => value.isEmpty ? 'New password can\'t be empty' : null,
                   ),
@@ -99,18 +108,23 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     controller: conPasswordController,
                     autofocus: false,
                     decoration: new InputDecoration(
-                        hintText:'Confirm Password',
-                        icon: new Icon(
-                          Icons.lock,
-                          color: Colors.grey,
-                    )
+                      focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color:const Color(0x009688).withOpacity(0.8))
+                      ),
+                      hintText:'Confirm Password',
+                      icon: new Icon(
+                        Icons.lock,
+                        color: Colors.grey,
+                      )
                     ),
                   validator: (value) => value.isEmpty ? 'Confirm password can\'t be empty' : (value == newPasswordController.text) ? null : 'Password don\'t match',
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top:15),
+                  padding:  EdgeInsets.fromLTRB(110,10,110,10),
                   child: FlatButton(
+                    color: const Color(0x009688).withOpacity(0.6),
+                    hoverColor: const Color(0x009688).withOpacity(0.8),
                     onPressed: (){
                       editSave() async{
                         await pr.show();
@@ -153,7 +167,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       editSave();          
                                 
                     } ,
-                      child: Text("Save changes"),
+                      child: CustomText(
+                        text: 'Save Changes',
+                        size: 14,
+                        weight: FontWeight.w700 ,
+                        colors: Colors.white,
+                      ),
                   ),
                 )
                 

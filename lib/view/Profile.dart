@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+
 import 'package:webookapp/model/book_model.dart';
 import 'package:webookapp/model/user_model.dart';
+
 import 'package:webookapp/view/BookDetailsScreen.dart';
 import 'package:webookapp/view/EditProfileScreen.dart';
 import 'package:webookapp/view/ChangePassword.dart';
+
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view_model/file_provider.dart';
 import 'package:webookapp/view_model/home_provider.dart';
 import 'package:webookapp/view_model/library_provider.dart';
+import 'package:webookapp/widget/custom_loadingPage.dart';
+import 'package:webookapp/widget/custom_text.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -26,7 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
   LibraryProvider library;
   FileProvider file;
   List<Book> _book;
-
+  List<Book> _userBook;
   void didChangeDependencies() {
     super.didChangeDependencies();
     _auth = Provider.of<AuthProvider>(context);
@@ -36,22 +40,23 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void load() async {
-    if (_auth.user.uid != null){
+    if (_auth.user != null) {
       final user = await _auth.retrieveUser();
       final book = await library.getBooks(_auth.user.uid);
+      final userBook = await library.getUserBooks(_auth.user.uid);
       setState(() {
         _user = user;
         _book = book;
-        print(book.length);
-        if (_user.profilePic == null ||_user.profilePic == " "){
-          _user.profilePic = "https://img.icons8.com/pastel-glyph/2x/person-male.png";
+        _userBook = userBook;
+        // print(book.length);
+        if (_user.profilePic == null || _user.profilePic == " ") {
+          _user.profilePic =
+              "https://img.icons8.com/pastel-glyph/2x/person-male.png";
         }
       });
-    }
-    else{
+    } else {
       _user = null;
     }
-   
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -59,23 +64,17 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final feed = Provider.of<HomeProvider>(context);
-    if (_user == null){
-      return Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(
-            backgroundColor: Colors.tealAccent,
-          ),
-          )
-      );
-    }
-    else{
+    if (_user == null) {
+      return CustomLoadingPage();
+    } else {
       return Scaffold(
         key: _scaffoldKey,
         body: Container(
           child: Stack(
             children: <Widget>[
               Container(
-                decoration: BoxDecoration( color:const Color(0x009688).withOpacity(0.5)),
+                decoration: BoxDecoration(
+                    color: const Color(0x009688).withOpacity(0.5)),
               ),
               Container(
                 margin: EdgeInsets.only(top: 160.0),
@@ -96,10 +95,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           height: 100.0,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white60, width: 2.0),
+                            border:
+                                Border.all(color: Colors.white60, width: 2.0),
                           ),
                           padding: EdgeInsets.all(8.0),
-                          child: CircleAvatar(                          
+                          child: CircleAvatar(
                             backgroundImage: NetworkImage(_user.profilePic),
                             backgroundColor: Colors.grey.shade200,
                           ),
@@ -108,164 +108,171 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                   Column(
+                    children: <Widget>[
+                      CustomText(
+                        text: _user.firstName,
+                        weight: FontWeight.bold,
+                        size: 18.0,
+                        colors: Colors.black,
+                      ),
+                      CustomText(
+                        text: _user.role,
+                        weight: FontWeight.bold,
+                        size: 12.0,
+                        colors: Colors.black,
+                      ),
+                    ],
+                  ),
+
+                  // _book == null
+                  //     ? Column(
+                  //         mainAxisAlignment: MainAxisAlignment.center,
+                  //         children: <Widget>[
+                  //           CircularProgressIndicator(
+                  //             backgroundColor: const Color(0x009688),
+                  //           ),
+                  //           Text(
+                  //             'Loading..',
+                  //             style: GoogleFonts.openSans(
+                  //                 fontSize: 14,
+                  //                 fontWeight: FontWeight.w600,
+                  //                 color: Colors.black),
+                  //           )
+                  //         ],
+                  //       )
+                  //     :
+                  Expanded(
+                    child: Column(
                       children: <Widget>[
-                        Text(
-                          _user.firstName,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18.0,
-                            color: Colors.black,
+                        SizedBox(height: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.only(left: 25),
+                                margin: EdgeInsets.only(top: 0),
+                                height: 20,
+                                child: CustomText(
+                                    text: 'Work by me',
+                                    size: 15,
+                                    weight: FontWeight.w500,
+                                    colors: Colors.grey.shade600),
+                              ),
+                              Expanded(
+                                child: Container(
+                                    height: 200,
+                                    padding: EdgeInsets.only(top: 10),
+                                    child: 
+                                    _userBook != null 
+                                    ? ListView.builder(
+                                      padding: EdgeInsets.only(
+                                        left: 25,
+                                        right: 6,
+                                      ),
+                                      itemCount: _userBook.length,
+                                      physics: BouncingScrollPhysics(),
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (context, index) {
+                                        final book = _userBook[index];
+                                        return Container(
+                                          margin: EdgeInsets.only(right: 19),
+                                          height: 180,
+                                          width: 100,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: const Color(0xe0f2f1),
+                                            image: DecorationImage(
+                                              image:
+                                                  NetworkImage(book.coverURL),
+                                              fit: BoxFit.fill,
+                                            ),
+                                          ),
+                                          child: InkWell(onTap: () async {
+                                            await Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        BookDetailsScreen(
+                                                            book, _auth)));
+                                          }),
+                                        );
+                                      },
+                                    )
+                                    :Container ()
+                                  ),
+                                  
+                              ),
+                            ],
                           ),
                         ),
-                        Text(
-                          _user.role,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12.0,
-                            color: Colors.black,
+                        SizedBox(height: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.only(left: 25),
+                                height: 20,
+                                child: CustomText(
+                                    text: 'My Reading List',
+                                    size: 15,
+                                    weight: FontWeight.w500,
+                                    colors: Colors.grey.shade600),
+                              ),
+                              Expanded(
+                                child:  Container(
+                                    height: 200,
+                                    padding: EdgeInsets.only(top: 10),
+                                    child: 
+                                    _book != null 
+                                    ? ListView.builder(
+                                      padding: EdgeInsets.only(
+                                        left: 25,
+                                        right: 6,
+                                      ),
+                                      itemCount: _book.length,
+                                      physics: BouncingScrollPhysics(),
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (context, index) {
+                                        final book = _book[index];
+                                        return Container(
+                                          margin: EdgeInsets.only(right: 19),
+                                          height: 180,
+                                          width: 100,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: const Color(0xe0f2f1),
+                                            image: DecorationImage(
+                                              image:
+                                                  NetworkImage(book.coverURL),
+                                              fit: BoxFit.fill,
+                                            ),
+                                          ),
+                                          child: InkWell(onTap: () async {
+                                            await Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        BookDetailsScreen(
+                                                            book, _auth)));
+                                          }),
+                                        );
+                                      },
+                                    )
+                                    : Container()
+                                  )
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                   
-                    _book == null
-                    ?Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        CircularProgressIndicator(
-                            backgroundColor: const Color(0x009688),
-                        ),
-                        Text(
-                          'Loading..',
-                          style: GoogleFonts.openSans(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black
-                              ),
-                        )
-                      ],
-                    )
-                    :ListView(
-                      physics: BouncingScrollPhysics(),
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      children: <Widget>[
-                           Container(                     
-                            padding: EdgeInsets.only(left: 25),
-                            margin: EdgeInsets.only(top: 0),
-                            height: 20,
-                            child:
-                              Text(
-                                'Work by me',
-                                style: GoogleFonts.openSans(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500  ,
-                                  color: Colors.grey.shade600
-                                ),
-                              ),
-                          ),
-                          Container(
-                          height: 150,
-                          padding: EdgeInsets.only(top: 10 ),
-                          child: Column(
-                            children: <Widget>[
-                              Expanded(
-                                child: ListView.builder(
-                                  padding: EdgeInsets.only(left:25, right:6, ),
-                                  itemCount: _book.length,
-                                  physics: BouncingScrollPhysics(),
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, index){
-                                    final book = _book[index];
-                                    return Container(
-                                      margin: EdgeInsets.only(right:19),
-                                      height: 150,
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: const Color(0xe0f2f1),
-                                        image: DecorationImage(
-                                          image: NetworkImage(book.coverURL),
-                                          fit: BoxFit.fill,
-                                          
-                                        ),
-                                      ),
-                                      child: InkWell(
-                                        onTap: () async{
-                                          await Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => BookDetailsScreen(book,_auth))
-                                          );
-                                        }
-                                      ),
-                                    );
-                                  },
-                                ),
-                              )
-                            ],
-                          )
-                        ),
-                        SizedBox(height: 10),
-                        Container(                     
-                          padding: EdgeInsets.only(left:25),
-                          height: 20,
-                          child:
-                            Text(
-                              'My Reading List',
-                              style: GoogleFonts.openSans(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500  ,
-                                color: Colors.grey.shade600
-                              ),
-                            ),
-                        ),
-                        Container(
-                          height: 150,
-                          padding: EdgeInsets.only(top: 10 ),
-                          child: Column(
-                            children: <Widget>[
-                              Expanded(
-                                child: ListView.builder(
-                                  padding: EdgeInsets.only(left:25, right:6, ),
-                                  itemCount: _book.length,
-                                  physics: BouncingScrollPhysics(),
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, index){
-                                    final book = _book[index];
-                                    return Container(
-                                      margin: EdgeInsets.only(right:19),
-                                      height: 150,
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: const Color(0xe0f2f1),
-                                        image: DecorationImage(
-                                          image: NetworkImage(book.coverURL),
-                                          fit: BoxFit.fill,
-                                          
-                                        ),
-                                      ),
-                                      child: InkWell(
-                                        onTap: () async{
-                                          await Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => BookDetailsScreen(book,_auth))
-                                          );
-                                        }
-                                      ),
-                                    );
-                                  },
-                                ),
-                              )
-                            ],
-                          )
-                        ),
-
-                      ],
-                    )
-                    
-                  ],
-                ),
+                  )
+                ],
+              ),
               // settings button
               Align(
                 alignment: Alignment(1.4, -1.1),
@@ -276,23 +283,33 @@ class _ProfilePageState extends State<ProfilePage> {
                     shape: BoxShape.circle,
                   ),
                   padding: EdgeInsets.all(8.0),
-                  child: FlatButton(onPressed: ()=> _scaffoldKey.currentState.openEndDrawer() ,child: new Icon(Icons.settings, color: Colors.white)),
+                  child: FlatButton(
+                      onPressed: () =>
+                          _scaffoldKey.currentState.openEndDrawer(),
+                      child: new Icon(Icons.settings, color: Colors.white)),
                 ),
               ),
             ],
           ),
         ),
         endDrawer: Drawer(
-          elevation: 20.0,
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              
+            elevation: 20.0,
+            child: ListView(padding: EdgeInsets.zero, children: <Widget>[
               UserAccountsDrawerHeader(
-                accountName: Text(_user.firstName), 
-                accountEmail: Text(_user.email),
+                accountName: CustomText(
+                  text: _user.firstName,
+                  size: 14,
+                  weight: FontWeight.bold,
+                  colors: Colors.black,
+                ),
+                accountEmail: CustomText(
+                  text: _user.email,
+                  size: 12,
+                  weight: FontWeight.w400,
+                  colors: Colors.black,
+                ),
                 decoration: BoxDecoration(
-                  color:const Color(0x009688).withOpacity(0.5),
+                  color: const Color(0x009688).withOpacity(0.5),
                 ),
                 currentAccountPicture: CircleAvatar(
                   backgroundImage: NetworkImage(_user.profilePic),
@@ -300,92 +317,60 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               ListTile(
-                title: Text('Edit Profile'),
-                onTap:(){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfileScreen())).then((value) => setState((){print("hi"); load();}));
+                title: CustomText(
+                  text: 'Edit Profile',
+                  size: 14,
+                  weight: FontWeight.normal,
+                  colors: Colors.black,
+                ),
+                onTap: () {
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditProfileScreen()))
+                      .then((value) => setState(() {
+                            print("hi");
+                            load();
+                          }));
                 },
               ),
               ListTile(
-                title: Text('Change Password'),
-                onTap:(){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePasswordScreen()));
+                title: CustomText(
+                  text: 'Change Password',
+                  size: 14,
+                  weight: FontWeight.normal,
+                  colors: Colors.black,
+                ),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ChangePasswordScreen()));
                 },
               ),
               ListTile(
-                title: Text('Logout'),
-                onTap:(){
-                  logout() async{
-                    await _auth.signOut().then((__) =>  Navigator.pushNamedAndRemoveUntil(context, "/logIn", (r) => false)); 
-                   
+                title: CustomText(
+                  text: 'Logout',
+                  size: 14,
+                  weight: FontWeight.normal,
+                  colors: Colors.black,
+                ),
+                onTap: () {
+                  logout() async {
+                    await _auth.signOut();
+                    setState(() {
+                      _user = null;
+                      _book = null;
+                    });
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, "/logIn", (r) => false);
                   }
-                  logout(); 
-                  Navigator.pop(context);
+
+                  logout();
                 },
               ),
-            ]
-          )
-        ) ,
+            ])),
       );
-
     }
-   
   }
 }
-
-// Container(
-//                     height: 200,
-//                     margin: EdgeInsets.only(top:5),
-//                     padding: EdgeInsets.only(left: 25),
-//                     child: Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: <Widget>[
-//                         Text(
-//                           'Works by me',
-//                           style: GoogleFonts.openSans(
-//                             fontSize: 14,
-//                             fontWeight: FontWeight.w600
-//                           ),
-//                         ),
-//                         Container(
-//                           margin: EdgeInsets.only(top:21),
-//                           height:150,
-//                           child: ListView.builder(
-//                             padding: EdgeInsets.only(left:25, right:6),
-//                             itemCount: _bookwritten.length,
-//                             physics: BouncingScrollPhysics(),
-//                             scrollDirection: Axis.horizontal,
-//                             itemBuilder: (context, index){
-//                               final book = _bookwritten[index];
-//                               return Container(
-//                                 margin: EdgeInsets.only(right:19),
-//                                 height: 180,
-//                                 width: 120,
-//                                 decoration: BoxDecoration(
-//                                   borderRadius: BorderRadius.circular(10),
-//                                   color: const Color(0xe0f2f1),
-//                                   image: DecorationImage(
-//                                     image: NetworkImage(book.coverURL),
-//                                     fit: BoxFit.scaleDown
-//                                   ),
-//                                 ),
-//                                 child: InkWell(
-//                                   onTap: () async{
-//                                     await Navigator.pushReplacement(
-//                                       context,
-//                                       MaterialPageRoute(builder: (context) => BookDetailsScreen(book,_auth))
-//                                     );
-                                    
-//                                     // if (str == "delete") {
-//                                     //   load();
-//                                     // } 
-//                                   }
-//                                 ),
-//                               );
-//                             },
-//                           ),
-//                         )
-
-//                       ],
-//                     ),
-
-//                   ),

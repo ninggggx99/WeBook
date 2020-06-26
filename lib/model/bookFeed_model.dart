@@ -7,8 +7,6 @@ class BookFeed{
 
   List<Book> books;
 
-  
-
   BookFeed({this.books});
 
   BookFeed.fromSnapshot(DataSnapshot snapshot, String userId) : 
@@ -49,6 +47,10 @@ class BookFeed{
         total += c.rate;
       }
       
+      if (total == 0) {
+        return 0;
+      } 
+
       double avg = double.parse((total/noRate).toStringAsFixed(2));
 
       return avg;

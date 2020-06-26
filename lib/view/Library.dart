@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+
 import 'package:webookapp/model/book_model.dart';
 import 'package:webookapp/model/user_model.dart';
+
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view_model/file_provider.dart';
 import 'package:webookapp/view_model/library_provider.dart';
+
 import 'package:webookapp/widget/custom_bookItem.dart';
+import 'package:webookapp/widget/custom_loadingPage.dart';
+import 'package:webookapp/widget/custom_text.dart';
 
 class LibraryPage extends StatefulWidget{
   LibraryPage({Key key}) : super(key:key);
@@ -52,31 +56,25 @@ class _LibraryPageState extends State<LibraryPage>{
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(
-                        'What are you',
-                        style: GoogleFonts.openSans(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w100,
-                          color: Colors.black
-                        ),
+                      CustomText(
+                        text: 'What are you',                        
+                        size: 22,
+                        weight: FontWeight.w100,
+                        colors: Colors.black                        
                       ),
                       Row(
                         children: <Widget>[
-                          Text(
-                            'reading ',
-                            style: GoogleFonts.openSans(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w100,
-                              color: Colors.black
-                            ),
+                          CustomText(
+                            text: 'reading ',
+                            size: 22,
+                            weight: FontWeight.w100,
+                            colors: Colors.black
                           ),
-                          Text(
-                            'today ?',
-                            style: GoogleFonts.openSans(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black
-                            ),
+                          CustomText(
+                            text: 'today ?',
+                            size: 22,
+                            weight: FontWeight.w600,
+                            colors: Colors.black                            
                           )
                         ],
                       )
@@ -106,29 +104,8 @@ class _LibraryPageState extends State<LibraryPage>{
         );
       }
       else{
-          return Scaffold( 
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  CircularProgressIndicator(
-                      backgroundColor: const Color(0x009688),
-                  ),
-                  Text(
-                    'Loading..',
-                    style: GoogleFonts.openSans(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black
-                        ),
-                  )
-                ],
-              )
-            )
-          );
+        return CustomLoadingPage();
       }
-      
-    // }
     
   }
 

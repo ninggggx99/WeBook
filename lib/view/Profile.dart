@@ -9,6 +9,7 @@ import 'package:webookapp/model/user_model.dart';
 import 'package:webookapp/view/BookDetailsScreen.dart';
 import 'package:webookapp/view/EditProfileScreen.dart';
 import 'package:webookapp/view/ChangePassword.dart';
+import 'package:webookapp/view/logIn.dart';
 
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view_model/file_provider.dart';
@@ -31,6 +32,7 @@ class _ProfilePageState extends State<ProfilePage> {
   FileProvider file;
   List<Book> _book;
   List<Book> _userBook;
+  bool signout = false;
   void didChangeDependencies() {
     super.didChangeDependencies();
     _auth = Provider.of<AuthProvider>(context);
@@ -40,7 +42,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void load() async {
-    if (_auth.user != null) {
+    print("load" );
+    print(_auth == null);
+    if (signout == false) {
       final user = await _auth.retrieveUser();
       final book = await library.getBooks(_auth.user.uid);
       final userBook = await library.getUserBooks(_auth.user.uid);
@@ -178,7 +182,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         return Container(
                                           margin: EdgeInsets.only(right: 19),
                                           height: 180,
-                                          width: 100,
+                                          width: 150,
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(10),
@@ -240,7 +244,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         return Container(
                                           margin: EdgeInsets.only(right: 19),
                                           height: 180,
-                                          width: 100,
+                                          width: 150,
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(10),
@@ -357,16 +361,31 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 onTap: () {
                   logout() async {
-                    await _auth.signOut();
+                   Navigator.pushAndRemoveUntil(
+                    context, 
+                    MaterialPageRoute(
+                      builder: (context) => LogInPage()
+                    ),
+                     (r) => false);
                     setState(() {
-                      _user = null;
-                      _book = null;
+                      signout = true;
                     });
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, "/logIn", (r) => false);
+                    await _auth.signOut();
+                   print ("logout");
+                   
+                    // setState(() {
+                    //   _auth = null;
+                    //   _user = null;
+                    //   _book = null;
+                    // });
+                    
+                    
                   }
 
                   logout();
+                  
+                  // Navigator.pushNamedAndRemoveUntil(
+                  //       context, "/logIn", (r) => false);
                 },
               ),
             ])),

@@ -50,10 +50,10 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
-  @override
-  void dispose(){
-    super.dispose();
-  }
+  // @override
+  // void dispose(){
+  //   super.dispose();
+  // }
   @override
   Widget build(BuildContext context) {
     if(_user == null || _bookRec == null || _bookPop == null || _bookRate == null){

@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:webookapp/model/comment_model.dart';
-import 'package:webookapp/model/rating_model.dart';
 import 'package:webookapp/model/user_model.dart';
 import 'package:webookapp/widget/custom_starDisplay.dart';
 
@@ -11,12 +8,10 @@ class custom_feedbackContainer extends StatelessWidget{
   const custom_feedbackContainer({
     Key key,
     @required this.comment,
-    // @required this.rating,
     @required this.date,
     @required this.user
   }) :super (key:key);
   final Comment comment;
-  // final Rating rating;
   final String date;
   final User user;
 
@@ -50,6 +45,14 @@ class custom_feedbackContainer extends StatelessWidget{
                         color:Colors.black
                       ),
                     ),
+                    Text(
+                      user.role,
+                      style: GoogleFonts.openSans(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color:Colors.black
+                      ),
+                    ),
                             
                   ],
                 )
@@ -67,7 +70,7 @@ class custom_feedbackContainer extends StatelessWidget{
                       color: Colors.amber,
                       size: 20
                     ),
-                    child: custom_starDisplay(value: 3),
+                    child: custom_starDisplay(value: comment.rate),
                   ), 
                   SizedBox(width : 5),
                   Text(

@@ -43,6 +43,7 @@ dependencies:
   flutter_rating_bar: ^3.0.1+1
   epub_kitty: ^0.1.7
   archive: ^2.0.13
+  smooth_star_rating: 1.1.1
   
 
   # The following adds the Cupertino Icons font to your application.

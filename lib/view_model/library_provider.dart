@@ -117,20 +117,26 @@ class LibraryProvider {
     return deleted;
 
   }
-
   Future<List<Book>> getUserBooks(String uid) async {
 
     List<Book> books = [];
-
-    await _dbRef.child("books").orderByChild("authorId").equalTo(uid).once().then((DataSnapshot snapshot) async { 
-      Map<dynamic, dynamic> values = Map.from(snapshot.value);
-      values.forEach((key, value) {
-        Book book = Book.fromJson(Map.from(value));
-        book.setKey(key);
-        books.add(book);
+    try{
+      await _dbRef.child("books").orderByChild("authorId").equalTo(uid).once().then((DataSnapshot snapshot) async { 
+        Map<dynamic, dynamic> values = Map.from(snapshot.value);
+        values.forEach((key, value) {
+          Book book = Book.fromJson(Map.from(value));
+          book.setKey(key);
+          books.add(book);
+        });
       });
-    });
+      return books;
+    }
+    catch(e){
+      print("Error with retrieving user's written books: " + e.toString());
+      return null;
+    }
+   
 
-    return books;
+    
   }
 }

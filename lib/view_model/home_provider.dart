@@ -44,7 +44,7 @@ class HomeProvider {
 
   }*/
 
-  Future<List<Book>> getBooks(String id) async {
+  Future<BookFeed> getBooks(String id) async {
    
     DataSnapshot snapshot = await _dbRef.child("books").once()
                                 .catchError((e) { 
@@ -53,17 +53,31 @@ class HomeProvider {
 
     BookFeed _bookFeed = BookFeed.fromSnapshot(snapshot, id);
     
-    //Sort by Record = No. of people reading
-    //List<Book> sorted = await sortByRecord(_bookFeed.books);
+    return _bookFeed;
+  }
 
-    //Sort by Rating 
-    //List<Book> sorted = _bookFeed.sortByRatings();
+  Future<List<Book>> getBookByRecency(String id)  async {
 
-    //Sort by Date
-    List<Book> sorted = _bookFeed.sortByRecent();
-    print(sorted);
+    BookFeed books = await getBooks(id);
+    List<Book> sorted = books.sortByRecent();
+
     return sorted;
- 
+  }
+
+  Future<List<Book>> getBookByRatings(String id)  async {
+
+    BookFeed books = await getBooks(id);
+    List<Book> sorted = books.sortByRatings();
+
+    return sorted;
+  }
+
+  Future<List<Book>> getBookByVolume(String id)  async {
+
+    BookFeed books = await getBooks(id);
+    List<Book> sorted = await sortByRecord(books.books);
+
+    return sorted;
   }
 
   Future<List<Comment>> getComments(Book book) async {

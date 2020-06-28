@@ -317,7 +317,9 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
               width: 400,
               height: 49,
               color: Colors.transparent,
-              child: FlatButton(
+              child: 
+              _tabIndex !=2
+              ? FlatButton(
                 color: const Color(0x009688).withOpacity(0.5),
                 onPressed: () async {
                   if (_tabIndex == 0) {
@@ -418,7 +420,8 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                       ),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
-              ),
+              )
+              :null
             ),
           ],
         )),

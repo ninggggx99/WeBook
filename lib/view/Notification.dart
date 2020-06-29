@@ -8,7 +8,10 @@ class NotificationPage extends StatefulWidget{
       return _NotificationPageState();
   }
 }
+
+
 class _NotificationPageState extends State<NotificationPage>{
+
 
   @override
   Widget build (BuildContext context){
@@ -30,3 +33,4 @@ class _NotificationPageState extends State<NotificationPage>{
     );
   }
 }
+

@@ -177,7 +177,7 @@ class _CreateBookPageState extends State<CreateBookPage>{
                                 child: new RaisedButton(
                                   child: CustomText(
                                     text: 'Upload Image', 
-                                    size: 13.5, 
+                                    size: 12, 
                                     weight: FontWeight.w600, 
                                     colors: Colors.black
                                   ),
@@ -224,7 +224,7 @@ class _CreateBookPageState extends State<CreateBookPage>{
                                 child: new RaisedButton(
                                   child: CustomText(
                                     text: 'Upload Book', 
-                                    size: 14, 
+                                    size: 12, 
                                     weight: FontWeight.w600, 
                                     colors: Colors.black
                                   ),
@@ -253,7 +253,7 @@ class _CreateBookPageState extends State<CreateBookPage>{
                             child: new Text(
                               "Upload My Work",
                               style:  GoogleFonts.openSans(
-                                fontSize: 16,
+                                fontSize: 14,
                                 color: Colors.white
                               )
                             ),

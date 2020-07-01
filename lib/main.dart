@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:webookapp/view/EditProfileScreen.dart';
 import 'package:webookapp/view/LandingPage.dart';
 import 'package:webookapp/view/logIn.dart';
-import 'package:webookapp/view/navbar.dart';
+import 'package:webookapp/view/BottomNavBar.dart';
 import 'package:webookapp/view/signUp.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view_model/home_provider.dart';

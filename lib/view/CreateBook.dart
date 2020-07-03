@@ -29,8 +29,8 @@ class _CreateBookPageState extends State<CreateBookPage>{
     super.didChangeDependencies();
     auth = Provider.of<AuthProvider>(context);  
     file = Provider.of<FileProvider>(context);
-   
   }
+  
   TextEditingController titleController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController catController = TextEditingController();

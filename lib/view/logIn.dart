@@ -15,6 +15,8 @@ class _LogInPageState extends State<LogInPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  
+
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);

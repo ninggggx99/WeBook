@@ -127,10 +127,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     hoverColor: const Color(0x009688).withOpacity(0.8),
                     onPressed: (){
                       editSave() async{
-                        await pr.show();
+                       
                         print(conPasswordController.text);
                         if(_formKey.currentState.validate()){
-                         
+                          await pr.show();
                           bool result = await _auth.updatePassword(oldPasswordController.text, newPasswordController.text);
                           oldPasswordController.clear();
                           newPasswordController.clear();
@@ -160,6 +160,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                          
                         }
                         else{
+                         
                           print("Not Submitted");
                         }                   
                         
@@ -192,7 +193,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     print(errorcode.toString() + "ERROR");
     switch (errorcode) {
       case AuthError.ERROR_WRONG_PASSWORD:
-        return "Incorrect Email/Password";
+        return "Incorrect Password";
         break;
       case AuthError.ERROR_UNKNOWN:
         return "Unknown Error";

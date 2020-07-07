@@ -23,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   AuthProvider auth;
   HomeProvider home;
   User _user;
+
   List<Book> _bookRec;
   List<Book> _bookPop;
   List<Book> _bookRate;
@@ -60,8 +61,10 @@ class _HomePageState extends State<HomePage> {
         _bookPop == null ||
         _bookRate == null) {
       return CustomLoadingPage();
-    } else {
-      return Scaffold(
+    }
+    else{
+       return Scaffold(
+       
         body: Container(
             child: ListView(
           physics: BouncingScrollPhysics(),

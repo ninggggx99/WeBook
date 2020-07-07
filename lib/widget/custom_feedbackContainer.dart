@@ -27,7 +27,7 @@ class custom_feedbackContainer extends StatelessWidget{
                ClipRRect(
                   borderRadius: BorderRadius.circular(15.0),
                   child: Image.network(
-                   'https://wallpaperaccess.com/thumb/2056278.jpg',
+                    user.profilePic != null? user.profilePic :   "https://img.icons8.com/pastel-glyph/2x/person-male.png" ,
                     height: 71,
                     width: 71,
                   ),

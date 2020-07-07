@@ -51,7 +51,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
       final comment = await feed.getComments(widget.bookModel);
       print(widget.bookModel.title);
       // print(comment.length);
-      //await feed.addComment(widget.bookModel.key, widget.auth.user.uid, 'Helphelp', 3);
+      await feed.addComment(widget.bookModel.key, widget.auth.user.uid, 'Helphelp', 3);
       // if (library.error != LibraryError.NO_BOOK){
       if(bookOwn != null){
         for (book in bookOwn) {

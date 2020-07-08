@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:webookapp/model/bookRecord_model.dart';
 import 'package:webookapp/model/book_model.dart';
+import 'package:webookapp/view/BookDetailsScreen.dart';
 
 class LibraryProvider {
 
@@ -131,11 +132,11 @@ class LibraryProvider {
       return books;
     }
     catch(e){
+      print("Error with retrieving user's written books: " + e.toString());
       return null;
     }
    
 
     
   }
-
 }

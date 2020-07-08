@@ -29,8 +29,8 @@ class _CreateBookPageState extends State<CreateBookPage>{
     super.didChangeDependencies();
     auth = Provider.of<AuthProvider>(context);  
     file = Provider.of<FileProvider>(context);
-   
   }
+  
   TextEditingController titleController = TextEditingController();
   TextEditingController descController = TextEditingController();
   TextEditingController catController = TextEditingController();
@@ -45,7 +45,11 @@ class _CreateBookPageState extends State<CreateBookPage>{
     "Thriller",
     "Fantasy",
     "Poetry",
-    "Horror"
+    "Horror",
+    "Action and Adventure",
+    "Detective and Mystery",
+    "Sci-Fi", 
+    "Short Story"
   ];
 
   String selectedCat = "Romance";
@@ -173,7 +177,7 @@ class _CreateBookPageState extends State<CreateBookPage>{
                                 child: new RaisedButton(
                                   child: CustomText(
                                     text: 'Upload Image', 
-                                    size: 13.5, 
+                                    size: 12, 
                                     weight: FontWeight.w600, 
                                     colors: Colors.black
                                   ),
@@ -220,7 +224,7 @@ class _CreateBookPageState extends State<CreateBookPage>{
                                 child: new RaisedButton(
                                   child: CustomText(
                                     text: 'Upload Book', 
-                                    size: 14, 
+                                    size: 12, 
                                     weight: FontWeight.w600, 
                                     colors: Colors.black
                                   ),
@@ -249,7 +253,7 @@ class _CreateBookPageState extends State<CreateBookPage>{
                             child: new Text(
                               "Upload My Work",
                               style:  GoogleFonts.openSans(
-                                fontSize: 16,
+                                fontSize: 14,
                                 color: Colors.white
                               )
                             ),

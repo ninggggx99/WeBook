@@ -26,7 +26,7 @@ exports.sendToDevice = functions.database
     const commenterid = lastestComment ['userId']
     const commentDate = lastestComment ['dateCreated']
 
-    console.log(desc);
+    console.log(commenterid);
     // console.log(comment['-MB8ZNs7kwJyoewAVMnj']);
 
     // const querySnapshotWriter = await db.ref("books").child(bookId).once('value');
@@ -41,18 +41,13 @@ exports.sendToDevice = functions.database
       notification: {
         title: 'Someone commented on your book!',
         body: desc,
-        commentUserId: commenterid,
-        commentDate : commentDate.toString(),
         icon: "assets/logo_white.png",
-        // click_action: 'FLUTTER_NOTIFICATION_CLICK'
         click_action: 'FCM_PLUGIN_ACTIVITY'
       },
       data: {
-        orderId:"123",
-        pickLocation:"g10",
-        dropLocation:"f10",
-        orderType:"Posted"
-        }
+        commentUserId: commenterid,
+        commentDate : commentDate.toString(),
+      }
     };
 
     return admin.messaging().sendToDevice(tokens, payload)

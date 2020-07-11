@@ -27,12 +27,14 @@ class _NotificationPageState extends State<NotificationPage> {
       onMessage : (Map<String,dynamic> message) async{
         print("onMessage: $message");
         final notification = message['notification'];
+        final data = message['data'];
+        print(data['commentDate']);
         setState(() {
           notifications.add(Message(
               title: notification['title'],
               body: notification['body'],
-              dateTime: notification['commentDate'],
-              userId: notification['commentUserId']
+              dateTime: data['commentDate'],
+              userId: data['commentUserId']
             ),           
           );
         }); 

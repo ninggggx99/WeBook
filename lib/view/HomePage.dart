@@ -154,7 +154,7 @@ class _HomePageState extends State<HomePage> {
               child: Text('Color Changed'),
               onPressed: () async {
                 await home.addComment("-MAjipEmWrSQJVFYvvQI",
-                    "2Xm3ecEYwtVZ3KScvijQWB7UxM13", "this is the NEW comment", 5);
+                    "2Xm3ecEYwtVZ3KScvijQWB7UxM13", "this is the NEWNEWNEWNWENW comment", 5);
                 print("daone");
               },
             ),

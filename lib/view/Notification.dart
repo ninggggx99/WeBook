@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:webookapp/model/comment_model.dart';
 import 'package:webookapp/model/notification_model.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 
@@ -29,7 +30,9 @@ class _NotificationPageState extends State<NotificationPage> {
         setState(() {
           notifications.add(Message(
               title: notification['title'],
-              body: notification['body']
+              body: notification['body'],
+              dateTime: notification['commentDate'],
+              userId: notification['commentUserId']
             ),           
           );
         }); 
@@ -38,13 +41,13 @@ class _NotificationPageState extends State<NotificationPage> {
       onLaunch: (Map<String, dynamic> message) async{
         print ("onLaunch: $message");
         final notification = message['notification'];
-        setState(() {
-          notifications.add(Message(
-              title: 'OnLaunch: ${notification['title']}',
-              body: 'OnLaunch: ${notification['body']}'
-            ),           
-          );
-        }); 
+        // setState(() {
+        //   notifications.add(Message(
+        //       title: 'OnLaunch: ${notification['title']}',
+        //       body: 'OnLaunch: ${notification['body']}'
+        //     ),           
+        //   );
+        // }); 
         print(notifications);
       },
       onResume: (Map<String, dynamic> message) async{

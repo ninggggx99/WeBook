@@ -15,13 +15,22 @@ exports.sendToDevice = functions.database
     const bookId = change.after.val().bookId;
     console.log("hi");
     console.log(authorId);
-    const comment = change.after.val().comments[0];
-    // console.log(comment[0]);
-    // console.log(comment);
-    
+    const comment = await change.after.val().comments;
+    const keys =  Object.keys(comment)
+    var lastId;
+    for (const key of keys){
+      lastId = key
+    }
+    const lastestComment = comment[lastId]
+    const desc = lastestComment['commentDesc']
+    const commenterid = lastestComment ['userId']
+    const commentDate = lastestComment ['dateCreated']
 
-    //const querySnapshotWriter = await db.ref("users").child(comment.userId).once('value');
+    console.log(desc);
+    // console.log(comment['-MB8ZNs7kwJyoewAVMnj']);
 
+    // const querySnapshotWriter = await db.ref("books").child(bookId).once('value');
+    // console.log(querySnapshotWriter);
     const querySnapshotTokens = await db.ref("users").child(authorId).once('value');
 
     const tokens = querySnapshotTokens.val().token;
@@ -31,8 +40,11 @@ exports.sendToDevice = functions.database
     const payload =  {
       notification: {
         title: 'Someone commented on your book!',
-        body: "this is it",
+        body: desc,
+        commentUserId: commenterid,
+        commentDate : commentDate.toString(),
         icon: "assets/logo_white.png",
+        // click_action: 'FLUTTER_NOTIFICATION_CLICK'
         click_action: 'FCM_PLUGIN_ACTIVITY'
       },
       data: {

@@ -42,11 +42,13 @@ exports.sendToDevice = functions.database
         title: 'Someone commented on your book!',
         body: desc,
         icon: "assets/logo_white.png",
-        click_action: 'FCM_PLUGIN_ACTIVITY'
+        click_action: 'FLUTTER_NOTIFICATION_CLICK'
+        // click_action: 'FCM_PLUGIN_ACTIVITY'
       },
       data: {
         commentUserId: commenterid,
         commentDate : commentDate.toString(),
+        commentId: lastId
       }
     };
 

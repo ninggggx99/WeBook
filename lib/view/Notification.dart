@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/model/comment_model.dart';
 import 'package:webookapp/model/notification_model.dart';
@@ -43,13 +44,17 @@ class _NotificationPageState extends State<NotificationPage> {
       onLaunch: (Map<String, dynamic> message) async{
         print ("onLaunch: $message");
         final notification = message['notification'];
-        // setState(() {
-        //   notifications.add(Message(
-        //       title: 'OnLaunch: ${notification['title']}',
-        //       body: 'OnLaunch: ${notification['body']}'
-        //     ),           
-        //   );
-        // }); 
+        final data = message['data'];
+        DateTime date = DateTime.parse(data['commentDate']);
+        setState(() {
+          notifications.add(Message(
+              title: 'OnLaunch: ${notification['title']}',
+              body: 'OnLaunch: ${notification['body']}',
+              dateTime: date,
+              userId: '${data['commentUserId']}'
+            ),           
+          );
+        }); 
         print(notifications);
       },
       onResume: (Map<String, dynamic> message) async{

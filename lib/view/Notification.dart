@@ -2,7 +2,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/model/comment_model.dart';
 import 'package:webookapp/model/notification_model.dart';
@@ -35,7 +34,8 @@ class _NotificationPageState extends State<NotificationPage> {
               title: notification['title'],
               body: notification['body'],
               dateTime: data['commentDate'],
-              userId: data['commentUserId']
+              userId: data['commentUserId'],
+              commentId: data['commentId']
             ),           
           );
         }); 
@@ -51,7 +51,8 @@ class _NotificationPageState extends State<NotificationPage> {
               title: 'OnLaunch: ${notification['title']}',
               body: 'OnLaunch: ${notification['body']}',
               dateTime: date,
-              userId: '${data['commentUserId']}'
+              userId: '${data['commentUserId']}',
+              commentId: '${data['commentId']}'
             ),           
           );
         }); 

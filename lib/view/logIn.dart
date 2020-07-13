@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:webookapp/widget/custom_text.dart';
 
 class LogInPage extends StatefulWidget {
   @override
@@ -15,181 +15,257 @@ class _LogInPageState extends State<LogInPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  
+  AuthProvider auth;
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    auth = Provider.of<AuthProvider>(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthProvider>(context);
-    final pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    final pr = ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
     return Scaffold(
       body: Stack(
-        children: <Widget>[
-          Container(
+      children: <Widget>[
+        Container(
             padding: EdgeInsets.all(16.0),
             child: Form(
-              key:_formKey,
+              key: _formKey,
               child: new ListView(
                 shrinkWrap: true,
                 children: <Widget>[
-                  // Logo 
+                  // Logo
                   Hero(
-                    tag:'hero',
+                    tag: 'hero',
                     child: Padding(
-                      padding: EdgeInsets.fromLTRB(0.0, 30.0, 0.0, 0.0),
-                      child:Image.asset('assets/logo_transparent.png', height :250,width: 250),
-                      ),
+                      padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 0.0),
+                      child: Image.asset('assets/logo_transparent.png',
+                          height: 220, width: 220),
+                    ),
                   ),
                   //Email Textinput
                   Padding(
-                    padding:  const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+                    padding: const EdgeInsets.fromLTRB(0.0, 10, 0.0, 0.0),
                     child: new TextFormField(
                       maxLines: 1,
                       controller: emailController,
                       keyboardType: TextInputType.emailAddress,
                       autofocus: false,
                       decoration: new InputDecoration(
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color:
+                                      const Color(0x009688).withOpacity(0.8))),
                           hintText: 'Email',
                           icon: new Icon(
                             Icons.mail,
                             color: Colors.grey,
-                      )),
-                    validator: (value) => value.isEmpty ? 'Email can\'t be empty' : null,
+                          )),
+                      validator: (value) =>
+                          value.isEmpty ? 'Email can\'t be empty' : null,
                     ),
                   ),
                   //Password Textinput
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 0.0),
+                    padding: const EdgeInsets.fromLTRB(0.0, 10, 0.0, 0.0),
                     child: new TextFormField(
                       maxLines: 1,
                       controller: passwordController,
                       obscureText: true,
                       autofocus: false,
                       decoration: new InputDecoration(
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color:
+                                      const Color(0x009688).withOpacity(0.8))),
                           hintText: 'Password',
                           icon: new Icon(
                             Icons.lock,
                             color: Colors.grey,
                           )),
-                      validator: (value) => value.isEmpty ? 'Password can\'t be empty' : null,
+                      validator: (value) =>
+                          value.isEmpty ? 'Password can\'t be empty' : null,
                     ),
                   ),
                   // Login Button
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0.0, 45.0, 0.0, 0.0),
-                    child: SizedBox(
-                      height: 40.0,
-                      child: new RaisedButton(
-                        elevation: 5.0,
-                        shape: new RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(30.0)),
-                        color: Colors.blue,
-                        child: new Text('Login',
-                            style: new TextStyle(fontSize: 20.0, color: Colors.white)),
-                        onPressed: (){
-                          login() async{
-                            if(_formKey.currentState.validate()) {
-                              await pr.show();
-                              bool result = await auth.signInWithEmail(email:emailController.text, password: passwordController.text);
-                              if (result == true){
-                                print("Login success");
-                                await pr.hide();
-                                Navigator.pushReplacementNamed(context, '/mainHome');
-                                emailController.clear();
-                                passwordController.clear();
-                              }
-                              else{
-                                AlertDialog alert = AlertDialog(
-                                  title: Text("Error"), 
-                                  content: Text(getErrorMessage(auth.error)),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      child: Text("Ok"),
-                                      onPressed: (){
-                                        _formKey.currentState.reset();
-                                        emailController.clear();
-                                        passwordController.clear();
-                                        Navigator.of(context).pop();
-                                      },
+                      padding: EdgeInsets.fromLTRB(0, 10.0, 0, 0.0),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical:25),
+                        width: double.infinity,
+                        child: new RaisedButton(
+                          elevation: 5.0,
+                          padding: EdgeInsets.all(15.0),
+
+                          shape: new RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(30.0)),
+                          color: const Color(0x009688).withOpacity(0.8),
+                          child: CustomText(
+                            text:'Login',
+                            size: 18.0, 
+                            colors: Colors.white,
+                            weight: FontWeight.w600,                            
+                          ),
+                          onPressed: () {
+                            login() async {
+                              if (_formKey.currentState.validate()) {
+                                await pr.show();
+                                bool result = await auth.signInWithEmail(
+                                    email: emailController.text,
+                                    password: passwordController.text);
+                                if (result == true) {
+                                  print("Login success");
+                                  await pr.hide();
+                                  Navigator.pushReplacementNamed(
+                                      context, '/mainHome');
+                                  emailController.clear();
+                                  passwordController.clear();
+                                } else {
+                                  AlertDialog alert = AlertDialog(
+                                    title: Text("Error"),
+                                    content: Text(getErrorMessage(auth.error)),
+                                    actions: <Widget>[
+                                      FlatButton(
+                                        child: Text("Ok"),
+                                        onPressed: () {
+                                          _formKey.currentState.reset();
+                                          emailController.clear();
+                                          passwordController.clear();
+                                          Navigator.of(context).pop();
+                                        },
                                       )
-                                  ],
+                                    ],
                                   );
-                                await pr.hide();
-                                showDialog(context: context, builder: (BuildContext context){return alert;});
+                                  await pr.hide();
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return alert;
+                                      });
+                                }
                               }
                             }
-                          }
-                          login();
-                        },
+
+                            login();
+                          },
+                        ),
+                      )),
+                  Column(
+                    children: <Widget>[
+                      CustomText(
+                        text: '- OR -',
+                        colors: Colors.black,
+                        size: 14,
+                        weight: FontWeight.w400,
                       ),
-                    )
+                      SizedBox(height: 20.0),
+                      CustomText(
+                        text: 'Sign in with',
+                        colors: Colors.black,
+                        size: 14,
+                        weight: FontWeight.normal,
+                      ),
+                    ],
                   ),
                   // Login with Google Button
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0.0, 30, 0.0, 0.0),
-                    child: SizedBox(
-                      height: 40.0,
-                      child: new SignInButton(
-                        Buttons.Google,
-                        onPressed: () {
-                          login() async{
-                            await pr.show();
-                            bool result = await auth.signInWithGoogle();
-                            if (result == true) {
-                              print("Login success");
-                              await pr.hide();
-                              Navigator.pushReplacementNamed(context, '/mainHome');
-                              _formKey.currentState.reset();
-                            }
-                          }
-                          login();
-                        }
-                      )
-                    )
-                  ),
-                  // Login with Facebook Button
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0.0, 10, 0.0, 0.0),
-                    child: SizedBox(
-                      height: 40.0,
-                      child: new SignInButton(
-                        Buttons.Facebook,
-                        onPressed: (){
-                          logIn() async {
-                            await pr.show();
-                            bool result = await auth.signInWithFB();
-                            if(result == true) {
-                              print("Login success");
-                              await pr.hide();
-                              Navigator.pushReplacementNamed(context, '/mainHome');
-                            } else {
-                              print("log in with facebook failed!");
-                            }
-                          }
-                          logIn();
-                        }
-                      )
-                    )
-                  ),
-                  // Create New Acc button
+                      padding: EdgeInsets.fromLTRB(0.0, 10, 0.0, 0.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          _buildGoogleSignIn(),
+                          _buildFbSignIn()
+                        ],
+                      )),
+                  SizedBox(height: 20.0),
                   FlatButton(
-                    child: new Text(
-                        'Create an account' ,
-                        style: new TextStyle(fontSize: 18.0, fontWeight: FontWeight.w300)),
-                    onPressed: (){
+                      child: new Text('Don\'t have an account? Sign up',
+                          style: new TextStyle(
+                              fontSize: 18.0, fontWeight: FontWeight.w300)),
+                      onPressed: () {
                         Navigator.pushReplacementNamed(context, '/signUp');
-                    }
-                  ),
+                      }),
                 ],
               ),
-            )
-          )
-        ],
-      )
+            ))
+      ],
+    ));
+  }
+
+  Widget _buildGoogleSignIn() {
+    final pr = ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    return GestureDetector(
+      onTap: () {
+        login() async {
+          await pr.show();
+          bool result = await auth.signInWithGoogle();
+          if (result == true) {
+            print("Login success");
+            await pr.hide();
+            Navigator.pushReplacementNamed(context, '/mainHome');
+            _formKey.currentState.reset();
+          }
+        }
+
+        login();
+      },
+      child: Container(
+        height: 50,
+        width: 50,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black26, offset: Offset(0, 2), blurRadius: 6.0)
+            ],
+            image: DecorationImage(
+              image: AssetImage('assets/google.jpg'),
+            )),
+      ),
     );
   }
 
- String getErrorMessage(AuthError errorcode){
-   
+  Widget _buildFbSignIn() {
+    final pr = ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    return GestureDetector(
+      onTap: () {
+        logIn() async {
+          await pr.show();
+          bool result = await auth.signInWithFB();
+          if (result == true) {
+            print("Login success");
+            await pr.hide();
+            Navigator.pushReplacementNamed(context, '/mainHome');
+          } else {
+            print("log in with facebook failed!");
+            await pr.hide();
+            Navigator.pushReplacementNamed(context, '/logIn');
+          }
+        }
+
+        logIn();
+      },
+      child: Container(
+        height: 50,
+        width: 50,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black26, offset: Offset(0, 2), blurRadius: 6.0)
+            ],
+            image: DecorationImage(
+              image: AssetImage('assets/facebook.png'),
+            )),
+      ),
+    );
+  }
+  String getErrorMessage(AuthError errorcode) {
     // String error = " ";
     print(errorcode.toString() + "ERROR");
     switch (errorcode) {
@@ -206,17 +282,17 @@ class _LogInPageState extends State<LogInPage> {
       case AuthError.ERROR_USER_DISABLED:
       case AuthError.ERROR_TOO_MANY_REQUESTS:
       case AuthError.ERROR_OPERATION_NOT_ALLOWED:
-        return "Internal Error" ;
+        return "Internal Error";
         break;
       case AuthError.ERROR_UNKNOWN:
         if (emailController.text == "" || passwordController.text == "") {
           return "Email/Password cannot be blank";
         }
         return "Unknown Error";
-        break;        
+        break;
       default:
         return "Unknown Error";
         break;
-    }    
+    }
   }
 }

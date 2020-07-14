@@ -172,7 +172,7 @@ class _HomePageState extends State<HomePage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  BookDetailsScreen(book, auth)));
+                                  BookDetailsScreen(book, auth,true,false)));
                     },
                     child: Container(
                         margin: EdgeInsets.only(bottom: 19),

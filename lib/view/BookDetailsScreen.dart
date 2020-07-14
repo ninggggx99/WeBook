@@ -7,6 +7,7 @@ import 'package:webookapp/model/book_model.dart';
 import 'package:webookapp/model/comment_model.dart';
 import 'package:webookapp/model/user_model.dart';
 import 'package:webookapp/view/CreateReview.dart';
+import 'package:webookapp/view/EditBookScreen.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view_model/file_provider.dart';
 import 'package:webookapp/view_model/home_provider.dart';
@@ -14,6 +15,7 @@ import 'package:webookapp/view_model/library_provider.dart';
 
 import 'package:epub_kitty/epub_kitty.dart';
 import 'package:webookapp/widget/custom_feedbackContainer.dart';
+import 'package:webookapp/widget/custom_loadingPage.dart';
 import 'package:webookapp/widget/custom_tab_indicator.dart';
 import 'package:webookapp/widget/custom_text.dart';
 
@@ -24,16 +26,19 @@ class BookDetailsScreen extends StatefulWidget {
 
   final Book bookModel;
   final AuthProvider auth;
-
-  BookDetailsScreen(this.bookModel, this.auth);
+  final bool home;
+  final bool profile;
+  BookDetailsScreen(this.bookModel, this.auth, this.home, this.profile);
 }
 
 class _BookDetailsScreenState extends State<BookDetailsScreen> {
   LibraryProvider library;
   HomeProvider feed;
   bool _exist;
+  bool _own;
   int _tabIndex = 0;
-  bool checking = false;
+  bool checkExist = false;
+  bool checkOwn = false;
   int tabbed = 0;
 
   List<Comment> _comment;
@@ -47,45 +52,47 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
   void load() async {
     Book book;
     if (widget.auth.user.uid != null) {
-      final bookOwn = await library.getBooks(widget.auth.user.uid);
+      final bookExist = await library.getBooks(widget.auth.user.uid);
+      final bookOwn = await library.getUserBooks(widget.auth.user.uid);
       final comment = await feed.getComments(widget.bookModel);
       print(widget.bookModel.title);
       // print(comment.length);
-      await feed.addComment(widget.bookModel.key, widget.auth.user.uid, 'Helphelp', 3);
+      // await feed.addComment(widget.bookModel.key, widget.auth.user.uid, 'Helphelp', 3);
       // if (library.error != LibraryError.NO_BOOK){
-      if(bookOwn != null){
-        for (book in bookOwn) {
+      if (bookExist != null) {
+        for (book in bookExist) {
           if (book.bookURL == widget.bookModel.bookURL) {
-            checking = true;
+            checkExist = true;
           }
         }
       }
-      
+      if (bookOwn != null) {
+        for (book in bookOwn) {
+          if (book.bookURL == widget.bookModel.bookURL) {
+            checkOwn = true;
+          }
+        }
+      }
+
       // }
 
-      final exist = checking;
+      final exist = checkExist;
+      final own = checkOwn;
       setState(() {
         _comment = comment;
         _exist = exist;
+        _own = own;
       });
       print(_exist);
     }
   }
 
   TabController _tabcontroller;
-  // @override
-  // void initState(){
-  //   super.initState();
-  //   _tabcontroller.addListener(() {
-  //     print(_tabcontroller.index);
-  //   });
-  // }
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    final pr = ProgressDialog(context,
-        type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
     if (_exist != null) {
       return Scaffold(
         key: _scaffoldKey,
@@ -108,13 +115,17 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                               top: 35,
                               child: GestureDetector(
                                   onTap: () {
-                                    Navigator.pushReplacementNamed(
-                                        context, "/mainHome");
+                                    if (widget.profile == true) {
+                                      Navigator.pushReplacementNamed(
+                                          context, "/writerProfile");
+                                    } else {
+                                      Navigator.pushReplacementNamed(
+                                          context, "/mainHome");
+                                    }
                                   },
                                   child: Container(
                                     width: 32,
                                     height: 32,
-                                    // padding: EdgeInsets.only(top: ),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
                                       color: Colors.white,
@@ -272,9 +283,10 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                                                         return Column(
                                                           children: <Widget>[
                                                             SizedBox(
-                                                              width:30,
-                                                              height:50,
-                                                              child: CircularProgressIndicator(
+                                                              width: 30,
+                                                              height: 50,
+                                                              child:
+                                                                  CircularProgressIndicator(
                                                                 backgroundColor:
                                                                     const Color(
                                                                             0x009688)
@@ -282,7 +294,9 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                                                                             0.5),
                                                               ),
                                                             ),
-                                                            SizedBox(height: 20,)
+                                                            SizedBox(
+                                                              height: 20,
+                                                            )
                                                           ],
                                                         );
                                                       }
@@ -313,135 +327,129 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(left: 0, right: 0, bottom: 25),
-              width: 400,
-              height: 49,
-              color: Colors.transparent,
-              child: 
-              _tabIndex !=2
-              ? FlatButton(
-                color: const Color(0x009688).withOpacity(0.5),
-                onPressed: () async {
-                  if (_tabIndex == 0) {
-                    if (_exist == true) {
-                      void _showDialog(BuildContext ancestorContext) {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text(
-                                    "Are you sure you want to delete ${widget.bookModel.title} ?"),
-                                actions: <Widget>[
-                                  FlatButton(
-                                    child: Text(
-                                      "Confirm",
-                                      style: GoogleFonts.openSans(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          color: const Color(0x009688)
-                                              .withOpacity(0.9)),
-                                    ),
-                                    onPressed: () async {
-                                      Navigator.of(context).pop();
-                                      await pr.show();
-                                      await library.deleteBook(
-                                          widget.bookModel.key,
-                                          widget.auth.user.uid);
-                                      await pr.hide();
-                                      setState(() {
-                                        _exist = false;
-                                      });
-                                    },
-                                  ),
-                                  FlatButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: Text(
-                                      "Cancel",
-                                      style: GoogleFonts.openSans(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          color: const Color(0x009688)
-                                              .withOpacity(0.9)),
-                                    ),
-                                  )
-                                ],
-                              );
-                            });
-                      }
-
-                      _showDialog(context);
-                    } else {
-                      await pr.show();
-                      await library.addBook(
-                          widget.bookModel.key, widget.auth.user.uid);
-                      await pr.hide();
-                      _scaffoldKey.currentState.showSnackBar(
-                        SnackBar(
-                          content: const Text(
-                              'Yay! It has been successfully added to your library.'),
-                        ),
-                      );
-                      setState(() {
-                        _exist = true;
-                      });
-                    }
-                  } else {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CreateReview(
-                                widget.bookModel, widget.auth, feed)));
-                  }
-                },
-                child: _tabIndex == 0
-                    ? _exist == true
-                        ? Text(
-                            'Delete',
-                            style: GoogleFonts.openSans(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white),
-                          )
-                        : Text(
-                            'Add to Library',
-                            style: GoogleFonts.openSans(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white),
-                          )
-                    : Text(
-                        'Add a Review',
-                        style: GoogleFonts.openSans(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white),
-                      ),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-              )
-              :null
-            ),
+                margin: EdgeInsets.only(left: 0, right: 0, bottom: 25),
+                width: 400,
+                height: 49,
+                color: Colors.transparent,
+                child: _own == true
+                    ? _tabIndex == 0 ? writerButton() : null
+                    : bookwormButton()),
           ],
         )),
       );
     } else {
-      return Scaffold(
-          body: Center(
-              child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          CircularProgressIndicator(
-            backgroundColor: const Color(0x009688),
-          ),
-          Text(
-            'Loading..',
-            style: GoogleFonts.openSans(
-                fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black),
-          )
-        ],
-      )));
+      return CustomLoadingPage();
     }
+  }
+
+  Widget writerButton() {
+    final pr = ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    return FlatButton(
+      color: const Color(0x009688).withOpacity(0.5),
+      onPressed: () async {
+        Navigator.push(context,
+                      MaterialPageRoute(
+                          builder: (context) => EditBookScreeen(widget.bookModel)));
+      },
+      child: CustomText(
+          text: 'Edit Book',
+          size: 14,
+          weight: FontWeight.w600,
+          colors: Colors.white),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    );
+  }
+
+  Widget bookwormButton() {
+    final pr = ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    return FlatButton(
+      color: const Color(0x009688).withOpacity(0.5),
+      onPressed: () async {
+        if (_tabIndex == 0) {
+          if (_exist == true) {
+            void _showDialog(BuildContext ancestorContext) {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(
+                          "Are you sure you want to delete ${widget.bookModel.title} ?"),
+                      actions: <Widget>[
+                        FlatButton(
+                          child: CustomText(
+                              text: "Confirm",
+                              size: 14,
+                              weight: FontWeight.w600,
+                              colors: const Color(0x009688).withOpacity(0.9)),
+                          onPressed: () async {
+                            Navigator.of(context).pop();
+                            await pr.show();
+                            await library.deleteBook(
+                                widget.bookModel.key, widget.auth.user.uid);
+                            await pr.hide();
+                            setState(() {
+                              _exist = false;
+                            });
+                          },
+                        ),
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: CustomText(
+                              text: "Cancel",
+                              size: 14,
+                              weight: FontWeight.w600,
+                              colors: const Color(0x009688).withOpacity(0.9)),
+                        )
+                      ],
+                    );
+                  });
+            }
+
+            _showDialog(context);
+          } else {
+            await pr.show();
+            await library.addBook(widget.bookModel.key, widget.auth.user.uid);
+            await pr.hide();
+            _scaffoldKey.currentState.showSnackBar(
+              SnackBar(
+                content: const Text(
+                    'Yay! It has been successfully added to your library.'),
+              ),
+            );
+            setState(() {
+              _exist = true;
+            });
+          }
+        } else {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      CreateReview(widget.bookModel, widget.auth, feed)));
+        }
+      },
+      child: _tabIndex == 0
+          ? _exist == true
+              ? CustomText(
+                  text: 'Delete',
+                  size: 14,
+                  weight: FontWeight.w600,
+                  colors: Colors.white)
+              : CustomText(
+                  text: 'Add to Library',
+                  size: 14,
+                  weight: FontWeight.w600,
+                  colors: Colors.white)
+          : CustomText(
+              text: 'Add a Review',
+              size: 14,
+              weight: FontWeight.w600,
+              colors: Colors.white),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    );
   }
 }

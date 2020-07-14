@@ -12,13 +12,16 @@ import 'package:webookapp/widget/custom_loadingPage.dart';
 class BottomNavBar extends StatefulWidget{
 
   @override
-   State<StatefulWidget> createState() => _BottomNavBarState();
+   _BottomNavBarState createState() => _BottomNavBarState();
+  
+  final int index;
+  BottomNavBar(this.index);
 }
 
 class _BottomNavBarState extends State<BottomNavBar>{
   AuthProvider auth;
   User _user;
-  
+  int _currentIndex = 0;
   void didChangeDependencies(){
     super.didChangeDependencies();
     auth = Provider.of<AuthProvider>(context);
@@ -29,14 +32,14 @@ class _BottomNavBarState extends State<BottomNavBar>{
       final user = await auth.retrieveUser();
       setState(() {
         _user = user;
+        _currentIndex = widget.index;
       });
     }
     else{
       _user = null;
     }
   }
-
-  int _currentIndex = 0;
+  
   final List <Widget> _writerChildren = [HomePage(),LibraryPage(),CreateBookPage(),NotificationPage(),ProfilePage()];
   final List <Widget> _bookwormChildren = [HomePage(),LibraryPage(),NotificationPage(),ProfilePage()];
   void onTappedBar(int index){

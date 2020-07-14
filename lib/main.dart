@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/view/EditProfileScreen.dart';
 import 'package:webookapp/view/LandingPage.dart';
+import 'package:webookapp/view/Profile.dart';
 import 'package:webookapp/view/logIn.dart';
 import 'package:webookapp/view/BottomNavBar.dart';
 import 'package:webookapp/view/signUp.dart';
@@ -35,10 +36,12 @@ class MyApp extends StatelessWidget {
             ),*/
             home: LandingPage(),
             routes: {
-              '/mainHome':(context) => BottomNavBar(),
+              '/mainHome':(context) => BottomNavBar(0),
               '/logIn': (context) => LogInPage(),
               '/signUp' : (context) => SignUpPage(),
               '/editProfile': (context) => EditProfileScreen(),
+              '/writerProfile':(context) => BottomNavBar(4),
+              '/readerProfile':(context) => BottomNavBar(3)
             },
             ) 
         );

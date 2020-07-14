@@ -3,24 +3,23 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:webookapp/model/book_model.dart';
 import 'package:webookapp/model/user_model.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view_model/file_provider.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-
-import 'package:flutter/foundation.dart';
 import 'package:webookapp/widget/custom_text.dart';
 
-class CreateBookPage extends StatefulWidget{
-  CreateBookPage({Key key}) : super(key:key);
+class EditBookScreeen extends StatefulWidget{
   @override
-  _CreateBookPageState createState(){
-      return _CreateBookPageState();
+  _EditBookScreeenState createState(){
+      return _EditBookScreeenState();
   }
+  final Book book;
+  EditBookScreeen(this.book);
 }
-class _CreateBookPageState extends State<CreateBookPage>{
+class _EditBookScreeenState extends State<EditBookScreeen>{
   AuthProvider auth;
   FileProvider file;
   User user;
@@ -37,6 +36,8 @@ class _CreateBookPageState extends State<CreateBookPage>{
   TextEditingController coverController = TextEditingController();
   TextEditingController bookController = TextEditingController();
 
+
+
   final _formKey = GlobalKey<FormState>();
 
   //Can add more
@@ -52,32 +53,44 @@ class _CreateBookPageState extends State<CreateBookPage>{
     "Short Story"
   ];
 
-  String selectedCat = "Romance";
+  String selectedCat ;
+  void load(){
+    setState(() {
+      selectedCat = widget.book.category;
+    });
+  }
   @override
   Widget build (BuildContext context){
+    titleController.value = titleController.value.copyWith(
+      text: widget.book.title
+    );
+    descController.value = descController.value.copyWith(
+      text: widget.book.description
+    );
+    catController.value = catController.value.copyWith(
+      text: widget.book.category
+    );
+    coverController.value = coverController.value.copyWith(
+      text: widget.book.coverURL
+    );
+    bookController.value = bookController.value.copyWith(
+      text: widget.book.bookURL
+    );
     final pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0x009688).withOpacity(0.5),
+        title: CustomText(
+          text: 'Edit Book',
+          size: 22,
+          weight: FontWeight.w600,
+          colors: Colors.white,
+        )
+      ),
       body: Container(
         child: ListView(
           physics:  BouncingScrollPhysics(),
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(left: 25, top:25),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    'Create Book',
-                    style: GoogleFonts.openSans(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black
-                    ),
-
-                  )
-                ],
-              )
-            ),
             Form(
               key: _formKey,
               child: ListView(
@@ -251,7 +264,7 @@ class _CreateBookPageState extends State<CreateBookPage>{
                                 borderRadius: new BorderRadius.circular(10.0)),
                             color: const Color(0x009688).withOpacity(0.8),
                             child: new CustomText(
-                              text: "Upload My Work",
+                              text: "Save My Work",
                               size: 14,
                               colors: Colors.white,
                               weight: FontWeight.normal,
@@ -260,18 +273,18 @@ class _CreateBookPageState extends State<CreateBookPage>{
                               upload () async {
                                 if(_formKey.currentState.validate()){
                                   await pr.show();
-                                  User user = await auth.retrieveUser(); 
+                                  // User user = await auth.retrieveUser(); 
 
-                                  await file.uploadBook(
-                                    user, 
-                                    titleController.text, 
-                                    descController.text, 
-                                    catController.text,
-                                    coverController.text, 
-                                    bookController.text);
+                                  // await file.uploadBook(
+                                  //   user, 
+                                  //   titleController.text, 
+                                  //   descController.text, 
+                                  //   catController.text,
+                                  //   coverController.text, 
+                                  //   bookController.text);
 
                                   final snackBar = SnackBar(
-                                    content: Text('Yay! Your work has been uploaded!'),
+                                    content: Text('Yay! Your work has been updated!'),
                                     duration: Duration(seconds: 3),);
 
                                   await pr.hide();

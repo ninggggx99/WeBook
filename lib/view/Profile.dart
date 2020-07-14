@@ -199,7 +199,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         BookDetailsScreen(
-                                                            book, _auth)));
+                                                            book, _auth,false,true)));
                                           }),
                                         );
                                       },
@@ -261,7 +261,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         BookDetailsScreen(
-                                                            book, _auth)));
+                                                            book, _auth,false,true)));
                                           }),
                                         );
                                       },

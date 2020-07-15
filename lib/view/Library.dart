@@ -6,14 +6,12 @@ import 'package:provider/provider.dart';
 
 import 'package:webookapp/model/book_model.dart';
 import 'package:webookapp/model/user_model.dart';
-import 'package:webookapp/view/BottomNavBar.dart';
 
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view_model/download_provider.dart';
 import 'package:webookapp/view_model/file_provider.dart';
 import 'package:webookapp/view_model/library_provider.dart';
 
-import 'package:webookapp/widget/custom_bookItem.dart';
 import 'package:webookapp/widget/custom_deleteBookAlert.dart';
 import 'package:webookapp/widget/custom_loadingPage.dart';
 import 'package:webookapp/widget/custom_text.dart';

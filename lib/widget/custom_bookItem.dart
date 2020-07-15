@@ -1,8 +1,17 @@
 import 'package:epub_kitty/epub_kitty.dart';
 import 'package:flutter/material.dart';
+import 'package:focused_menu/focused_menu.dart';
+import 'package:focused_menu/modals.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:webookapp/model/book_model.dart';
+import 'package:webookapp/view/BottomNavBar.dart';
+import 'package:webookapp/view/Library.dart';
+import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view_model/file_provider.dart';
+import 'package:webookapp/view_model/library_provider.dart';
+import 'package:webookapp/widget/custom_deleteBookAlert.dart';
+import 'package:webookapp/widget/custom_text.dart';
 
 
 class BookItem extends StatelessWidget {
@@ -10,6 +19,8 @@ class BookItem extends StatelessWidget {
   final String title;
   final Book book;
   final FileProvider file;
+  final LibraryProvider library;
+  final AuthProvider auth;
 
   BookItem({
     Key key,
@@ -17,17 +28,37 @@ class BookItem extends StatelessWidget {
     @required this.title,
     @required this.book,
     @required this.file,
+    @required this.library,
+    @required this.auth
   }) : super(key: key);
 
-  // static final uuid = Uuid();
-  // final String imgTag = uuid.v4();
-  // final String titleTag = uuid.v4();
-  // final String authorTag = uuid.v4();
 
   @override
   Widget build(BuildContext context) {
     final pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
     return InkWell(
+      onLongPress: () async{
+        showModalBottomSheet(
+          context: context, 
+          builder: (context) {
+            return Container(
+              height: 250,
+              color: Color(0xFF737373),
+              child: Container(                 
+                child: _buildBottomSheet(context),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: const Radius.circular(10),
+                    topRight: const Radius.circular(10)
+                  )
+                ),
+              ),
+            );
+          }
+        );
+      
+      },
       onTap: () async{
        String epubPath = "";
         await pr.show();
@@ -70,4 +101,92 @@ class BookItem extends StatelessWidget {
       ),
     );
   }
+  Widget _buildBottomSheet (BuildContext context){
+    return Column(
+      children: <Widget>[
+        SizedBox(height: 10),
+        Row(
+          children: <Widget>[   
+            SizedBox(width: 10),         
+            Container(
+              height: 81,
+              width: 62,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                    image: NetworkImage(img)),
+                color: const Color(0xe0f2f1),
+              ),
+            ),
+            SizedBox(
+              width: 21,
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  book.title,
+                  style: GoogleFonts.openSans(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black),
+                ),
+                SizedBox(height: 5),
+                Text(
+                  book.authorName,
+                  style: GoogleFonts.openSans(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black),
+                ),
+                SizedBox(height: 5),
+                Text(
+                  book.category,
+                  style: GoogleFonts.openSans(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black),
+                ),
+              ],
+            ) 
+          ],
+        ),
+        SizedBox(height:15),
+        ListTile(
+          leading: Icon(Icons.file_download),
+          title: CustomText(
+                  text: 'Download',
+                  colors: Colors.black,
+                  size: 14,
+                  weight: FontWeight.normal,
+                ),
+          onTap: () {},
+        ),
+        ListTile(
+          leading: Icon(Icons.delete),
+          title: CustomText(
+                  text: 'Remove from Library',
+                  colors: Colors.black,
+                  size: 14,
+                  weight: FontWeight.normal,
+                ),
+          onTap: () async{
+            void _showDialog(BuildContext ancestorCont) async{
+              await showDialog(
+                context: context,
+                builder: (BuildContext context){
+                  return CustomDeleteBookAlert(book, library, auth);
+                }
+              );
+                           
+            }
+            _showDialog(context);
+            
+          },
+        ),
+      ],
+    );
+  }
+
 }

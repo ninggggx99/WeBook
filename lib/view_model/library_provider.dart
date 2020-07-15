@@ -48,7 +48,7 @@ class LibraryProvider {
     //   Map<dynamic, dynamic> values = snapshot.value;
     //   values.forEach((key, value) {
     //     if (value["userId"] == uid) {
-    //       records.add(BookRecord.fromJson(Map.from(value)));
+    //       records.add(BookRecord.fromJson(Map.from(value))); 
     //     }
     //   });
     // });
@@ -86,7 +86,7 @@ class LibraryProvider {
 
     if (!exist) {
 
-      BookRecord record = new BookRecord(bookId, uid, false);
+      BookRecord record = new BookRecord(bookId, uid, false,false);
       String key =  _dbRef.child("bookRecords").push().key;
 
       await _dbRef.child("bookRecords/$key").set(record.toJson());

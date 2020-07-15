@@ -7,6 +7,7 @@ import 'package:webookapp/view/logIn.dart';
 import 'package:webookapp/view/BottomNavBar.dart';
 import 'package:webookapp/view/signUp.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
+import 'package:webookapp/view_model/download_provider.dart';
 import 'package:webookapp/view_model/home_provider.dart';
 import 'package:webookapp/view_model/file_provider.dart';
 import 'package:webookapp/view_model/library_provider.dart';
@@ -25,7 +26,8 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => AuthProvider()),
           Provider(create: (_) => HomeProvider()),
           Provider(create: (_) => LibraryProvider()),
-          Provider(create: (_) => FileProvider(),)
+          Provider(create: (_) => FileProvider()),
+          Provider(create: (_) => DownloadProvider()),
         ],
         child: MaterialApp(
             title: 'WeBook',
@@ -41,7 +43,8 @@ class MyApp extends StatelessWidget {
               '/signUp' : (context) => SignUpPage(),
               '/editProfile': (context) => EditProfileScreen(),
               '/writerProfile':(context) => BottomNavBar(4),
-              '/readerProfile':(context) => BottomNavBar(3)
+              '/readerProfile':(context) => BottomNavBar(3),
+              '/library': (context) => BottomNavBar(1)
             },
             ) 
         );

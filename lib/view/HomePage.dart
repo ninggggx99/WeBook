@@ -13,6 +13,7 @@ import 'package:webookapp/view/BookDetailsScreen.dart';
 import 'package:webookapp/view_model/home_provider.dart';
 import 'package:webookapp/widget/custom_homeTabBar.dart';
 import 'package:webookapp/widget/custom_loadingPage.dart';
+import 'package:webookapp/widget/custom_text.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -50,10 +51,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // @override
-  // void dispose(){
-  //   super.dispose();
-  // }
   @override
   Widget build(BuildContext context) {
     if (_user == null ||
@@ -74,19 +71,17 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    'Hi, ' + _user.firstName,
-                    style: GoogleFonts.openSans(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.grey),
+                  CustomText(
+                    text: 'Hi, ' + _user.firstName,
+                    size: 14,
+                    weight: FontWeight.w600,
+                    colors: Colors.grey
                   ),
-                  Text(
-                    'Discover Latest Book',
-                    style: GoogleFonts.openSans(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black),
+                  CustomText(
+                    text:'Discover Latest Book',
+                    size: 22,
+                    weight: FontWeight.w600,
+                    colors: Colors.black
                   )
                 ],
               ),
@@ -197,28 +192,25 @@ class _HomePageState extends State<HomePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text(
-                                  book.title,
-                                  style: GoogleFonts.openSans(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black),
+                                CustomText(
+                                  text: book.title,
+                                  size: 16,
+                                  weight: FontWeight.w600,
+                                  colors: Colors.black
                                 ),
                                 SizedBox(height: 5),
-                                Text(
-                                  book.authorName,
-                                  style: GoogleFonts.openSans(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.black),
+                                CustomText(
+                                  text:book.authorName,
+                                  size: 10,
+                                  weight: FontWeight.w400,
+                                  colors: Colors.black
                                 ),
                                 SizedBox(height: 5),
-                                Text(
-                                  book.category,
-                                  style: GoogleFonts.openSans(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black),
+                                CustomText(
+                                  text:book.category,
+                                  size: 16,
+                                  weight: FontWeight.w600,
+                                  colors: Colors.black
                                 ),
                               ],
                             )

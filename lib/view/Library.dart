@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import 'package:webookapp/model/book_model.dart';
 import 'package:webookapp/model/user_model.dart';
+import 'package:webookapp/view/DownloadedBookScreen.dart';
 
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view_model/download_provider.dart';
@@ -52,6 +53,7 @@ class _LibraryPageState extends State<LibraryPage>{
   @override
   Widget build(BuildContext context) {
       if ( _book != null){       
+        print (_book);
         return Scaffold(          
           body: Container(
             child: ListView(
@@ -59,31 +61,43 @@ class _LibraryPageState extends State<LibraryPage>{
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.only(left: 25, top:25),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      CustomText(
-                        text: 'What are you',                        
-                        size: 22,
-                        weight: FontWeight.w100,
-                        colors: Colors.black                        
-                      ),
-                      Row(
+                  child: Row(                   
+                    children: <Widget>[                      
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,      
                         children: <Widget>[
                           CustomText(
-                            text: 'reading ',
-                            size: 22,
-                            weight: FontWeight.w100,
-                            colors: Colors.black
+                              text: 'What are you',                        
+                              size: 22,
+                              weight: FontWeight.w100,
+                              colors: Colors.black                        
                           ),
-                          CustomText(
-                            text: 'today ?',
-                            size: 22,
-                            weight: FontWeight.w600,
-                            colors: Colors.black                            
+                          Row(
+                            children: <Widget>[
+                              CustomText(
+                                text: 'reading ',
+                                size: 22,
+                                weight: FontWeight.w100,
+                                colors: Colors.black
+                              ),
+                              CustomText(
+                                text: 'today ?',
+                                size: 22,
+                                weight: FontWeight.w600,
+                                colors: Colors.black                            
+                              ),
+                            ],
                           )
                         ],
-                      )
+                      ),
+                      Spacer(),
+                      IconButton(                            
+                        icon: Icon(Icons.file_download),
+                        onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => DownloadBookScreen(auth)));
+                        }
+                      ),
+                      SizedBox(width: 10,)
                     ],
                   )
                 ),
@@ -262,7 +276,7 @@ class _LibraryPageState extends State<LibraryPage>{
               await showDialog(
                 context: context,
                 builder: (BuildContext context){
-                  return CustomDeleteBookAlert(book, library, auth);
+                  return CustomDeleteBookAlert(book, library, auth,downloadProvider);
                 }
               ).then((value){
                 Navigator.of(context).pop();

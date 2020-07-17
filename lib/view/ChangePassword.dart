@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:webookapp/model/user_model.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/widget/custom_text.dart';
+import 'package:webookapp/widget/custom_AppBar.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   @override
@@ -48,9 +49,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     final pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
   
    return Scaffold(
-    appBar: AppBar(
-       backgroundColor: Color(0x009688).withOpacity(0.5),
-    ),
+    appBar: CustomAppBar(text: "Change Password" ),
     body: Stack(
       children: <Widget>[
         Container(

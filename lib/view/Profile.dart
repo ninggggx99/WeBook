@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'package:webookapp/model/book_model.dart';
@@ -62,11 +61,14 @@ class _ProfilePageState extends State<ProfilePage> {
       _user = null;
     }
   }
+   
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
+    MediaQueryData screen = MediaQuery.of(context);
+    print(screen.size.height/4);
     final feed = Provider.of<HomeProvider>(context);
     if (_user == null) {
       return CustomLoadingPage();
@@ -127,24 +129,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ],
                   ),
-
-                  // _book == null
-                  //     ? Column(
-                  //         mainAxisAlignment: MainAxisAlignment.center,
-                  //         children: <Widget>[
-                  //           CircularProgressIndicator(
-                  //             backgroundColor: const Color(0x009688),
-                  //           ),
-                  //           Text(
-                  //             'Loading..',
-                  //             style: GoogleFonts.openSans(
-                  //                 fontSize: 14,
-                  //                 fontWeight: FontWeight.w600,
-                  //                 color: Colors.black),
-                  //           )
-                  //         ],
-                  //       )
-                  //     :
                   Expanded(
                     child: Column(
                       children: <Widget>[
@@ -165,7 +149,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               Expanded(
                                 child: Container(
-                                    height: 200,
+                                    height: screen.size.height/4,
                                     padding: EdgeInsets.only(top: 10),
                                     child: 
                                     _userBook != null 
@@ -181,8 +165,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                         final book = _userBook[index];
                                         return Container(
                                           margin: EdgeInsets.only(right: 19),
-                                          height: 180,
-                                          width: 150,
+                                          height: screen.size.height/4,
+                                          width: 100,
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(10),
@@ -227,7 +211,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               Expanded(
                                 child:  Container(
-                                    height: 200,
+                                    height: screen.size.height/4,
                                     padding: EdgeInsets.only(top: 10),
                                     child: 
                                     _book != null 
@@ -244,7 +228,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         return Container(
                                           margin: EdgeInsets.only(right: 19),
                                           height: 180,
-                                          width: 150,
+                                          width: 100,
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(10),

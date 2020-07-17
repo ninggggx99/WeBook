@@ -5,11 +5,12 @@ import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view_model/download_provider.dart';
 import 'package:webookapp/widget/custom_loadingPage.dart';
 import 'package:webookapp/widget/custom_text.dart';
+import 'package:webookapp/widget/custom_AppBar.dart';
 
 
 class DownloadBookScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => new _DownloadBookScreenState();
+  _DownloadBookScreenState createState() => new _DownloadBookScreenState();
   AuthProvider auth;
   
   DownloadBookScreen(this.auth);
@@ -47,13 +48,7 @@ class _DownloadBookScreenState extends State<DownloadBookScreen> {
     else{
       // print(_bookDownload);
        return Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(
-            color: Colors.black
-          ),
-          title: CustomText(text: "Download", size: 22, weight: FontWeight.w500, colors: Colors.black),
-          backgroundColor: Colors.white,
-        ),
+        appBar: CustomAppBar( text: "Download"),
         body: Container(
           child: ListView(
           physics: BouncingScrollPhysics(),

@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            custom_homeTabBar(
+            CustomHomeTabBar(
               auth: auth,
               newBook: _bookRec,
               bestBook: _bookRate,

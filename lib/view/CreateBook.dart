@@ -55,7 +55,7 @@ class _CreateBookPageState extends State<CreateBookPage>{
   String selectedCat = "Romance";
   @override
   Widget build (BuildContext context){
-    final pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+   
     return Scaffold(
       body: Container(
         child: ListView(
@@ -104,6 +104,7 @@ class _CreateBookPageState extends State<CreateBookPage>{
                           ),
                           validator: (value) => value.isEmpty ? 'Title can\'t be empty' : null,
                         ),
+                        SizedBox(height: 10,),
                         TextFormField(
                           controller: descController,
                           keyboardType: TextInputType.multiline,
@@ -121,7 +122,7 @@ class _CreateBookPageState extends State<CreateBookPage>{
                           validator: (value) => value.isEmpty ? 'Book Description can\'t be empty' : null,
                         ),
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                           child: Row(
                               children: <Widget> [
                                 Icon(Icons.category, color: Colors.grey),
@@ -153,7 +154,7 @@ class _CreateBookPageState extends State<CreateBookPage>{
                         ),
                         //Upload Image
                         Padding(
-                          padding: EdgeInsets.fromLTRB(0,10,0,0),
+                          padding: EdgeInsets.fromLTRB(0,20,0,0),
                           child: Row(
                             children: <Widget>[
                               Expanded(
@@ -197,9 +198,10 @@ class _CreateBookPageState extends State<CreateBookPage>{
                             ],
                           ),
                         ),
+                        
                         //Document Upload
                         Padding(
-                          padding: EdgeInsets.fromLTRB(0,10,0,0),
+                          padding: EdgeInsets.fromLTRB(0,20,0,0),
                           child: Row(
                             children: <Widget>[
                               Expanded(
@@ -246,50 +248,18 @@ class _CreateBookPageState extends State<CreateBookPage>{
                         //Upload Button
                         Padding(
                           padding: const EdgeInsets.fromLTRB(100, 30.0, 100, 30),
-                          child: new RaisedButton(
-                            shape: new RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(10.0)),
-                            color: const Color(0x009688).withOpacity(0.8),
-                            child: new CustomText(
-                              text: "Upload My Work",
+                          child:  FlatButton(
+                          color: const Color(0x009688).withOpacity(0.6),
+                          hoverColor: const Color(0x009688).withOpacity(0.8),
+                          
+                          onPressed: upload,
+                            child: CustomText(
+                              text: 'Upload My Work',
                               size: 14,
+                              weight: FontWeight.w700 ,
                               colors: Colors.white,
-                              weight: FontWeight.normal,
                             ),
-                            onPressed: () {
-                              upload () async {
-                                if(_formKey.currentState.validate()){
-                                  await pr.show();
-                                  User user = await auth.retrieveUser(); 
-
-                                  await file.uploadBook(
-                                    user, 
-                                    titleController.text, 
-                                    descController.text, 
-                                    catController.text,
-                                    coverController.text, 
-                                    bookController.text);
-
-                                  final snackBar = SnackBar(
-                                    content: Text('Yay! Your work has been uploaded!'),
-                                    duration: Duration(seconds: 3),);
-
-                                  await pr.hide();
-
-                                  titleController.clear();
-                                  descController.clear();
-                                  coverController.clear();
-                                  bookController.clear();
-                                  Scaffold.of(context).showSnackBar(snackBar);
-
-                                  print("Submitted");
-                                } else {
-                                  print("Not Submitted");
-                                }
-                              }
-                              upload();
-                            },
-                          )
+                        ),
                         ),
                       ],
                     )
@@ -302,4 +272,36 @@ class _CreateBookPageState extends State<CreateBookPage>{
       )
     );
   }
+  void upload () async {
+    final pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    if(_formKey.currentState.validate()){
+      await pr.show();
+      User user = await auth.retrieveUser(); 
+
+      await file.uploadBook(
+        user, 
+        titleController.text, 
+        descController.text, 
+        catController.text,
+        coverController.text, 
+        bookController.text);
+
+      final snackBar = SnackBar(
+        content: Text('Yay! Your work has been uploaded!'),
+        duration: Duration(seconds: 3),);
+
+      await pr.hide();
+
+      titleController.clear();
+      descController.clear();
+      coverController.clear();
+      bookController.clear();
+      Scaffold.of(context).showSnackBar(snackBar);
+
+      print("Submitted");
+    } else {
+      print("Not Submitted");
+    }
+  }
+
 }

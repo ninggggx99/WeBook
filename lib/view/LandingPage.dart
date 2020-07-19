@@ -14,7 +14,7 @@ class LandingPage extends StatelessWidget {
     
     final auth = Provider.of<AuthProvider>(context);
     if (auth.status == AuthStatus.LOGGED_IN){
-      return BottomNavBar();
+      return BottomNavBar(0);
     }
     else if (auth.status == AuthStatus.NOT_LOGGED_IN){
       return LogInPage();

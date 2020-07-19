@@ -98,7 +98,7 @@ class custom_homeTabBar extends StatelessWidget {
                           onTap: () async{
                             await Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (context) => BookDetailsScreen(book,auth))
+                              MaterialPageRoute(builder: (context) => BookDetailsScreen(book,auth,true,false))
                             );
                           }
                         ),
@@ -127,7 +127,7 @@ class custom_homeTabBar extends StatelessWidget {
                           onTap: () async{
                             await Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (context) => BookDetailsScreen(book,auth))
+                              MaterialPageRoute(builder: (context) => BookDetailsScreen(book,auth,true,false))
                             );
                           }
                         ),
@@ -156,7 +156,7 @@ class custom_homeTabBar extends StatelessWidget {
                           onTap: () async{
                             await Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (context) => BookDetailsScreen(book,auth))
+                              MaterialPageRoute(builder: (context) => BookDetailsScreen(book,auth,true,false))
                             );
                           }
                         ),

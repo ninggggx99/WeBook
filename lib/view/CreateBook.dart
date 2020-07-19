@@ -250,12 +250,11 @@ class _CreateBookPageState extends State<CreateBookPage>{
                             shape: new RoundedRectangleBorder(
                                 borderRadius: new BorderRadius.circular(10.0)),
                             color: const Color(0x009688).withOpacity(0.8),
-                            child: new Text(
-                              "Upload My Work",
-                              style:  GoogleFonts.openSans(
-                                fontSize: 14,
-                                color: Colors.white
-                              )
+                            child: new CustomText(
+                              text: "Upload My Work",
+                              size: 14,
+                              colors: Colors.white,
+                              weight: FontWeight.normal,
                             ),
                             onPressed: () {
                               upload () async {

@@ -149,7 +149,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Column(
                       children: <Widget>[
                         SizedBox(height: 10),
-                        Expanded(
+                        _user.role =="Bookworm" ? Container(): Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
@@ -199,7 +199,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         BookDetailsScreen(
-                                                            book, _auth)));
+                                                            book, _auth,false,true)));
                                           }),
                                         );
                                       },
@@ -261,7 +261,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         BookDetailsScreen(
-                                                            book, _auth)));
+                                                            book, _auth,false,true)));
                                           }),
                                         );
                                       },

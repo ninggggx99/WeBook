@@ -41,6 +41,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
   bool checkOwn = false;
   int tabbed = 0;
 
+  List<Book> _bookSim;
   List<Comment> _comment;
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -51,9 +52,11 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
 
   void load() async {
     Book book;
+    
     if (widget.auth.user.uid != null) {
       final bookExist = await library.getBooks(widget.auth.user.uid);
       final bookOwn = await library.getUserBooks(widget.auth.user.uid);
+      final bookSimilar = await feed.getBooksByCat(widget.bookModel);
       final comment = await feed.getComments(widget.bookModel);
       print(widget.bookModel.title);
       // print(comment.length);
@@ -82,6 +85,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
         _comment = comment;
         _exist = exist;
         _own = own;
+        _bookSim = bookSimilar;
       });
       print(_exist);
     }
@@ -305,14 +309,19 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                                     ),
                                     Padding(
                                       padding: EdgeInsets.only(
-                                          left: 0, right: 25, top: 20),
-                                      child: Text("Coming soon",
-                                          style: GoogleFonts.openSans(
-                                              fontSize: 12,
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.w400,
-                                              letterSpacing: 1.5,
-                                              height: 2)),
+                                          left: 0, right:0, top: 20),
+                                      child: SizedBox(
+                                        height: 80,
+                                        child: _buildListView(_bookSim)
+                                      )
+
+                                      // Text("Coming soon",
+                                      //     style: GoogleFonts.openSans(
+                                      //         fontSize: 12,
+                                      //         color: Colors.grey,
+                                      //         fontWeight: FontWeight.w400,
+                                      //         letterSpacing: 1.5,
+                                      //         height: 2)),
                                     ),
                                   ],
                                 ),
@@ -451,5 +460,40 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
               colors: Colors.white),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
+  }
+  Widget _buildListView (List<Book> _book){
+    return ListView.builder(
+      padding: EdgeInsets.only(left:25, right:6),
+      itemCount: _book.length,
+      shrinkWrap: true,
+      physics: BouncingScrollPhysics(),
+      scrollDirection: Axis.horizontal,
+      itemBuilder: (context, index){
+        final book = _book[index];
+        return Container(
+          margin: EdgeInsets.only(right:19),
+          height: 80,
+          width: 100,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: const Color(0xe0f2f1),
+            image: DecorationImage(
+              image: NetworkImage(book.coverURL),
+              fit: BoxFit.cover,
+              
+            ),
+          ),
+          child: InkWell(
+            onTap: () async{
+              await Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => BookDetailsScreen(book,widget.auth,true,false))
+              );
+            }
+          ),
+        );
+      },
+    );
+
   }
 }

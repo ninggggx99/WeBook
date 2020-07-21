@@ -184,7 +184,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> signUpWithFB(String role) async {
-    
+
     final result = await _facebookLogin.logIn(['email']);
     print(result.status);
     final token = result.accessToken.token;

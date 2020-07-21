@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/model/book_model.dart';
 import 'package:webookapp/model/user_model.dart';
+import 'package:webookapp/view/SearchScreen.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 
 import 'package:flutter/foundation.dart';
@@ -28,6 +29,8 @@ class _HomePageState extends State<HomePage> {
   List<Book> _bookRec;
   List<Book> _bookPop;
   List<Book> _bookRate;
+
+  TextEditingController searchController = TextEditingController();
 
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -95,6 +98,7 @@ class _HomePageState extends State<HomePage> {
               child: Stack(
                 children: <Widget>[
                   TextField(
+                    controller: searchController,
                     maxLengthEnforced: true,
                     style: GoogleFonts.openSans(
                         fontSize: 12,
@@ -125,7 +129,28 @@ class _HomePageState extends State<HomePage> {
                             icon: Icon(Icons.search),
                             color: Colors.white,
                             iconSize: 30,
-                            onPressed: () {},
+                            onPressed: () async {
+                              String search = searchController.text;
+                              searchController.clear();
+                              if (search != null && search != ""){
+                              
+                                List<Book> searchResult = await home.searchResultBook(search, auth.user.uid);
+                                if (searchResult.isEmpty){
+                                  Scaffold.of(context).showSnackBar(
+                                    SnackBar(content: Text("Book not found"),)
+                                  );   
+                                }
+                                else{
+                                  Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          SearchBookScreen(auth,searchResult,search)));
+                                }
+                                
+                              }
+                              
+                            },
                           )))
                 ],
               ),
@@ -224,3 +249,4 @@ class _HomePageState extends State<HomePage> {
     }
   }
 }
+

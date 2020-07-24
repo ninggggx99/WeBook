@@ -52,7 +52,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
 
   void load() async {
     Book book;
-    
+
     if (widget.auth.user.uid != null) {
       final bookExist = await library.getBooks(widget.auth.user.uid);
       final bookOwn = await library.getUserBooks(widget.auth.user.uid);
@@ -218,6 +218,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                               Expanded(
                                 child: TabBarView(
                                   children: [
+                                    // description
                                     Padding(
                                       padding: EdgeInsets.only(
                                           left: 0, right: 25, top: 20),
@@ -229,6 +230,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                                               letterSpacing: 1.5,
                                               height: 2)),
                                     ),
+                                    // reviews
                                     Padding(
                                       padding: EdgeInsets.only(
                                           left: 0, right: 25, top: 20),
@@ -307,22 +309,30 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                                                     });
                                               }),
                                     ),
+                                    //s
                                     Padding(
-                                      padding: EdgeInsets.only(
-                                          left: 0, right:0, top: 20),
-                                      child: SizedBox(
-                                        height: 80,
-                                        child: _buildListView(_bookSim)
-                                      )
+                                        padding: EdgeInsets.only(
+                                            left: 0, right: 0, top: 20),
+                                        child: Column(
+                                          children: <Widget>[
+                                            Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.20,
+                                                child:
+                                                    _buildListView(_bookSim)),
+                                          ],
+                                        )
 
-                                      // Text("Coming soon",
-                                      //     style: GoogleFonts.openSans(
-                                      //         fontSize: 12,
-                                      //         color: Colors.grey,
-                                      //         fontWeight: FontWeight.w400,
-                                      //         letterSpacing: 1.5,
-                                      //         height: 2)),
-                                    ),
+                                        // Text("Coming soon",
+                                        //     style: GoogleFonts.openSans(
+                                        //         fontSize: 12,
+                                        //         color: Colors.grey,
+                                        //         fontWeight: FontWeight.w400,
+                                        //         letterSpacing: 1.5,
+                                        //         height: 2)),
+                                        ),
                                   ],
                                 ),
                               ),
@@ -357,9 +367,10 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
     return FlatButton(
       color: const Color(0x009688).withOpacity(0.5),
       onPressed: () async {
-        Navigator.push(context,
-                      MaterialPageRoute(
-                          builder: (context) => EditBookScreeen(widget.bookModel)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EditBookScreeen(widget.bookModel)));
       },
       child: CustomText(
           text: 'Edit Book',
@@ -461,39 +472,37 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
   }
-  Widget _buildListView (List<Book> _book){
+
+  Widget _buildListView(List<Book> _book) {
     return ListView.builder(
-      padding: EdgeInsets.only(left:25, right:6),
+      padding: EdgeInsets.only(left: 25, right: 6),
       itemCount: _book.length,
       shrinkWrap: true,
       physics: BouncingScrollPhysics(),
       scrollDirection: Axis.horizontal,
-      itemBuilder: (context, index){
+      itemBuilder: (context, index) {
         final book = _book[index];
         return Container(
-          margin: EdgeInsets.only(right:19),
-          height: 80,
+          margin: EdgeInsets.only(right: 19),
+          height: 120,
           width: 100,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             color: const Color(0xe0f2f1),
             image: DecorationImage(
               image: NetworkImage(book.coverURL),
-              fit: BoxFit.cover,
-              
+              fit: BoxFit.fitHeight,
             ),
           ),
-          child: InkWell(
-            onTap: () async{
-              await Navigator.pushReplacement(
+          child: InkWell(onTap: () async {
+            await Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => BookDetailsScreen(book,widget.auth,true,false))
-              );
-            }
-          ),
+                MaterialPageRoute(
+                    builder: (context) =>
+                        BookDetailsScreen(book, widget.auth, true, false)));
+          }),
         );
       },
     );
-
   }
 }

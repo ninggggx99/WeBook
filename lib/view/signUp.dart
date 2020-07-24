@@ -1,4 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +15,8 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = new GlobalKey<FormState>();
+  final FirebaseMessaging _fcm = FirebaseMessaging();
+  
 
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
@@ -203,6 +207,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             signUp() async {
                               if (_formKey.currentState.validate()) {
                                 await pr.show();
+                                String fcmToken = await _getDeviceToken();
                                 AuthResult result = await auth.createUser(
                                     firstName: firstNameController.text,
                                     lastName: lastNameController.text,
@@ -211,6 +216,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     role: roleController.text);
                                 if (result.user != null) {
                                   print("Sign Up");
+                                  await auth.saveFcmToken(result.user.uid, fcmToken);
                                   await pr.hide();
                                   Navigator.pushReplacementNamed(
                                       context, '/logIn');
@@ -310,9 +316,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 actions: <Widget>[
                   FlatButton(
                       child: Text('Sign Up'),
-                      onPressed: () {
+                      onPressed: () async{
+                        String fcmToken = await _getDeviceToken();
                         auth
-                            .signUpWithFB(roleController.text)
+                            .signUpWithFB(roleController.text,fcmToken)
                             .whenComplete(() => {
                                   Navigator.of(context).pop(),
                                   Navigator.pushReplacementNamed(
@@ -392,9 +399,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 actions: <Widget>[
                   FlatButton(
                       child: Text('Sign Up'),
-                      onPressed: () {
+                      onPressed: () async {
+                        String fcmToken = await _getDeviceToken();
                         auth
-                            .signUpWithGoogle(roleController.text)
+                            .signUpWithGoogle(roleController.text,fcmToken)
                             .whenComplete(() => {
                                   Navigator.of(context).pop(),
                                   Navigator.pushReplacementNamed(
@@ -429,5 +437,11 @@ class _SignUpPageState extends State<SignUpPage> {
             )),
       ),
     );
+  }
+   _getDeviceToken() async {
+    // Get the token for this device
+    String fcmToken = await _fcm.getToken();
+    print(fcmToken);
+
   }
 }

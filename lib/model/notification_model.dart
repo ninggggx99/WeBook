@@ -7,8 +7,9 @@ class Message {
   String userId;
   String commentId;
   DateTime dateTime;
+  String bookId;
 
-  Message({this.title, this.body, this.dateTime, this.userId, this.commentId});
+  Message({this.title, this.body, this.dateTime, this.userId, this.commentId, this.bookId});
 
   Message.fromSnapShot(DataSnapshot snapshot) :
         key = snapshot.key,
@@ -16,7 +17,8 @@ class Message {
         body = snapshot.value["body"],
         userId = snapshot.value["userId"],
         commentId = snapshot.value["commentId"],
-        dateTime = convertTimeStampToDateTime(snapshot.value["dateTime"]);
+        dateTime = convertTimeStampToDateTime(snapshot.value["dateTime"]),
+        bookId = snapshot.value["bookId"];
 
   toJson() {
     return {
@@ -24,7 +26,8 @@ class Message {
       "body": body != null ? body : null,
       "userId": userId != null ? userId : null,
       "commentId": commentId != null ? commentId : null,
-      "dateTime": dateTime != null ? convertDateToTimeStamp(dateTime) : null
+      "dateTime": dateTime != null ? convertDateToTimeStamp(dateTime) : null,
+      "bookId" : bookId != null ? bookId : null
     };
   }
 
@@ -36,6 +39,7 @@ class Message {
       userId: parsedJson["userId"] != null ? parsedJson["userId"] : null,
       commentId:
           parsedJson["commentId"] != null ? parsedJson["commentId"] : null,
+      bookId: parsedJson["bookId"] != null ? parsedJson ["bookId"] : null
     );
   }
 }

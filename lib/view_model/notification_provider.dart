@@ -1,4 +1,9 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:intl/intl.dart';
+import 'package:webookapp/model/book_model.dart';
+import 'package:webookapp/model/comment_model.dart';
+import 'package:webookapp/model/user_model.dart';
+import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/model/notification_model.dart';
 
 class NotiProvider {
@@ -9,7 +14,7 @@ class NotiProvider {
   }
 
   Future<List<Message>> getNoti(String uid) async {
-    List<Message> notis = new List<Message>();
+    List<Message> notis = [];
 
     try {
       await _dbRef
@@ -37,7 +42,72 @@ class NotiProvider {
 
     return notis;
   }
+  Future<List<Message>> getTodayNoti(String uid) async {
+    List<Message> notis = [];
+    final now = DateTime.now();
+    try {
+      await _dbRef
+          .child(uid)
+          .once()
+          .then((DataSnapshot snapshot) {
+        if (snapshot.value != null) {
+          Map<dynamic, dynamic> maps = Map.from(snapshot.value);
+          maps.forEach((key, value) {
+            print("snapped");
+            Message m = Message.fromJson(Map.from(value));
+            m.key = key;
+            if (now.year == m.dateTime.year && now.month == m.dateTime.month && now.day == m.dateTime.day){
+              print("added");
+              notis.add(m);
+            }
+           
+          });
+        }
+      });
 
+      Comparator<Message> recencyComparator =
+          (a, b) => b.dateTime.compareTo(a.dateTime);
+
+      notis.sort(recencyComparator);
+    } catch (e) {
+      print("Error with getting noti : " + e.toString());
+    }
+
+    return notis;
+  }
+  Future<List<Message>> getWeekNoti(String uid) async {
+    List<Message> notis = [];
+    final now = DateTime.now();
+
+    try {
+      await _dbRef
+          .child(uid)
+          .once()
+          .then((DataSnapshot snapshot) {
+        if (snapshot.value != null) {
+          Map<dynamic, dynamic> maps = Map.from(snapshot.value);
+          maps.forEach((key, value) {
+            print("snapped");
+            Message m = Message.fromJson(Map.from(value));
+            m.key = key;
+            if (now.difference(m.dateTime).inDays <= 7 && now.difference(m.dateTime).inDays >= 1){
+              print("added");
+              notis.add(m);
+            }           
+          });
+        }
+      });
+
+      Comparator<Message> recencyComparator =
+          (a, b) => b.dateTime.compareTo(a.dateTime);
+
+      notis.sort(recencyComparator);
+    } catch (e) {
+      print("Error with getting noti : " + e.toString());
+    }
+
+    return notis;
+  }
   Future<void> createNoti(Message message, String uid) async {
     String key = _dbRef.child(uid).push().key;
 
@@ -48,4 +118,43 @@ class NotiProvider {
       print("Error with creating noti: " + e.toString());
     }
   }
+
+  Future <List<Book>> getCommentedBook (List<Message> notiList) async{
+    DatabaseReference _dbRefBook = FirebaseDatabase.instance.reference().child("books");
+    List<Book> books = [];
+    for (Message message in notiList){
+      await _dbRefBook.child(message.bookId).once().then((DataSnapshot snapshot){
+        books.add(Book.fromSnapShot(snapshot));
+      });
+    }
+    return books;
+  } 
+  Future <List<User>> getCommentedUser (List<Message> notiList) async{
+    DatabaseReference _dbRefUser = FirebaseDatabase.instance.reference().child("users");
+    List<User> users = [];
+    for (Message message in notiList){
+      await _dbRefUser.child(message.userId).once().then((DataSnapshot snapshot){
+        users.add(User.fromSnapShot(snapshot));
+      });
+    }
+    return users;
+  } 
+  Future <List<Comment>> getCommentedComment (List<Message> notiList) async{
+    DatabaseReference _dbRefBook = FirebaseDatabase.instance.reference().child("books");
+    List<Comment> comments = [];
+    List<Comment> commentList = [];
+    for (Message message in notiList){
+      await _dbRefBook.child(message.bookId).once().then((DataSnapshot snapshot){
+        if (Book.fromSnapShot(snapshot).comments != null) {
+          comments = Book.fromSnapShot(snapshot).comments;
+        }
+        for (Comment comment in comments){
+          if (comment.key == message.commentId){
+            commentList.add(comment);
+          }
+        }
+      });
+    }
+    return commentList;
+  } 
 }

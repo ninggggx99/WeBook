@@ -69,7 +69,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> insertUser(String firstName, String lastName, String email, String role) async {
+  Future<void> insertUser(String firstName, String lastName, String email, String role,) async {
     //Convert to the user model and insert into db
     User acc = new User(" ", firstName, lastName, email, role);
     _dbRef.child("users").child(user.uid).set(acc.toJson());
@@ -167,7 +167,7 @@ class AuthProvider extends ChangeNotifier {
     return result.user == null ? false : true;
   }
 
-  Future<void> signUpWithGoogle(String role) async {
+  Future<void> signUpWithGoogle(String role, String fcmToken) async {
     final GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleSignInAuthentication =
         await googleSignInAccount.authentication;
@@ -179,11 +179,16 @@ class AuthProvider extends ChangeNotifier {
 
     await signInWithCredential(credential);
     await insertUser(user.displayName, " ", user.email, role);
+    
+    // Save it to Firestore
+    if (fcmToken != null) {
+      await _dbRef.child('users/${user.uid}/token').set(fcmToken);
+    }
 
     print('signUpWithGoogle succeeded: ${user.uid}');
   }
 
-  Future<void> signUpWithFB(String role) async {
+  Future<void> signUpWithFB(String role, String fcmToken) async {
 
     final result = await _facebookLogin.logIn(['email']);
     print(result.status);
@@ -194,15 +199,22 @@ class AuthProvider extends ChangeNotifier {
     await signInWithCredential(credential);
     print(user);
     await insertUser(user.displayName, " ", user.email, role);
-
+    
+    // Save it to Firestore
+    if (fcmToken != null) {
+      await _dbRef.child('users/${user.uid}/token').set(fcmToken);
+    }
     print('signUpWithFB succeeded: $user');
 
   }
 
-
-  Future <bool> signInWithEmail({String email, String password}) async{
+  Future <void> saveFcmToken(String userId, String fcmToken)async{
+    await _dbRef.child('users/${user.uid}/token').set(fcmToken);
+  }
+  Future <AuthResult> signInWithEmail({String email, String password}) async{
+    AuthResult result;
     try {
-      AuthResult result = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      result = await _auth.signInWithEmailAndPassword(email: email, password: password);
       _user = result.user;
       _additionalUserInfo = result.additionalUserInfo;
       notifyListeners();
@@ -234,7 +246,7 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
       
     }
-    return _user == null ? false : true;
+    return result;
   }
 
   //This can update and insert a new profile pic

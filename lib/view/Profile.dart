@@ -67,8 +67,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    MediaQueryData screen = MediaQuery.of(context);
-    print(screen.size.height/4);
     final feed = Provider.of<HomeProvider>(context);
     if (_user == null) {
       return CustomLoadingPage();
@@ -132,127 +130,72 @@ class _ProfilePageState extends State<ProfilePage> {
                   Expanded(
                     child: Column(
                       children: <Widget>[
-                        SizedBox(height: 10),
-                        _user.role =="Bookworm" ? Container(): Expanded(
+                        SizedBox(
+                          height: 20
+                        ),
+                        _user.role =="Bookworm" ? 
+                        Container()
+                        :(Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Container(
+                                alignment: Alignment.topLeft,
                                 padding: EdgeInsets.only(left: 25),
-                                margin: EdgeInsets.only(top: 0),
                                 height: 20,
                                 child: CustomText(
                                     text: 'Work by me',
-                                    size: 15,
+                                    size: 16,
                                     weight: FontWeight.w500,
                                     colors: Colors.grey.shade600),
                               ),
-                              Expanded(
-                                child: Container(
-                                    height: screen.size.height/4,
-                                    padding: EdgeInsets.only(top: 10),
-                                    child: 
-                                    _userBook != null 
-                                    ? ListView.builder(
-                                      padding: EdgeInsets.only(
-                                        left: 25,
-                                        right: 6,
-                                      ),
-                                      itemCount: _userBook.length,
-                                      physics: BouncingScrollPhysics(),
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (context, index) {
-                                        final book = _userBook[index];
-                                        return Container(
-                                          margin: EdgeInsets.only(right: 19),
-                                          height: screen.size.height/4,
-                                          width: 100,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: const Color(0xe0f2f1),
-                                            image: DecorationImage(
-                                              image:
-                                                  NetworkImage(book.coverURL),
-                                              fit: BoxFit.fill,
-                                            ),
-                                          ),
-                                          child: InkWell(onTap: () async {
-                                            await Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        BookDetailsScreen(
-                                                            book, _auth,false,true)));
-                                          }),
-                                        );
-                                      },
-                                    )
-                                    :Container ()
-                                  ),
-                                  
-                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: 0, right: 0, top: 20),
+                                child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                        height: MediaQuery.of(context)
+                                                .size
+                                                .height *
+                                            0.20,
+                                        child:
+                                            _buildListView(_userBook)),
+                                  ],
+                                )
+                              )
                             ],
                           ),
-                        ),
-                        SizedBox(height: 10),
+                        )),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Container(
+                                alignment: Alignment.topLeft,
                                 padding: EdgeInsets.only(left: 25),
                                 height: 20,
                                 child: CustomText(
                                     text: 'My Reading List',
-                                    size: 15,
+                                    size: 16,
                                     weight: FontWeight.w500,
                                     colors: Colors.grey.shade600),
                               ),
-                              Expanded(
-                                child:  Container(
-                                    height: screen.size.height/4,
-                                    padding: EdgeInsets.only(top: 10),
-                                    child: 
-                                    _book != null 
-                                    ? ListView.builder(
-                                      padding: EdgeInsets.only(
-                                        left: 25,
-                                        right: 6,
-                                      ),
-                                      itemCount: _book.length,
-                                      physics: BouncingScrollPhysics(),
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (context, index) {
-                                        final book = _book[index];
-                                        return Container(
-                                          margin: EdgeInsets.only(right: 19),
-                                          height: 180,
-                                          width: 100,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: const Color(0xe0f2f1),
-                                            image: DecorationImage(
-                                              image:
-                                                  NetworkImage(book.coverURL),
-                                              fit: BoxFit.fill,
-                                            ),
-                                          ),
-                                          child: InkWell(onTap: () async {
-                                            await Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        BookDetailsScreen(
-                                                            book, _auth,false,true)));
-                                          }),
-                                        );
-                                      },
-                                    )
-                                    : Container()
-                                  )
-                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: 0, right: 0, top: 20),
+                                child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                        height: MediaQuery.of(context)
+                                                .size
+                                                .height *
+                                            0.20,
+                                        child:
+                                            _buildListView(_book)),
+                                  ],
+                                )
+                              )
                             ],
                           ),
                         ),
@@ -375,5 +318,38 @@ class _ProfilePageState extends State<ProfilePage> {
             ])),
       );
     }
+  }
+
+  Widget _buildListView(List<Book> _book) {
+    return ListView.builder(
+      padding: EdgeInsets.only(left: 25, right: 6),
+      itemCount: _book.length,
+      shrinkWrap: true,
+      physics: BouncingScrollPhysics(),
+      scrollDirection: Axis.horizontal,
+      itemBuilder: (context, index) {
+        final book = _book[index];
+        return Container(
+          margin: EdgeInsets.only(right: 19),
+          height: 0,
+          width: 100,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: const Color(0xe0f2f1),
+            image: DecorationImage(
+              image: NetworkImage(book.coverURL),
+              fit: BoxFit.fill,
+            ),
+          ),
+          child: InkWell(onTap: () async {
+            await Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        BookDetailsScreen(book, _auth, false, true)));
+          }),
+        );
+      },
+    );
   }
 }

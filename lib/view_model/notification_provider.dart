@@ -78,7 +78,7 @@ class NotiProvider {
   Future<List<Message>> getWeekNoti(String uid) async {
     List<Message> notis = [];
     final now = DateTime.now();
-
+    print("weeknoti");
     try {
       await _dbRef
           .child(uid)
@@ -90,7 +90,8 @@ class NotiProvider {
             print("snapped");
             Message m = Message.fromJson(Map.from(value));
             m.key = key;
-            if (now.difference(m.dateTime).inDays <= 7 && now.difference(m.dateTime).inDays >= 1){
+            print(now.difference(m.dateTime).inDays);
+            if (now.difference(m.dateTime).inDays <= 7 && (now.year == m.dateTime.year && now.month == m.dateTime.month && now.day != m.dateTime.day)){
               print("added");
               notis.add(m);
             }           
@@ -105,7 +106,7 @@ class NotiProvider {
     } catch (e) {
       print("Error with getting noti : " + e.toString());
     }
-
+    print(notis);
     return notis;
   }
   Future<void> createNoti(Message message, String uid) async {

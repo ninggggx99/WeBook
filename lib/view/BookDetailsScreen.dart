@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -34,19 +36,21 @@ class BookDetailsScreen extends StatefulWidget {
 class _BookDetailsScreenState extends State<BookDetailsScreen> {
   LibraryProvider library;
   HomeProvider feed;
+  FileProvider file;
   bool _exist;
   bool _own;
   int _tabIndex = 0;
   bool checkExist = false;
   bool checkOwn = false;
   int tabbed = 0;
-
+  TabController _tabcontroller;
   List<Book> _bookSim;
   List<Comment> _comment;
   void didChangeDependencies() {
     super.didChangeDependencies();
     library = Provider.of<LibraryProvider>(context);
     feed = Provider.of<HomeProvider>(context);
+    file = Provider.of<FileProvider>(context);
     load();
   }
 
@@ -91,7 +95,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
     }
   }
 
-  TabController _tabcontroller;
+  
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -114,28 +118,6 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                       color: const Color(0x009688).withOpacity(0.5),
                       child: Stack(
                         children: <Widget>[
-                          Positioned(
-                              left: 25,
-                              top: 35,
-                              child: GestureDetector(
-                                  onTap: () {
-                                    if (widget.profile == true) {
-                                      Navigator.pushReplacementNamed(
-                                          context, "/writerProfile");
-                                    } else {
-                                      Navigator.pushReplacementNamed(
-                                          context, "/mainHome");
-                                    }
-                                  },
-                                  child: Container(
-                                    width: 32,
-                                    height: 32,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.white,
-                                    ),
-                                    child: Icon(Icons.arrow_back_ios),
-                                  ))),
                           Align(
                               alignment: Alignment.bottomCenter,
                               child: Container(
@@ -178,14 +160,16 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                             children: <Widget>[
                               TabBar(
                                 onTap: (index) {
+                              
                                   setState(() {
                                     _tabIndex = index;
                                   });
                                 },
+                                
                                 controller: _tabcontroller,
                                 labelPadding: EdgeInsets.all(0),
                                 indicatorPadding: EdgeInsets.all(0),
-                                isScrollable: true,
+                                // isScrollable: SemanticsFlag.hasEnabledState
                                 labelColor: Colors.black,
                                 unselectedLabelColor: Colors.grey,
                                 labelStyle: GoogleFonts.openSans(
@@ -242,12 +226,13 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                                                   fontWeight: FontWeight.w600,
                                                   color: Colors.black),
                                             )
+                                          // ? Container()
                                           : ListView.builder(
                                               itemCount: _comment.length,
                                               scrollDirection: Axis.vertical,
                                               shrinkWrap: true,
                                               itemBuilder: (context, index) {
-                                                final Comment comment =
+                                                final comment =
                                                     _comment[index];
 
                                                 String formattedDate =
@@ -286,25 +271,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                                                           )),
                                                         );
                                                       } else {
-                                                        return Column(
-                                                          children: <Widget>[
-                                                            SizedBox(
-                                                              width: 30,
-                                                              height: 50,
-                                                              child:
-                                                                  CircularProgressIndicator(
-                                                                backgroundColor:
-                                                                    const Color(
-                                                                            0x009688)
-                                                                        .withOpacity(
-                                                                            0.5),
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              height: 20,
-                                                            )
-                                                          ],
-                                                        );
+                                                        return Container();
                                                       }
                                                     });
                                               }),
@@ -324,15 +291,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                                                     _buildListView(_bookSim)),
                                           ],
                                         )
-
-                                        // Text("Coming soon",
-                                        //     style: GoogleFonts.openSans(
-                                        //         fontSize: 12,
-                                        //         color: Colors.grey,
-                                        //         fontWeight: FontWeight.w400,
-                                        //         letterSpacing: 1.5,
-                                        //         height: 2)),
-                                        ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -350,9 +309,13 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                 width: 400,
                 height: 49,
                 color: Colors.transparent,
-                child: _own == true
-                    ? _tabIndex == 0 ? writerButton() : null
-                    : bookwormButton()),
+                child: _tabIndex != 2
+                ? (_own == true
+                  ? writerButton()
+                  : bookwormButton()
+                )
+                : null
+            ),
           ],
         )),
       );
@@ -367,13 +330,46 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
     return FlatButton(
       color: const Color(0x009688).withOpacity(0.5),
       onPressed: () async {
-        Navigator.push(
+        if (_tabIndex == 0){
+           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => EditBookScreeen(widget.bookModel)));
+                builder: (context) => EditBookScreeen(widget.bookModel))).then((value) => setState(() {
+                            print("hi");
+                            load();
+                          }));
+        }
+        else{
+          String epubPath = "";
+          await pr.show();
+
+          /* await file.createFileOfPdfUrl(widget.book.bookURL).then((f) {
+            pdfPath = f.path;
+          }); */
+
+          await file.convertFile(widget.bookModel.bookURL).then((f) {
+            epubPath = f.path;
+          });
+          /* await Navigator.push(context,
+            MaterialPageRoute(builder: (context) => PDFScreen(pathPDF: pdfPath, book: widget.book,) )
+          ); */
+          
+          await pr.hide();
+          EpubKitty.setConfig('book', "#32a852", 'vertical', true);
+
+          //This is the part experiencing errors for me
+          EpubKitty.open(epubPath);
+        }
+       
       },
-      child: CustomText(
+      child: _tabIndex == 0
+      ?  CustomText(
           text: 'Edit Book',
+          size: 14,
+          weight: FontWeight.w600,
+          colors: Colors.white)
+      :  CustomText(
+          text: 'Read Book',
           size: 14,
           weight: FontWeight.w600,
           colors: Colors.white),
@@ -433,6 +429,9 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
           } else {
             await pr.show();
             await library.addBook(widget.bookModel.key, widget.auth.user.uid);
+            setState(() {
+              _exist = true;
+            });
             await pr.hide();
             _scaffoldKey.currentState.showSnackBar(
               SnackBar(
@@ -440,9 +439,6 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                     'Yay! It has been successfully added to your library.'),
               ),
             );
-            setState(() {
-              _exist = true;
-            });
           }
         } else {
           Navigator.push(
@@ -495,7 +491,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
             ),
           ),
           child: InkWell(onTap: () async {
-            await Navigator.pushReplacement(
+            await Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) =>

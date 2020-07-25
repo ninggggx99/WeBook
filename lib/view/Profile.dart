@@ -341,12 +341,15 @@ class _ProfilePageState extends State<ProfilePage> {
               fit: BoxFit.fill,
             ),
           ),
-          child: InkWell(onTap: () async {
-            await Navigator.pushReplacement(
+          child: InkWell(onTap: ()  {
+              Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        BookDetailsScreen(book, _auth, false, true)));
+                        BookDetailsScreen(book, _auth, false, true))).then((value) => setState(() {
+                            print("hi");
+                            load();
+                          }));
           }),
         );
       },

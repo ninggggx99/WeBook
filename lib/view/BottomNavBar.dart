@@ -86,6 +86,7 @@ class _BottomNavBarState extends State<BottomNavBar>{
         await _savingNoti(message);
         // TODO optional
       },
+      onBackgroundMessage: null,
       onResume: (Map<String, dynamic> message) async {
         print("onResume: $message");
         await _savingNoti(message);

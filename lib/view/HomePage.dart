@@ -188,7 +188,7 @@ class _HomePageState extends State<HomePage> {
                 return GestureDetector(
                     onTap: () async {
                       print('vertical tapped');
-                      Navigator.pushReplacement(
+                      Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) =>

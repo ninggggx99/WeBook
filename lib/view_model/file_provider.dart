@@ -42,7 +42,28 @@ class FileProvider {
 
     return url.toString();
   }
+  Future<void> updateBookEpub(Book book, String newTitle, String newFilePath) async {
+    try {
+      await _storage
+          .ref()
+          .child("books")
+          .child(book.authorId)
+          .child(book.key)
+          .child("${book.title}-book")
+          .delete();
+    } catch (e) {
+      print("Error with deleting epub:" + e.toString());
+    }
 
+    try {
+      String bookURL =
+            await uploadEPub(book.authorId, book.key, newTitle, newFilePath);
+
+        await _dbRef.child("books").child(book.key).child("bookURL").set(bookURL);
+    } catch (e) {
+      print("Error with updating epub:" + e.toString());
+    }
+  }
   //Uploading of any type of files except for EPUB and images (eg. PDF)
   /* Future<String> uploadDocument(String authID, String key, String title, String filePath) async {
 

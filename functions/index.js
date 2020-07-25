@@ -12,12 +12,13 @@ exports.sendToDevice = functions.database
     // Grab the current value of what was written to the Realtime Database.
 
     const authorId = change.after.val().authorId;
-    const bookId = change.after.val().bookId;
     console.log("hi");
     console.log(authorId);
+    const bookId = change.after.key;
     const comment = await change.after.val().comments;
     const keys =  Object.keys(comment)
     var lastId;
+    
     for (const key of keys){
       lastId = key
     }
@@ -43,12 +44,15 @@ exports.sendToDevice = functions.database
         body: desc,
         icon: "assets/logo_white.png",
         click_action: 'FLUTTER_NOTIFICATION_CLICK'
+        // click_action: '.MainActivity'
         // click_action: 'FCM_PLUGIN_ACTIVITY'
       },
       data: {
         commentUserId: commenterid,
         commentDate : commentDate.toString(),
-        commentId: lastId
+        commentId: lastId,
+        bookId: bookId,
+        authorId:authorId
       }
     };
 

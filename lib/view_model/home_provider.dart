@@ -51,6 +51,29 @@ class HomeProvider {
     return _bookFeed;
   }
 
+  bool equalsIgnoreCase (String str, String check){
+    print("check");
+    print(str.toLowerCase().trim());
+    print(check.toLowerCase().trim());
+    bool exist = str.toLowerCase().trim() == check.toLowerCase().trim();
+    print(exist);
+    return exist;
+  }
+
+  Future<List<Book>> searchResultBook (String bookTitle, String id) async{
+    List<Book> _books = await getBookByRecency(id);
+    List<Book> _searchResult = [];
+
+    for(int i = 0; i<_books.length ; i++){
+      if (equalsIgnoreCase(_books[i].title, bookTitle) == true){
+        print(_books[i].title);
+        _searchResult.add(_books[i]);
+      }
+      print("not in" + _books[i].title);
+    }
+    return _searchResult;
+  }
+
   Future<List<Book>> getBookByRecency(String id) async {
     BookFeed books = await getBooks(id);
     List<Book> sorted = books.sortByRecent();
@@ -83,9 +106,12 @@ class HomeProvider {
           .then((DataSnapshot snapshot) {
         Map<dynamic, dynamic> maps = Map.from(snapshot.value);
         maps.forEach((key, value) {
-          Book book = Book.fromJson(Map.from(value));
-          book.setKey(key);
-          books.add(book);
+          Book _book = Book.fromJson(Map.from(value));
+          _book.setKey(key);
+          if(book.key != _book.key){
+            books.add(_book);
+          }
+          
         });
       });
     } catch (e) {

@@ -40,7 +40,7 @@ class LibraryProvider {
       return books;
     }catch(e){
       print ("NO BOOK");
-      return null;
+      return books;
     }
     
     //Collecting all the book records
@@ -133,7 +133,7 @@ class LibraryProvider {
     }
     catch(e){
       print("Error with retrieving user's written books: " + e.toString());
-      return null;
+      return books;
     }
    
 

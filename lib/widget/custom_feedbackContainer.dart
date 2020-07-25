@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:webookapp/model/comment_model.dart';
@@ -17,7 +18,8 @@ class custom_feedbackContainer extends StatelessWidget{
 
   @override
   Widget build (BuildContext context){
-   
+     print((user.profilePic));
+    print((user.profilePic)== " ");
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,8 +28,14 @@ class custom_feedbackContainer extends StatelessWidget{
             children: <Widget>[
                ClipRRect(
                   borderRadius: BorderRadius.circular(15.0),
-                  child: Image.network(
-                    user.profilePic != null? user.profilePic :   "https://img.icons8.com/pastel-glyph/2x/person-male.png" ,
+                  child: (user.profilePic) == " "?
+                    Image.asset(
+                      'assets/ProfileDefault.png',
+                      height: 71,
+                      width: 71                    
+                    )
+                  : Image.network(
+                    user.profilePic,
                     height: 71,
                     width: 71,
                   ),

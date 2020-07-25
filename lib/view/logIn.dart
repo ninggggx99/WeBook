@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +14,7 @@ class LogInPage extends StatefulWidget {
 
 class _LogInPageState extends State<LogInPage> {
   final _formKey = GlobalKey<FormState>();
+  final FirebaseMessaging _fcm = FirebaseMessaging();
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -216,11 +219,13 @@ class _LogInPageState extends State<LogInPage> {
         type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
     if (_formKey.currentState.validate()) {
       await pr.show();
-      bool result = await auth.signInWithEmail(
+      AuthResult result = await auth.signInWithEmail(
           email: emailController.text,
           password: passwordController.text);
-      if (result == true) {
+      if (result != null) {
         print("Login success");
+     
+        await auth.saveFcmToken(result.user.uid, await _getDeviceToken());
         await pr.hide();
         Navigator.pushReplacementNamed(
             context, '/mainHome');
@@ -251,7 +256,13 @@ class _LogInPageState extends State<LogInPage> {
       }
     }
   }
+   Future<String> _getDeviceToken() async {
+    // Get the token for this device
+    String fcmToken = await _fcm.getToken();
+    print(fcmToken);
+    return fcmToken;
 
+  }
   String getErrorMessage(AuthError errorcode) {
     // String error = " ";
     print(errorcode.toString() + "ERROR");
@@ -284,59 +295,3 @@ class _LogInPageState extends State<LogInPage> {
   }
 }
 
-//  new RaisedButton(
-//                           elevation: 5.0,
-//                           padding: EdgeInsets.all(15.0),
-
-//                           shape: new RoundedRectangleBorder(
-//                               borderRadius: new BorderRadius.circular(30.0)),
-//                           color: const Color(0x009688).withOpacity(0.8),
-//                           child: CustomText(
-//                             text:'Login',
-//                             size: 18.0, 
-//                             colors: Colors.white,
-//                             weight: FontWeight.w600,                            
-//                           ),
-//                           onPressed: () {
-//                             login() async {
-//                               if (_formKey.currentState.validate()) {
-//                                 await pr.show();
-//                                 bool result = await auth.signInWithEmail(
-//                                     email: emailController.text,
-//                                     password: passwordController.text);
-//                                 if (result == true) {
-//                                   print("Login success");
-//                                   await pr.hide();
-//                                   Navigator.pushReplacementNamed(
-//                                       context, '/mainHome');
-//                                   emailController.clear();
-//                                   passwordController.clear();
-//                                 } else {
-//                                   AlertDialog alert = AlertDialog(
-//                                     title: Text("Error"),
-//                                     content: Text(getErrorMessage(auth.error)),
-//                                     actions: <Widget>[
-//                                       FlatButton(
-//                                         child: Text("Ok"),
-//                                         onPressed: () {
-//                                           _formKey.currentState.reset();
-//                                           emailController.clear();
-//                                           passwordController.clear();
-//                                           Navigator.of(context).pop();
-//                                         },
-//                                       )
-//                                     ],
-//                                   );
-//                                   await pr.hide();
-//                                   showDialog(
-//                                       context: context,
-//                                       builder: (BuildContext context) {
-//                                         return alert;
-//                                       });
-//                                 }
-//                               }
-//                             }
-
-//                             login();
-//                           },
-//                         ),

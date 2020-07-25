@@ -9,6 +9,7 @@ import 'package:webookapp/model/book_model.dart';
 import 'package:webookapp/model/user_model.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view_model/home_provider.dart';
+import 'package:webookapp/widget/custom_AppBar.dart';
 import 'package:webookapp/widget/custom_text.dart';
 
 class CreateReview extends StatefulWidget {
@@ -37,9 +38,7 @@ class _CreateReviewState extends State<CreateReview> {
     final pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
   
    return Scaffold(
-    appBar: AppBar(
-       backgroundColor: Color(0x009688).withOpacity(0.5),
-    ),
+    appBar: CustomAppBar(text: "Add Review"),
     body: Stack(
       children: <Widget>[
         Container(

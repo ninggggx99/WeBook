@@ -6,6 +6,7 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/model/user_model.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
+import 'package:webookapp/widget/custom_AppBar.dart';
 import 'package:webookapp/widget/custom_loadingPage.dart';
 import 'package:webookapp/widget/custom_text.dart';
 
@@ -45,7 +46,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    
     if (_user == null){
       return CustomLoadingPage();
     }
@@ -56,10 +57,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       print(_user.firstName);
       return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(
-          backgroundColor: Color(0x009688).withOpacity(0.5),
-
-        ),
+        appBar: CustomAppBar(text: "Edit Profile"),
         body: Container(
           child: Form(
             key:_formKey,
@@ -144,34 +142,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(110,10,110,10),
-                        child: FlatButton(
+                        child: 
+                        FlatButton(
                           color: const Color(0x009688).withOpacity(0.6),
                           hoverColor: const Color(0x009688).withOpacity(0.8),
                           
-                          onPressed: (){
-                            editSave() async{
-                              await pr.show();
-                              if(_formKey.currentState.validate()){
-                                if (filename == null){
-                                  await _auth.updateFirstName(usernameController.text);
-                                }
-                                else{
-                                  await _auth.updateFirstName(usernameController.text);
-                                  await _auth.uploadProfilePic(_user, filename);  
-                                }
-                              }
-                              else{
-                                print("Not Submitted");
-                              }
-                              
-                              await pr.hide();
-                              Navigator.pop(context); 
-                            
-                              
-                            }                           
-                            editSave();          
-                                      
-                          } ,
+                          onPressed: editSave,
                             child: CustomText(
                               text: 'Save Changes',
                               size: 14,
@@ -193,5 +169,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     }
    
+  }
+  void editSave () async {
+    final pr = ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
+    await pr.show();
+    if(_formKey.currentState.validate()){
+      if (filename == null){
+        await _auth.updateFirstName(usernameController.text);
+      }
+      else{
+        await _auth.updateFirstName(usernameController.text);
+        await _auth.uploadProfilePic(_user, filename);  
+      }
+    }
+    else{
+      print("Not Submitted");
+    }
+    
+    await pr.hide();
+    Navigator.pop(context); 
+  
   }
 }

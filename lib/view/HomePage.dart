@@ -192,14 +192,14 @@ class _HomePageState extends State<HomePage> {
                 )
               ],
             ),
-            RaisedButton(
-              child: Text('Color Changed'),
-              onPressed: () async {
-                await home.addComment("-MD6NhXoImbjM6dqFLBW",
-                    "2Xm3ecEYwtVZ3KScvijQWB7UxM13", "this is the NEWNEWNEWNWENW comment", 5);
-                print("daone");
-              },
-            ),
+            // RaisedButton(
+            //   child: Text('Color Changed'),
+            //   onPressed: () async {
+            //     await home.addComment("-MD6NhXoImbjM6dqFLBW",
+            //         "2Xm3ecEYwtVZ3KScvijQWB7UxM13", "this is the NEWNEWNEWNWENW comment", 5);
+            //     print("daone");
+            //   },
+            // ),
             ListView.builder(
               padding: EdgeInsets.only(left: 25, right: 6),
               itemCount: _bookPop.length,

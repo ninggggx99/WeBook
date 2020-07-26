@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'package:webookapp/model/book_model.dart';
 import 'package:webookapp/model/user_model.dart';
 
 import 'package:webookapp/view/BookDetailsScreen.dart';
+import 'package:webookapp/view/BottomNavBar.dart';
 import 'package:webookapp/view/EditProfileScreen.dart';
 import 'package:webookapp/view/ChangePassword.dart';
 import 'package:webookapp/view/logIn.dart';
@@ -159,8 +161,38 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 .size
                                                 .height *
                                             0.20,
-                                        child:
-                                            _buildListView(_userBook)),
+                                        child: _userBook.length == 0 
+                                          ? Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                               SizedBox(
+                                                width: 40,
+                                                  child: FlatButton(
+                                                  padding: EdgeInsets.all(0),
+                                                  onPressed: (){
+                                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNavBar(0)));
+                                                  },
+                                                  child: Text(
+                                                    'Create',
+                                                    style: GoogleFonts.openSans(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w600,
+                                                      color: Colors.black,
+                                                      decoration: TextDecoration.underline
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              CustomText(
+                                                text: ' your book',
+                                                size: 16,
+                                                weight: FontWeight.w500,
+                                                colors: Colors.grey.shade600
+                                              ),
+                                             
+                                            ],
+                                          )
+                                          : _buildListView(_userBook)),
                                   ],
                                 )
                               )
@@ -192,7 +224,38 @@ class _ProfilePageState extends State<ProfilePage> {
                                                 .height *
                                             0.20,
                                         child:
-                                            _buildListView(_book)),
+                                          _book.length == 0 
+                                          ? Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              CustomText(
+                                                text: 'Explore More @ ',
+                                                size: 16,
+                                                weight: FontWeight.w500,
+                                                colors: Colors.grey.shade600
+                                              ),
+                                              SizedBox(
+                                                width: 40,
+                                                  child: FlatButton(
+                                                  padding: EdgeInsets.all(0),
+                                                  onPressed: (){
+                                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNavBar(0)));
+                                                  },
+                                                  child: Text(
+                                                    'Home',
+                                                    style: GoogleFonts.openSans(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w600,
+                                                      color: Colors.black,
+                                                      decoration: TextDecoration.underline
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          )
+                                          : _buildListView(_book)
+                                          ),
                                   ],
                                 )
                               )

@@ -175,7 +175,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                                 controller: _tabcontroller,
                                 labelPadding: EdgeInsets.all(0),
                                 indicatorPadding: EdgeInsets.all(0),
-                                // isScrollable: SemanticsFlag.hasEnabledState
+                                isScrollable: false,
                                 labelColor: Colors.black,
                                 unselectedLabelColor: Colors.grey,
                                 labelStyle: GoogleFonts.openSans(

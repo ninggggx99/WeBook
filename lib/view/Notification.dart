@@ -6,6 +6,7 @@ import 'package:webookapp/model/comment_model.dart';
 import 'package:webookapp/model/notification_model.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/model/user_model.dart';
+import 'package:webookapp/view/BookDetailsScreen.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view_model/notification_provider.dart';
 import 'package:webookapp/widget/custom_loadingPage.dart';
@@ -64,7 +65,14 @@ class _NotificationPageState extends State<NotificationPage> {
   Widget _buildMessage(Message notim, Book book, User user,Comment comment){
     return GestureDetector(
       onTap: ()async {
-
+         Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        BookDetailsScreen(book, auth))).then((value) => setState(() {
+                            print("hi");
+                            load();
+                          }));
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 19),

@@ -346,7 +346,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        BookDetailsScreen(book, _auth, false, true))).then((value) => setState(() {
+                        BookDetailsScreen(book, _auth))).then((value) => setState(() {
                             print("hi");
                             load();
                           }));

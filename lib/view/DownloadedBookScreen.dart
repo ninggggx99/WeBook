@@ -1,11 +1,18 @@
+import 'dart:io';
+
+import 'package:epub_kitty/epub_kitty.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/model/book_model.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view_model/download_provider.dart';
+import 'package:webookapp/view_model/file_provider.dart';
 import 'package:webookapp/widget/custom_loadingPage.dart';
 import 'package:webookapp/widget/custom_text.dart';
 import 'package:webookapp/widget/custom_AppBar.dart';
+import 'package:webookapp/utils/consts.dart';
 
 
 class DownloadBookScreen extends StatefulWidget {
@@ -17,7 +24,7 @@ class DownloadBookScreen extends StatefulWidget {
 }
 
 class _DownloadBookScreenState extends State<DownloadBookScreen> {
-  
+  FileProvider file;
   DownloadProvider downloadProvider; 
   List<Book> _bookDownload;
   bool edit = true;
@@ -25,6 +32,7 @@ class _DownloadBookScreenState extends State<DownloadBookScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     downloadProvider = Provider.of<DownloadProvider>(context);
+    file = Provider.of<FileProvider>(context);
     load();
   }
 
@@ -73,7 +81,8 @@ class _DownloadBookScreenState extends State<DownloadBookScreen> {
    
   }
   Widget _buildDownloadList (BuildContext context, Book book){
-
+    final pr = ProgressDialog(context,
+        type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
     return Dismissible(
       key: UniqueKey(),
       background: Container(
@@ -98,7 +107,15 @@ class _DownloadBookScreenState extends State<DownloadBookScreen> {
       },
       child: GestureDetector(
         onTap: () async {
-          print('vertical tapped');
+          String epubPath;
+          await pr.show();
+          String path = await getBookPath(book);
+          // await file.convertFile(path).then((f){
+          //   epubPath = f.path;
+          // });
+          await pr.hide();
+          EpubKitty.setConfig('book', '#32a852', 'vertical', true);
+          EpubKitty.open(path);
         },
         child: Container(
             margin: EdgeInsets.only(bottom: 19),
@@ -152,3 +169,14 @@ class _DownloadBookScreenState extends State<DownloadBookScreen> {
     );
   }
 }
+Future<String> getBookPath (Book book) async {
+  String title = book.title;
+  Directory appDocDir = Platform.isAndroid
+      ? await getExternalStorageDirectory()
+      : null;
+  if (Platform.isAndroid){
+    Directory(appDocDir.path.split('Android')[0] + '${Constants.appName}').createSync();
+  }
+  String path = appDocDir.path.split('Android')[0] + '${Constants.appName}/$title.epub';
+  return path;
+} 

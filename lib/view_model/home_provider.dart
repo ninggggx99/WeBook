@@ -51,6 +51,7 @@ class HomeProvider {
     return _bookFeed;
   }
 
+
   bool equalsIgnoreCase (String str, String check){
     print("check");
     print(str.toLowerCase().trim());
@@ -95,20 +96,22 @@ class HomeProvider {
     return sorted;
   }
 
-  Future<List<Book>> getBooksByCat(Book book) async {
+  Future<List<Book>> getBooksByCat(String bookCat, String bookId) async {
     List<Book> books = [];
     try {
       await _dbRef
           .child("books")
           .orderByChild("category")
-          .equalTo(book.category)
+          .equalTo(bookCat)
           .once()
           .then((DataSnapshot snapshot) {
         Map<dynamic, dynamic> maps = Map.from(snapshot.value);
         maps.forEach((key, value) {
           Book _book = Book.fromJson(Map.from(value));
           _book.setKey(key);
-          if(book.key != _book.key){
+          if(bookId != _book.key){
+            print(bookId);
+            print(_book.key);
             books.add(_book);
           }
           
@@ -121,11 +124,11 @@ class HomeProvider {
     return books;
   }
 
-  Future<List<Comment>> getComments(Book book) async {
+  Future<List<Comment>> getComments(String bookId) async {
     List<Comment> comments = [];
 
     await _dbRef
-        .child("books/${book.key}")
+        .child("books/$bookId")
         .orderByChild("dateCreated")
         .once()
         .then((DataSnapshot snapshot) {

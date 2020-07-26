@@ -28,9 +28,7 @@ class BookDetailsScreen extends StatefulWidget {
 
   final Book bookModel;
   final AuthProvider auth;
-  final bool home;
-  final bool profile;
-  BookDetailsScreen(this.bookModel, this.auth, this.home, this.profile);
+  BookDetailsScreen(this.bookModel, this.auth);
 }
 
 class _BookDetailsScreenState extends State<BookDetailsScreen> {
@@ -46,6 +44,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
   TabController _tabcontroller;
   List<Book> _bookSim;
   List<Comment> _comment;
+  Book _mainBook;
   void didChangeDependencies() {
     super.didChangeDependencies();
     library = Provider.of<LibraryProvider>(context);
@@ -55,27 +54,31 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
   }
 
   void load() async {
+
     Book book;
 
     if (widget.auth.user.uid != null) {
+      final mainBook =await feed.retrieveBook(widget.bookModel.key);
       final bookExist = await library.getBooks(widget.auth.user.uid);
       final bookOwn = await library.getUserBooks(widget.auth.user.uid);
-      final bookSimilar = await feed.getBooksByCat(widget.bookModel);
-      final comment = await feed.getComments(widget.bookModel);
+      final bookSimilar = await feed.getBooksByCat(mainBook.category,widget.bookModel.key);
+      // print(bookSimilar[0].key + " " +bookSimilar[1].key);
+      final comment = await feed.getComments(widget.bookModel.key);
       print(widget.bookModel.title);
+      print(comment);
       // print(comment.length);
       // await feed.addComment(widget.bookModel.key, widget.auth.user.uid, 'Helphelp', 3);
       // if (library.error != LibraryError.NO_BOOK){
       if (bookExist != null) {
         for (book in bookExist) {
-          if (book.bookURL == widget.bookModel.bookURL) {
+          if (book.key == widget.bookModel.key) {
             checkExist = true;
           }
         }
       }
       if (bookOwn != null) {
         for (book in bookOwn) {
-          if (book.bookURL == widget.bookModel.bookURL) {
+          if (book.key == widget.bookModel.key) {
             checkOwn = true;
           }
         }
@@ -90,8 +93,11 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
         _exist = exist;
         _own = own;
         _bookSim = bookSimilar;
+        _mainBook = mainBook;
+        _mainBook.key = widget.bookModel.key;
       });
       print(_exist);
+      print(_mainBook.title);
     }
   }
 
@@ -127,7 +133,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
                                         image: NetworkImage(
-                                            widget.bookModel.coverURL)),
+                                            _mainBook.coverURL)),
                                     borderRadius: BorderRadius.circular(10),
                                   )))
                         ],
@@ -138,14 +144,14 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                     delegate: SliverChildListDelegate([
                       Padding(
                           padding: EdgeInsets.only(top: 24, left: 25),
-                          child: Text(widget.bookModel.title,
+                          child: Text(_mainBook.title,
                               style: GoogleFonts.openSans(
                                   fontSize: 27,
                                   color: Colors.black,
                                   fontWeight: FontWeight.w600))),
                       Padding(
                           padding: EdgeInsets.only(top: 7, left: 25),
-                          child: Text(widget.bookModel.authorName,
+                          child: Text(_mainBook.authorName,
                               style: GoogleFonts.openSans(
                                   fontSize: 14,
                                   color: Colors.grey,
@@ -206,7 +212,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                                     Padding(
                                       padding: EdgeInsets.only(
                                           left: 0, right: 25, top: 20),
-                                      child: Text(widget.bookModel.description,
+                                      child: Text(_mainBook.description,
                                           style: GoogleFonts.openSans(
                                               fontSize: 12,
                                               color: Colors.grey,
@@ -334,9 +340,11 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
            Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => EditBookScreeen(widget.bookModel))).then((value) => setState(() {
+                builder: (context) => EditBookScreeen(_mainBook))).then((value) => setState(() {
                             print("hi");
                             load();
+                                                      
+                          
                           }));
         }
         else{
@@ -347,7 +355,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
             pdfPath = f.path;
           }); */
 
-          await file.convertFile(widget.bookModel.bookURL).then((f) {
+          await file.convertFile(_mainBook.bookURL).then((f) {
             epubPath = f.path;
           });
           /* await Navigator.push(context,
@@ -391,7 +399,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: Text(
-                          "Are you sure you want to delete ${widget.bookModel.title} ?"),
+                          "Are you sure you want to delete ${_mainBook.title} ?"),
                       actions: <Widget>[
                         FlatButton(
                           child: CustomText(
@@ -445,7 +453,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      CreateReview(widget.bookModel, widget.auth, feed)));
+                      CreateReview(_mainBook, widget.auth, feed)));
         }
       },
       child: _tabIndex == 0
@@ -495,7 +503,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        BookDetailsScreen(book, widget.auth, true, false)));
+                        BookDetailsScreen(book, widget.auth)));
           }),
         );
       },

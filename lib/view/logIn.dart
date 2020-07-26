@@ -172,6 +172,7 @@ class _LogInPageState extends State<LogInPage> {
             ],
             image: DecorationImage(
               image: AssetImage('assets/google.jpg'),
+              
             )),
       ),
     );

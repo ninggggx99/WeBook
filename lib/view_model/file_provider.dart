@@ -174,6 +174,27 @@ class FileProvider {
 
   Future<void> deleteBookP(Book book) async {
     try {
+      await _dbRef
+          .child("notifications/${book.authorId}")
+          .orderByChild("bookId")
+          .equalTo(book.key)
+          .once()
+          .then((DataSnapshot snapshot) async {
+            if (snapshot.value != null){
+              Map<dynamic, dynamic> maps = Map.from(snapshot.value);
+              print("MAP");
+              print(maps);
+              maps.forEach((key, value) async {
+                print(book.key);
+                print(key);
+                if (value["bookId"] == book.key){
+                  await _dbRef.child("notifications/${book.authorId}/$key").remove();
+                }
+              });
+            }
+        
+      });
+      print("done noti");
       //Delete from book records
       await _dbRef
           .child("bookRecords")
@@ -181,22 +202,28 @@ class FileProvider {
           .equalTo(book.key)
           .once()
           .then((DataSnapshot snapshot) async {
-        Map<dynamic, dynamic> maps = Map.from(snapshot.value);
-        maps.forEach((key, value) async {
-          await _dbRef.child("bookRecords/$key").remove();
-        });
+            if (snapshot.value != null){
+              print("here");
+              Map<dynamic, dynamic> maps = Map.from(snapshot.value);
+                maps.forEach((key, value) async {
+                  await _dbRef.child("bookRecords/$key").remove();
+              });
+            }
+       
       });
+      //Delete from storage
+      // await _storage
+      //     .ref()
+      //     .child("books")
+      //     .child(book.authorId)
+      //     .child(book.key)
+      //     .delete();
+      //Then call the epub func.
+
       //Delete from books
       await _dbRef.child("books/${book.key}").remove();
 
-      //Delete from storage
-      await _storage
-          .ref()
-          .child("books")
-          .child(book.authorId)
-          .child(book.key)
-          .delete();
-      //Then call the epub func.
+      
 
     } catch (e) {
       print("Error with deleting book permanently : " + e.toString());

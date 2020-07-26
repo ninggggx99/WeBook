@@ -16,6 +16,7 @@ import 'package:webookapp/view_model/home_provider.dart';
 import 'package:webookapp/view_model/library_provider.dart';
 
 import 'package:epub_kitty/epub_kitty.dart';
+import 'package:webookapp/widget/custom_deleteBookAlert.dart';
 import 'package:webookapp/widget/custom_feedbackContainer.dart';
 import 'package:webookapp/widget/custom_loadingPage.dart';
 import 'package:webookapp/widget/custom_tab_indicator.dart';
@@ -107,6 +108,7 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final pr = ProgressDialog(context,type: ProgressDialogType.Normal, isDismissible: false, showLogs: false);
     if (_exist != null) {
       return Scaffold(
         key: _scaffoldKey,
@@ -135,7 +137,33 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
                                         image: NetworkImage(
                                             _mainBook.coverURL)),
                                     borderRadius: BorderRadius.circular(10),
-                                  )))
+                                  ))),
+                          _own == true
+                          ?  Align(
+                              alignment: Alignment.topRight,
+                              child: IconButton(
+                                padding: EdgeInsets.fromLTRB(0,15,15,20),
+                                icon: Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                ), 
+                                onPressed: () async{
+                                  CustomDeleteBookAlert(widget.bookModel,library,widget.auth,null,file,true);
+                                  void _showDialog(BuildContext ancestorCont) async{
+                                    await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context){
+                                        return  CustomDeleteBookAlert(widget.bookModel,library,widget.auth,null,file,true);
+                                      }
+                                    ).then((value){
+                                      Navigator.of(context).pop();
+                                    });             
+                                  }
+                                  _showDialog(context);         
+                                }
+                              )
+                          )
+                          : Container()
                         ],
                       ),
                     ),

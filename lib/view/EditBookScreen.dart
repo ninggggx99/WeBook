@@ -267,9 +267,16 @@ class _EditBookScreeenState extends State<EditBookScreeen>{
                                 if(_formKey.currentState.validate()){
                                   await pr.show();
                                   
-                                  await file.updateBookDetails(widget.book, titleController.text, descController.text);
-                                  // await file.uploadBookCover(widget.book.authorId, widget.book.key, titleController.text, coverController.text);
-                                  await file.updateBookEpub(widget.book,titleController.text, bookController.text);
+                                  await file.updateBookDetails(widget.book, titleController.text, descController.text, catController.text);
+                                  
+                                  if (coverController.text != widget.book.coverURL) {
+                                    await file.updateBookCover(widget.book, coverController.text);
+                                  }
+                                  
+                                  if (bookController.text != widget.book.bookURL) {
+                                    await file.updateBookEpub(widget.book, bookController.text);
+                                  }
+                                  
                         
                                   final snackBar = SnackBar(
                                     content: Text('Yay! Your work has been updated!'),
@@ -282,7 +289,7 @@ class _EditBookScreeenState extends State<EditBookScreeen>{
                                   coverController.clear();
                                   bookController.clear();
                                   Navigator.pop(context);
-                                  // showSnackBar(snackBar);
+                                  //showSnackBar(snackBar);
 
                                   print("Submitted");
                                 } else {

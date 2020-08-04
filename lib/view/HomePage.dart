@@ -170,14 +170,6 @@ class _HomePageState extends State<HomePage> {
                       fontWeight: FontWeight.w600,
                       color: Colors.black),
                 )),
-            RaisedButton(
-              child: Text('Color Changed'),
-              onPressed: () async {
-                await home.addComment("-MAtrrYb1TIdVOKIkPsh",
-                    "2Xm3ecEYwtVZ3KScvijQWB7UxM13", "this is the NEWNEWNEWNWENW comment", 5);
-                print("daone");
-              },
-            ),
             ListView.builder(
               padding: EdgeInsets.only(left: 25, right: 6),
               itemCount: _bookPop.length,

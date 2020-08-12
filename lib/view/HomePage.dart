@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/model/book_model.dart';
 import 'package:webookapp/model/user_model.dart';
+import 'package:webookapp/view/AllBookScreen.dart';
 import 'package:webookapp/view/SearchScreen.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 
@@ -161,15 +162,44 @@ class _HomePageState extends State<HomePage> {
               bestBook: _bookRate,
               trendBook: _bookPop,
             ),
-            Padding(
-                padding: EdgeInsets.only(left: 25, top: 25, bottom: 25),
-                child: Text(
-                  'Popular',
-                  style: GoogleFonts.openSans(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black),
-                )),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                    padding: EdgeInsets.only(left: 25, top: 25, bottom: 25),
+                    child: Text(
+                      'Popular',
+                      style: GoogleFonts.openSans(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black),
+                    )),
+
+                FlatButton(
+                  onPressed: (){
+                     Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  AllBookScreen(auth)));
+                  }, 
+                  child: CustomText(
+                    text: 'View All',
+                    size: 15,
+                    weight: FontWeight.w300,
+                    colors: Colors.black,
+                  )
+                )
+              ],
+            ),
+            // RaisedButton(
+            //   child: Text('Color Changed'),
+            //   onPressed: () async {
+            //     await home.addComment("-MD6NhXoImbjM6dqFLBW",
+            //         "2Xm3ecEYwtVZ3KScvijQWB7UxM13", "this is the NEWNEWNEWNWENW comment", 5);
+            //     print("daone");
+            //   },
+            // ),
             ListView.builder(
               padding: EdgeInsets.only(left: 25, right: 6),
               itemCount: _bookPop.length,
@@ -184,7 +214,7 @@ class _HomePageState extends State<HomePage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  BookDetailsScreen(book, auth,true,false)));
+                                  BookDetailsScreen(book, auth)));
                     },
                     child: Container(
                         margin: EdgeInsets.only(bottom: 19),

@@ -109,11 +109,6 @@ class FileProvider {
           .child("cover")
           .delete();
 
-      /*await _storage
-          .ref()
-          .child(book.coverURL)
-          .delete();*/
-
     } catch (e) {
       print("Error with deleting cover:" + e.toString());
     }
@@ -128,22 +123,6 @@ class FileProvider {
     }
 
   }
-
-  //Uploading of any type of files except for EPUB and images (eg. PDF)
-  /* Future<String> uploadDocument(String authID, String key, String title, String filePath) async {
-
-    String fileName = filePath.split('/').last;
-    String _extension = fileName.split(".").last;
-    StorageReference storageReference = _storage.ref().child("books");
-    StorageUploadTask uploadTask;
-  
-    uploadTask = storageReference.child("$authID/$key/$title-book").putFile(File(filePath), StorageMetadata(contentType: 'application/$_extension'));
-      
-    var url = await (await uploadTask.onComplete).ref.getDownloadURL();
-
-    return url.toString();
-  } */
-
 
   //This can be used by both uploading and updating the profile pic
   Future<void> uploadProfilePic(User user, String filePath) async {
@@ -174,6 +153,28 @@ class FileProvider {
 
   Future<void> deleteBookP(Book book) async {
     try {
+
+      await _dbRef
+          .child("notifications/${book.authorId}")
+          .orderByChild("bookId")
+          .equalTo(book.key)
+          .once()
+          .then((DataSnapshot snapshot) async {
+            if (snapshot.value != null){
+              Map<dynamic, dynamic> maps = Map.from(snapshot.value);
+              print("MAP");
+              print(maps);
+              maps.forEach((key, value) async {
+                print(book.key);
+                print(key);
+                if (value["bookId"] == book.key){
+                  await _dbRef.child("notifications/${book.authorId}/$key").remove();
+                }
+              });
+            }
+        
+      });
+      print("done noti");
       //Delete from book records
       await _dbRef
           .child("bookRecords")
@@ -181,22 +182,20 @@ class FileProvider {
           .equalTo(book.key)
           .once()
           .then((DataSnapshot snapshot) async {
-        Map<dynamic, dynamic> maps = Map.from(snapshot.value);
-        maps.forEach((key, value) async {
-          await _dbRef.child("bookRecords/$key").remove();
-        });
+            if (snapshot.value != null){
+              print("here");
+              Map<dynamic, dynamic> maps = Map.from(snapshot.value);
+                maps.forEach((key, value) async {
+                  await _dbRef.child("bookRecords/$key").remove();
+              });
+            }
+       
       });
+
       //Delete from books
       await _dbRef.child("books/${book.key}").remove();
 
-      //Delete from storage
-      await _storage
-          .ref()
-          .child("books")
-          .child(book.authorId)
-          .child(book.key)
-          .delete();
-      //Then call the epub func.
+      
 
     } catch (e) {
       print("Error with deleting book permanently : " + e.toString());
@@ -214,19 +213,5 @@ class FileProvider {
     await file.writeAsBytes(bytes);
     return file;
   }
-
-  /*Future<File> createFileOfPdfUrl(String path) async {
-    
-    String url = path;
-    final filename = url.substring(url.lastIndexOf("/") + 1);
-    var request = await HttpClient().getUrl(Uri.parse(url));
-    var response = await request.close();
-    var bytes = await consolidateHttpClientResponseBytes(response);
-    String dir = (await getApplicationDocumentsDirectory()).path;
-    File file = new File('$dir/$filename');
-    await file.writeAsBytes(bytes);
-    return file;
-
-  }*/
 
 }

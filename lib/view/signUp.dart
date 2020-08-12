@@ -323,7 +323,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             .whenComplete(() => {
                                   Navigator.of(context).pop(),
                                   Navigator.pushReplacementNamed(
-                                      context, '/mainHome')
+                                      context, '/logIn')
                                 })
                             .catchError((e) {
                           print("error with sign up with FB");
@@ -406,7 +406,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             .whenComplete(() => {
                                   Navigator.of(context).pop(),
                                   Navigator.pushReplacementNamed(
-                                      context, '/mainHome')
+                                      context, '/logIn')
                                 })
                             .catchError((e) {
                           print("error with sign up with Google");

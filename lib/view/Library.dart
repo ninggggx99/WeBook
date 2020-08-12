@@ -276,7 +276,7 @@ class _LibraryPageState extends State<LibraryPage>{
               await showDialog(
                 context: context,
                 builder: (BuildContext context){
-                  return CustomDeleteBookAlert(book, library, auth,downloadProvider);
+                  return CustomDeleteBookAlert(book, library, auth,downloadProvider,file,false);
                 }
               ).then((value){
                 Navigator.of(context).pop();

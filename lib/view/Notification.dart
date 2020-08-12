@@ -6,6 +6,7 @@ import 'package:webookapp/model/comment_model.dart';
 import 'package:webookapp/model/notification_model.dart';
 import 'package:provider/provider.dart';
 import 'package:webookapp/model/user_model.dart';
+import 'package:webookapp/view/BookDetailsScreen.dart';
 import 'package:webookapp/view_model/auth_provider.dart';
 import 'package:webookapp/view_model/notification_provider.dart';
 import 'package:webookapp/widget/custom_loadingPage.dart';
@@ -64,7 +65,14 @@ class _NotificationPageState extends State<NotificationPage> {
   Widget _buildMessage(Message notim, Book book, User user,Comment comment){
     return GestureDetector(
       onTap: ()async {
-
+         Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        BookDetailsScreen(book, auth))).then((value) => setState(() {
+                            print("hi");
+                            load();
+                          }));
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 19),
@@ -74,11 +82,17 @@ class _NotificationPageState extends State<NotificationPage> {
           children: <Widget>[
             ClipRRect(
                 borderRadius: BorderRadius.circular(15.0),
-                child: Image.network(
-                  user.profilePic != ""? user.profilePic :   "https://img.icons8.com/pastel-glyph/2x/person-male.png" ,
-                  height: 71,
-                  width: 71,
-                ),
+                child: (user.profilePic) == " "?
+                    Image.asset(
+                      'assets/ProfileDefault.png',
+                      height: 71,
+                      width: 71                    
+                    )
+                  : Image.network(
+                    user.profilePic,
+                    height: 71,
+                    width: 71,
+                  ),
             ),
             SizedBox(
               width: 21,
@@ -98,9 +112,16 @@ class _NotificationPageState extends State<NotificationPage> {
             ),
             SizedBox(height: 5),
             ClipRRect(
-                borderRadius: BorderRadius.circular(15.0),
-                child: Image.network(
-                  book.coverURL != null? book.coverURL :   "https://img.icons8.com/pastel-glyph/2x/person-male.png" ,
+              borderRadius: BorderRadius.circular(15.0),
+              child:
+                book.coverURL == null?
+                Image.asset(
+                    'assets/BookCover.png',
+                    height: 71,
+                    width: 71                    
+                  )
+                : Image.network(
+                  book.coverURL,
                   height: 71,
                   width: 71,
                 ),
@@ -148,71 +169,107 @@ class _NotificationPageState extends State<NotificationPage> {
                   ],
                 )
               ),
-              Padding(
-                padding: EdgeInsets.only(left: 25, top: 25, bottom: 5),
-                child: CustomText(
-                  text:'Today',
-                  size: 20,
-                  weight: FontWeight.w200,
-                  colors: Colors.black),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 5),
-                child: Column(
+              (_notiMessage.length == 0 && _notiMessageWk.length == 0)
+              ? Center(                
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Container (
-                      color: Colors.blue,
-                    ),
-                    ListView.builder(
-                      padding: EdgeInsets.only(left: 25, right: 6, top: 20),
-                      itemCount: _notiMessage.length,
-                      physics: BouncingScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        final message = _notiMessage[index];
-                        final book = _notiBook[index];
-                        final user = _notiUser[index];
-                        final comment = _notiComment[index];
-                        return _buildMessage(message,book,user,comment);
-                        
-                        },
+                    SizedBox(height: MediaQuery.of(context).size.height*0.7),
+                    CustomText(
+                      text: 'No recent activity ',
+                      size: 16,
+                      weight: FontWeight.w500,
+                      colors: Colors.grey.shade600
                     ),
                   ],
                 )
+              )
+              :            
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _notiMessage.length == 0 
+                  ? Container()
+                  : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(left: 25, top: 25, bottom: 5),
+                        child: CustomText(
+                          text:'Today',
+                          size: 20,
+                          weight: FontWeight.w200,
+                          colors: Colors.black),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 5),
+                        child: Column(
+                          children: <Widget>[
+                            Container (
+                              color: Colors.blue,
+                            ),
+                            ListView.builder(
+                                padding: EdgeInsets.only(left: 25, right: 6, top: 20),
+                                itemCount: _notiMessage.length,
+                                physics: BouncingScrollPhysics(),
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  final message = _notiMessage[index];
+                                  final book = _notiBook[index];
+                                  final user = _notiUser[index];
+                                  final comment = _notiComment[index];
+                                  return _buildMessage(message,book,user,comment);
+                                  
+                                  },
+                              ),
+                          ],
+                        )
+                      ),
+                    ],
+                  ),
+                   _notiMessageWk.length == 0 
+                  ? Container()
+                  : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(left: 25, top: 25, bottom: 5),
+                        child: CustomText(
+                          text:'This Week',
+                          size: 20,
+                          weight: FontWeight.w200,
+                          colors: Colors.black),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 5),
+                        child: Column(
+                          children: <Widget>[
+                            Container (
+                              color: Colors.blue,
+                            ),
+                            ListView.builder(
+                              padding: EdgeInsets.only(left: 25, right: 6, top: 20),
+                              itemCount: _notiMessageWk.length,
+                              physics: BouncingScrollPhysics(),
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                final message = _notiMessageWk[index];
+                                final book = _notiBookWk[index];
+                                final user = _notiUserWk[index];
+                                final comment = _notiCommentWk[index];
+                                return _buildMessage(message,book,user,comment);
+                                
+                                },
+                            ),
+                          ],
+                        )
+                      ),
+                    ],
+                  ),
+                  
+                ],
               ),
-              Padding(
-                padding: EdgeInsets.only(left: 25, top: 25, bottom: 5),
-                child: CustomText(
-                  text:'This Week',
-                  size: 20,
-                  weight: FontWeight.w200,
-                  colors: Colors.black),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 5),
-                child: Column(
-                  children: <Widget>[
-                    Container (
-                      color: Colors.blue,
-                    ),
-                    ListView.builder(
-                      padding: EdgeInsets.only(left: 25, right: 6, top: 20),
-                      itemCount: _notiMessageWk.length,
-                      physics: BouncingScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        final message = _notiMessageWk[index];
-                        final book = _notiBookWk[index];
-                        final user = _notiUserWk[index];
-                        final comment = _notiCommentWk[index];
-                        return _buildMessage(message,book,user,comment);
-                        
-                        },
-                    ),
-                  ],
-                )
-              ),
-              
+             
             ],   
           ),
         )

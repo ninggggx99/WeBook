@@ -33,13 +33,46 @@ class HomeProvider {
     });
   }
 
-  /*Future<void> addRating(String bookID, String userId, double rating) async {
-    
-    Rating rate = new Rating(userId, rating);
-    String key = _dbRef.child("books/$bookID/ratings").push().key;
-    await _dbRef.child("books/$bookID/ratings/$key").set(rate.toJson());
+  Future<void> editComment(
+      String bookID, Comment comment, String desc, int rate) async {
+    try {
+      await _dbRef
+          .child("books/$bookID/comments/${comment.key}")
+          .child("commentDesc")
+          .set(desc);
+      await _dbRef
+          .child("books/$bookID/comments/${comment.key}")
+          .child("rate")
+          .set(rate);
+    } catch (e) {
+      print("Error with editing comment: " + e.toString());
+    }
+  }
 
-  }*/
+  Future<void> deleteComment(Book book, Comment comment) async {
+    try {
+      //Delete comment from book
+      await _dbRef
+          .child("books/${book.key}")
+          .child("comments/${comment.key}")
+          .remove();
+
+      //Deleting notfication
+      await _dbRef
+          .child("notifications/${book.key}")
+          .orderByChild("commentId")
+          .equalTo(comment.key)
+          .once()
+          .then((DataSnapshot snapshot) {
+        Map<dynamic, dynamic> maps = Map.from(snapshot.value);
+        maps.forEach((key, value) async {
+          await _dbRef.child("notifications/${book.key}").child(key).remove();
+        });
+      });
+    } catch (e) {
+      print("Error with deleting comment: " + e.toString());
+    }
+  }
 
   Future<BookFeed> getBooks(String id) async {
     DataSnapshot snapshot = await _dbRef.child("books").once().catchError((e) {
@@ -51,7 +84,7 @@ class HomeProvider {
     return _bookFeed;
   }
 
-  bool equalsIgnoreCase (String str, String check){
+  bool equalsIgnoreCase(String str, String check) {
     print("check");
     print(str.toLowerCase().trim());
     print(check.toLowerCase().trim());
@@ -60,12 +93,12 @@ class HomeProvider {
     return exist;
   }
 
-  Future<List<Book>> searchResultBook (String bookTitle, String id) async{
+  Future<List<Book>> searchResultBook(String bookTitle, String id) async {
     List<Book> _books = await getBookByRecency(id);
     List<Book> _searchResult = [];
 
-    for(int i = 0; i<_books.length ; i++){
-      if (equalsIgnoreCase(_books[i].title, bookTitle) == true){
+    for (int i = 0; i < _books.length; i++) {
+      if (equalsIgnoreCase(_books[i].title, bookTitle) == true) {
         print(_books[i].title);
         _searchResult.add(_books[i]);
       }
@@ -95,23 +128,24 @@ class HomeProvider {
     return sorted;
   }
 
-  Future<List<Book>> getBooksByCat(Book book) async {
+  Future<List<Book>> getBooksByCat(String bookCat, String bookId) async {
     List<Book> books = [];
     try {
       await _dbRef
           .child("books")
           .orderByChild("category")
-          .equalTo(book.category)
+          .equalTo(bookCat)
           .once()
           .then((DataSnapshot snapshot) {
         Map<dynamic, dynamic> maps = Map.from(snapshot.value);
         maps.forEach((key, value) {
           Book _book = Book.fromJson(Map.from(value));
           _book.setKey(key);
-          if(book.key != _book.key){
+          if (bookId != _book.key) {
+            print(bookId);
+            print(_book.key);
             books.add(_book);
           }
-          
         });
       });
     } catch (e) {
@@ -121,11 +155,11 @@ class HomeProvider {
     return books;
   }
 
-  Future<List<Comment>> getComments(Book book) async {
+  Future<List<Comment>> getComments(String bookId) async {
     List<Comment> comments = [];
 
     await _dbRef
-        .child("books/${book.key}")
+        .child("books/$bookId")
         .orderByChild("dateCreated")
         .once()
         .then((DataSnapshot snapshot) {

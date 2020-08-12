@@ -110,9 +110,9 @@ class CustomHomeTabBar extends StatelessWidget {
           ),
           child: InkWell(
             onTap: () async{
-              await Navigator.pushReplacement(
+              await Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => BookDetailsScreen(book,auth,true,false))
+                MaterialPageRoute(builder: (context) => BookDetailsScreen(book,auth))
               );
             }
           ),
